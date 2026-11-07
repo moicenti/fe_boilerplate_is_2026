@@ -26,7 +26,6 @@ async function getCurrentUser(): Promise<Me | null> {
 export default async function Sidebar() {
   const user = await getCurrentUser();
   const isAdmin = user?.role === 'ADMINISTRADOR';
-  const unit = user?.unit ?? 'Sin unidad';
   const isSecurity = user?.role === 'SEGURIDAD';
 
   return (
@@ -45,10 +44,10 @@ export default async function Sidebar() {
           </div>
         </div>
 
-      
+        {/* Info Usuario */}
         <div className="border border-gray-600 rounded-lg p-3 mb-6">
           <h2 className="font-semibold text-sm">Los Olivos</h2>
-                    {user?.unit ? (
+          {user?.unit ? (
             <>
               <p className="text-xs text-gray-300 mt-1">
                 {user.unit.tower} · {user.unit.code}
@@ -65,52 +64,53 @@ export default async function Sidebar() {
           </span>
         </div>
 
+        {/* Navegación */}
         {isSecurity ? <SecurityNav /> : (
-        <nav className="space-y-6">
-          <div>
-            <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
-              Mi Cuenta
-            </p>
-            <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
-              <FileText size={18} /> Estado de cuenta
-            </Link>
-            <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
-              <Wallet size={18} /> Realizar pago
-            </Link>
-          </div>
-
-          <div>
-            <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
-              Mi Comunidad
-            </p>
-            <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
-              <Grid size={18} /> Áreas comunes
-            </Link>
-            <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
-              <CalendarPlus size={18} /> Nueva reserva
-            </Link>
-            <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
-              <Calendar size={18} /> Mis reservas
-            </Link>
-            <Link href="/incidencias" className="flex items-center gap-3 px-2 py-2 text-sm bg-[#164a33] text-white rounded-md mt-1">
-              <FileText size={18} /> Incidencias
-            </Link>
-          </div>
-
-          {isAdmin && (
+          <nav className="space-y-6">
             <div>
               <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
-                Administración
+                Mi Cuenta
               </p>
-              <Link
-                href="/admin/incidencias"
-                className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition"
-              >
-                <ShieldCheck size={18} /> Panel de incidencias
+              <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
+                <FileText size={18} /> Estado de cuenta
+              </Link>
+              <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
+                <Wallet size={18} /> Realizar pago
               </Link>
             </div>
-          )}
-        </nav>
+
+            <div>
+              <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
+                Mi Comunidad
+              </p>
+              <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
+                <Grid size={18} /> Áreas comunes
+              </Link>
+              <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
+                <CalendarPlus size={18} /> Nueva reserva
+              </Link>
+              <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
+                <Calendar size={18} /> Mis reservas
+              </Link>
+              <Link href="/incidencias" className="flex items-center gap-3 px-2 py-2 text-sm bg-[#164a33] text-white rounded-md mt-1">
+                <FileText size={18} /> Incidencias
+              </Link>
+            </div>
+
+            {isAdmin && (
+              <div>
+                <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
+                  Administración
+                </p>
+                <Link
+                  href="/admin/incidencias"
+                  className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition"
+                >
+                  <ShieldCheck size={18} /> Panel de incidencias
+                </Link>
+              </div>
+            )}
+          </nav>
         )}
       </div>
 

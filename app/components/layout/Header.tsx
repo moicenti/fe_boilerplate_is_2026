@@ -6,15 +6,10 @@ import Breadcrumb from "@/app/components/layout/Breadcrumb";
 type Me = {
   id: string;
   email: string;
-  isActive: boolean;
-  createdAt: string;
   role: 'RESIDENTE' | 'ADMINISTRADOR' | 'MANTENIMIENTO' | 'SEGURIDAD';
   unit?: { id: string; code: string; tower: string; description: string } | null;
-};
-
-const ROLE_LABEL: Record<string, string> = {
-  SEGURIDAD: "Seguridad · Los Olivos",
-  ADMINISTRADOR: "Administración",
+  isActive: boolean;
+  createdAt: string;
 };
 
 async function getCurrentUser(): Promise<Me | null> {
