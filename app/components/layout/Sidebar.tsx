@@ -12,8 +12,9 @@ import {
 } from 'lucide-react';
 import { getSession } from '@/lib/session';
 import { apiFetch } from '@/lib/api';
+import SecurityNav from '@/app/components/layout/SecurityNav';
 
-type Me = { id: string; email: string; unit?: string | null };
+type Me = { id: string; email: string; unit?: string | null; role?: string };
 
 async function getCurrentUser(): Promise<Me | null> {
   const token = await getSession();
@@ -28,6 +29,7 @@ async function getCurrentUser(): Promise<Me | null> {
 export default async function Sidebar() {
   const user = await getCurrentUser();
   const unit = user?.unit ?? 'Sin unidad';
+  const isSecurity = user?.role === 'SEGURIDAD';
 
   return (
     <aside className="w-64 bg-[#0a2f1f] text-white min-h-screen flex flex-col justify-between p-4">
@@ -48,13 +50,14 @@ export default async function Sidebar() {
      
         <div className="border border-gray-600 rounded-lg p-3 mb-6">
           <h2 className="font-semibold text-sm">Los Olivos</h2>
-          <p className="text-xs text-gray-300">Unidad {unit}</p>
+          <p className="text-xs text-gray-300">{isSecurity ? 'Caseta principal' : `Unidad ${unit}`}</p>
           <span className="inline-block mt-2 bg-[#164a33] text-xs px-2 py-1 rounded">
-            Residente
+            {isSecurity ? 'Personal de seguridad' : 'Residente'}
           </span>
         </div>
 
-   
+
+        {isSecurity ? <SecurityNav /> : (
         <nav className="space-y-6">
           <div>
             <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
@@ -105,6 +108,7 @@ export default async function Sidebar() {
             </Link>
           </div>
         </nav>
+        )}
       </div>
 
    
@@ -115,7 +119,7 @@ export default async function Sidebar() {
             <span className="font-semibold">Estamos para ayudarte</span>
           </div>
           <p className="text-xs text-gray-300 mb-2">
-            ¿Una duda con tus reportes? Contacta a la administración.
+            {isSecurity ? '¿Una duda en caseta?' : '¿Una duda con tus reportes?'} Contacta a la administración.
           </p>
           <Link href="#" className="text-xs text-white underline">
             Contactar administración

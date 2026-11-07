@@ -1,12 +1,19 @@
 import { Bell } from "lucide-react";
 import { getSession } from "@/lib/session";
 import { apiFetch } from "@/lib/api";
+import Breadcrumb from "@/app/components/layout/Breadcrumb";
 
 type Me = {
   id: string;
   email: string;
   isActive: boolean;
   createdAt: string;
+  role?: string;
+};
+
+const ROLE_LABEL: Record<string, string> = {
+  SEGURIDAD: "Seguridad · Los Olivos",
+  ADMINISTRADOR: "Administración",
 };
 
 async function getCurrentUser(): Promise<Me | null> {
@@ -46,11 +53,7 @@ export default async function Header() {
 
   return (
     <header className="h-16 border-b border-gray-200 bg-[#fbf8f1] flex items-center justify-between px-8">
-      <div className="flex items-center gap-2 text-sm text-gray-600">
-        <span>Mi comunidad</span>
-        <span className="text-gray-400">&gt;</span>
-        <span className="font-medium text-gray-900">Incidencias</span>
-      </div>
+      <Breadcrumb />
 
       <div className="flex items-center gap-6">
         <button className="relative text-gray-500 hover:text-gray-900">
@@ -67,7 +70,7 @@ export default async function Header() {
             <p className="font-semibold text-gray-900 leading-none truncate max-w-[160px]">
               {displayName}
             </p>
-            <p className="text-gray-500 text-xs">Residente</p>
+            <p className="text-gray-500 text-xs">{ROLE_LABEL[user?.role ?? ""] ?? "Residente"}</p>
           </div>
         </div>
       </div>
