@@ -33,7 +33,6 @@ export default function ReportCard({ report }: { report: Report }) {
 
   return (
     <div className="grid grid-cols-12 gap-4 items-center p-4 border-b border-gray-200 bg-white hover:bg-gray-50 transition">
-      {/* Asunto / Folio */}
       <div className="col-span-4">
         <p className="font-semibold text-gray-900 text-sm">{report.title}</p>
         <p className="text-xs text-gray-500 mt-1">
@@ -45,18 +44,15 @@ export default function ReportCard({ report }: { report: Report }) {
         </p>
       </div>
 
-      {/* Ubicación */}
       <div className="col-span-3">
         <p className="text-sm text-gray-700">{report.location}</p>
       </div>
 
-      {/* Actualización */}
       <div className="col-span-2">
         <p className="text-sm text-gray-700">{report.date}</p>
         <p className="text-xs text-gray-500">{report.time}</p>
       </div>
 
-      {/* Estado */}
       <div className="col-span-2">
         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusStyles(report.status)}`}>
           {report.status}
@@ -66,7 +62,6 @@ export default function ReportCard({ report }: { report: Report }) {
         )}
       </div>
 
-      {/* Acciones */}
       <div className="col-span-1 text-right">
         <Link 
           href={`/incidencias/${report.id}`} 

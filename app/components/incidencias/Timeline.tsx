@@ -23,7 +23,7 @@ export default function Timeline({ events }: { events: TimelineEvent[] }) {
             <div className="absolute left-[11px] top-8 bottom-0 w-0.5 bg-gray-200" />
           )}
 
-          {/* Icono del paso */}
+       
           <div className="relative z-10 shrink-0 mt-0.5">
             {event.status === 'completed' ? (
               <div className="w-6 h-6 rounded-full bg-[#0a2f1f] flex items-center justify-center text-white">
@@ -36,7 +36,6 @@ export default function Timeline({ events }: { events: TimelineEvent[] }) {
             )}
           </div>
 
-          {/* Contenido del evento */}
           <div className="flex-1">
             <div className="flex justify-between items-start mb-1">
               <h4 className="text-sm font-semibold text-gray-900">{event.title}</h4>
@@ -48,7 +47,7 @@ export default function Timeline({ events }: { events: TimelineEvent[] }) {
               {event.description}
             </p>
 
-            {/* Archivo adjunto (si existe) */}
+
             {event.attachment && (
               <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg bg-gray-50 max-w-md">
                 <div className="flex items-center gap-3">

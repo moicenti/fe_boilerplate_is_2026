@@ -20,14 +20,7 @@ async function getCurrentUser(): Promise<Me | null> {
   }
 }
 
-/**
- * Iniciales a partir del email.
- * "matoceti@example.com"           → "MA"
- * "ana.martinez@example.com"       → "AM"
- * "ana_martinez@example.com"       → "AM"
- * "ana-martinez@example.com"       → "AM"
- * "john@example.com"               → "JO"
- */
+
 function getInitials(email: string): string {
   const local = email.split("@")[0] ?? "";
   const parts = local.split(/[._-]/).filter(Boolean);
@@ -37,11 +30,7 @@ function getInitials(email: string): string {
   return local.slice(0, 2).toUpperCase();
 }
 
-/**
- * Nombre visible a partir del email.
- * "matoceti@example.com"      → "Matoceti"
- * "ana.martinez@example.com"  → "Ana Martinez"
- */
+
 function getDisplayName(email: string): string {
   const local = email.split("@")[0] ?? "";
   return local

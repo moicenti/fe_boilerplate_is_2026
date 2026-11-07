@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Plus, Search, ChevronDown, CheckCircle2 } from 'lucide-react';
 import ReportCard, { Report } from '@/app/components/incidencias/ReportCard';
 
-// Tipo que devuelve el backend
 type ApiReport = {
   id: string;
   folio: string;
@@ -19,7 +18,6 @@ type ApiReport = {
   photos: { id: string; url: string }[];
 };
 
-// Mapea el status del backend al que usa el UI
 function mapStatus(apiStatus: string): Report['status'] {
   switch (apiStatus) {
     case 'Abierto':
@@ -35,7 +33,6 @@ function mapStatus(apiStatus: string): Report['status'] {
   }
 }
 
-// Formatea fecha tipo "05 nov 2026"
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('es-MX', {
     day: '2-digit',
@@ -44,7 +41,6 @@ function formatDate(iso: string): string {
   });
 }
 
-// Formatea hora tipo "09:15 h"
 function formatTime(iso: string): string {
   return (
     new Date(iso).toLocaleTimeString('es-MX', {
@@ -62,7 +58,6 @@ export default function MisReportesPage() {
   const [activeFilter, setActiveFilter] = useState('Todos');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Cargar reportes al montar
   useEffect(() => {
     async function load() {
       try {
@@ -93,7 +88,6 @@ export default function MisReportesPage() {
     load();
   }, []);
 
-  // Filtrado + búsqueda
   const filteredReports = reports.filter((report) => {
     const matchesFilter = activeFilter === 'Todos' || report.status === activeFilter;
     const matchesSearch =
@@ -102,7 +96,6 @@ export default function MisReportesPage() {
     return matchesFilter && matchesSearch;
   });
 
-  // Conteo de reportes por estado (para los pills)
   const counts = {
     Todos: reports.length,
     Recibida: reports.filter((r) => r.status === 'Recibida').length,
@@ -111,12 +104,10 @@ export default function MisReportesPage() {
     Cerrada: reports.filter((r) => r.status === 'Cerrada').length,
   };
 
-  // ¿Hay algún reporte pendiente de confirmar? (para el banner superior)
   const pendingConfirmation = reports.find((r) => r.status === 'Por confirmar');
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Header de la página */}
       <div className="flex justify-between items-end mb-6">
         <div>
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Incidencias</p>
@@ -131,7 +122,6 @@ export default function MisReportesPage() {
         </Link>
       </div>
 
-      {/* Banner de acción requerida (solo si hay un reporte "Por confirmar") */}
       {pendingConfirmation && (
         <div className="bg-[#f5f0e6] border border-[#e8dfcf] rounded-xl p-4 flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -152,10 +142,8 @@ export default function MisReportesPage() {
         </div>
       )}
 
-      {/* Contenedor de la Tabla y Filtros */}
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
         
-        {/* Cabecera de la tabla: Filtros y buscador */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-gray-900">Reportes de Ana Martínez</h2>
@@ -168,7 +156,6 @@ export default function MisReportesPage() {
           </div>
 
           <div className="flex justify-between items-center">
-            {/* Botones de Filtro (Pills) */}
             <div className="flex gap-2 flex-wrap">
               {(['Todos', 'Recibida', 'En atención', 'Por confirmar', 'Cerrada'] as const).map((filter) => (
                 <button
@@ -199,7 +186,6 @@ export default function MisReportesPage() {
           </div>
         </div>
 
-        {/* Cabecera de la Tabla (Columnas) */}
         <div className="grid grid-cols-12 gap-4 px-4 py-3 bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
           <div className="col-span-4">Asunto / Folio / Registro</div>
           <div className="col-span-3">Ubicación</div>
@@ -208,7 +194,6 @@ export default function MisReportesPage() {
           <div className="col-span-1 text-right">Acciones</div>
         </div>
 
-        {/* Lista de Reportes */}
         <div className="flex flex-col">
           {isLoading && (
             <div className="p-8 text-center text-gray-500">Cargando reportes...</div>
@@ -228,7 +213,6 @@ export default function MisReportesPage() {
           ))}
         </div>
 
-        {/* Footer de la Tabla (Paginación) */}
         <div className="p-4 border-t border-gray-200 flex justify-between items-center text-sm text-gray-500">
           <span>
             {filteredReports.length > 0
@@ -243,7 +227,6 @@ export default function MisReportesPage() {
         </div>
       </div>
 
-      {/* Footer informativo */}
       <div className="mt-6 text-xs text-gray-500">
         Información al{' '}
         {new Date().toLocaleDateString('es-MX', {
