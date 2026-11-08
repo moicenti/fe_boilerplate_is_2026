@@ -10,8 +10,6 @@ export type LoginState = {
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Llama a la API de autenticación. Devuelve el token si las credenciales son
-// válidas, o null si la API responde 401/403.
 async function authenticate(email: string, password: string) {
   const apiUrl = process.env.API_URL;
   if (!apiUrl) {
@@ -32,7 +30,6 @@ async function authenticate(email: string, password: string) {
     throw new Error(`auth/login respondió ${res.status}`);
   }
 
-  // Ajustar al formato de respuesta real de la API.
   const data = await res.json();
   const token: string | undefined =
     data.token ?? data.accessToken ?? data.access_token;

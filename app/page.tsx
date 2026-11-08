@@ -7,7 +7,7 @@ export default function Home() {
       <form action={logout}>
         <button
           type="submit"
-          className="rounded-md border border-zinc-300 px-4 py-2 text-sm dark:border-zinc-700"
+          className="rounded-md border border-sage px-4 py-2 text-sm"
         >
           Cerrar sesión
         </button>
