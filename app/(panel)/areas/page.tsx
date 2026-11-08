@@ -4,10 +4,12 @@ import { logout } from "@/app/actions/auth";
 import { AlertIcon, CheckCircleIcon, ChevronLeftIcon, InfoIcon, PlusIcon } from "@/components/icons";
 import { Topbar } from "@/components/topbar";
 import { ApiError } from "@/lib/api";
-import { listAreas } from "@/lib/areas-api";
+import { listAreas, listBloqueos } from "@/lib/areas-api";
 import { ESTADO_AREA, formatHoras, resumirHorarios, type Area } from "@/lib/areas";
-import { CONDOMINIO } from "@/lib/condominio";
+import { bloqueosVigentes, type BloqueoVista } from "@/lib/bloqueos";
+import { CONDOMINIO, hoyEnCondominio } from "@/lib/condominio";
 import { AreaForm } from "./area-form";
+import { Bloqueos } from "./bloqueos";
 import { DeleteArea } from "./delete-area";
 
 export const metadata: Metadata = {
@@ -61,6 +63,18 @@ export default async function AreasPage(props: PageProps<"/areas">) {
   // La página muestra una sola cosa a la vez: la lista o el formulario.
   const editando = creando || Boolean(seleccionada);
   const volverHref = href({ pagina });
+
+  // Bloqueos vigentes (los que aún no terminan) del área seleccionada.
+  let bloqueos: BloqueoVista[] = [];
+  let errorBloqueos = false;
+  if (seleccionada) {
+    try {
+      bloqueos = bloqueosVigentes((await listBloqueos(seleccionada.id)) ?? []);
+    } catch (error) {
+      errorBloqueos = true;
+      console.error("Error al listar bloqueos:", error);
+    }
+  }
 
   return (
     <>
@@ -255,7 +269,19 @@ export default async function AreasPage(props: PageProps<"/areas">) {
 
             <div className="flex flex-col gap-6">
               {seleccionada && (
-                <DeleteArea key={seleccionada.id} id={seleccionada.id} nombre={seleccionada.nombre} />
+                <>
+                  <Bloqueos
+                    key={seleccionada.id}
+                    areaId={seleccionada.id}
+                    nombre={seleccionada.nombre}
+                    horarios={seleccionada.horarios ?? []}
+                    duracionBloque={seleccionada.duracionBloque || 1}
+                    hoy={hoyEnCondominio()}
+                    bloqueos={bloqueos}
+                    errorCarga={errorBloqueos}
+                  />
+                  <DeleteArea key={`eliminar-${seleccionada.id}`} id={seleccionada.id} nombre={seleccionada.nombre} />
+                </>
               )}
               <aside className="flex gap-4 rounded-xl bg-sage/20 p-6 text-xs leading-relaxed text-secondary">
                 <InfoIcon className="size-5 shrink-0 text-foreground" />

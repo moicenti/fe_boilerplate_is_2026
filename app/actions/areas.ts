@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { ApiError } from "@/lib/api";
 import { createArea, deleteArea, updateArea } from "@/lib/areas-api";
 import { DIAS, type AreaInput, type Horario } from "@/lib/areas";
-import { deleteSession } from "@/lib/session";
+import { expireSession } from "@/lib/session";
 
 export type HorarioDiaValues = {
   activo: boolean;
@@ -114,11 +114,6 @@ function apiErrorMessage(error: ApiError, operacion: "guardar" | "eliminar") {
     default:
       return `No se pudo ${operacion} el área. Intenta más tarde.`;
   }
-}
-
-async function expireSession(): Promise<never> {
-  await deleteSession();
-  redirect("/login");
 }
 
 export async function saveArea(

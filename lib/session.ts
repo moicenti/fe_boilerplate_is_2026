@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const SESSION_COOKIE = "session";
 const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
@@ -22,4 +23,10 @@ export async function getSession() {
 export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete(SESSION_COOKIE);
+}
+
+// Borra la sesión y manda al login (p. ej. cuando la API responde 401).
+export async function expireSession(): Promise<never> {
+  await deleteSession();
+  redirect("/login");
 }
