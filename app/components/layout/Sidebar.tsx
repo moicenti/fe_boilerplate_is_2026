@@ -10,21 +10,8 @@ import {
   MessageCircle,
   LogOut,
 } from 'lucide-react';
-import { getSession } from '@/lib/session';
-import { apiFetch } from '@/lib/api';
+import { getCurrentUser } from '@/lib/current-user';
 import SecurityNav from '@/app/components/layout/SecurityNav';
-
-type Me = { id: string; email: string; unit?: string | null; role?: string };
-
-async function getCurrentUser(): Promise<Me | null> {
-  const token = await getSession();
-  if (!token) return null;
-  try {
-    return await apiFetch<Me>('/auth/me');
-  } catch {
-    return null;
-  }
-}
 
 export default async function Sidebar() {
   const user = await getCurrentUser();

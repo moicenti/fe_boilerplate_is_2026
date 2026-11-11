@@ -1,31 +1,11 @@
 import { Bell } from "lucide-react";
-import { getSession } from "@/lib/session";
-import { apiFetch } from "@/lib/api";
+import { getCurrentUser } from "@/lib/current-user";
 import Breadcrumb from "@/app/components/layout/Breadcrumb";
-
-type Me = {
-  id: string;
-  email: string;
-  isActive: boolean;
-  createdAt: string;
-  role?: string;
-};
 
 const ROLE_LABEL: Record<string, string> = {
   SEGURIDAD: "Seguridad · Los Olivos",
   ADMINISTRADOR: "Administración",
 };
-
-async function getCurrentUser(): Promise<Me | null> {
-  const token = await getSession();
-  if (!token) return null;
-
-  try {
-    return await apiFetch<Me>("/auth/me");
-  } catch {
-    return null;
-  }
-}
 
 
 function getInitials(email: string): string {

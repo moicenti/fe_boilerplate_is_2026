@@ -1,19 +1,6 @@
 // app/(dashboard)/incidencias/page.tsx
 import ReportesList from '@/app/components/incidencias/ReportesList';
-import { getSession } from '@/lib/session';
-import { apiFetch } from '@/lib/api';
-
-type Me = { id: string; email: string; unit?: string | null };
-
-async function getCurrentUser(): Promise<Me | null> {
-  const token = await getSession();
-  if (!token) return null;
-  try {
-    return await apiFetch<Me>('/auth/me');
-  } catch {
-    return null;
-  }
-}
+import { getCurrentUser } from '@/lib/current-user';
 
 function getDisplayName(email: string | undefined): string {
   if (!email) return 'Usuario';
