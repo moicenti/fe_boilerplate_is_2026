@@ -12,6 +12,9 @@ function crumbsFor(pathname: string): [string, string] {
   if (pathname.startsWith("/paquetes")) {
     return ["Caseta de seguridad", "Paquetes"];
   }
+  if (pathname.startsWith("/areas/disponibilidad")) {
+    return ["Mi comunidad", "Áreas y reservas"];
+  }
   return ["Mi comunidad", "Incidencias"];
 }
 
