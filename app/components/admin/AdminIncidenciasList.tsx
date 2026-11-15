@@ -1,10 +1,18 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Search } from 'lucide-react';
+import { Search, AlertCircle } from 'lucide-react';
 import AsignarModal from './AsignarModal';
 
 type Priority = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA';
+
+type ReportEvent = {
+  id: string;
+  action: string;
+  metadata: Record<string, unknown> | null;
+  userId: string;
+  createdAt: string;
+};
 
 type ApiReport = {
   id: string;
@@ -24,6 +32,7 @@ type ApiReport = {
   assignee: { id: string; email: string } | null;
   user: { id: string; email: string };
   photos: { id: string; url: string }[];
+  events: ReportEvent[];
 };
 
 type ApiResponse = {
@@ -47,6 +56,17 @@ function getPriorityStyles(p: Priority | null): string {
   }
 }
 
+function getStatusStyles(status: string): string {
+  switch (status) {
+    case 'Abierto': return 'bg-gray-100 text-gray-700';
+    case 'En atención': return 'bg-blue-100 text-blue-700';
+    case 'Rechazado': return 'bg-red-100 text-red-700';
+    case 'Resuelto': return 'bg-yellow-100 text-yellow-700';
+    case 'Cerrado': return 'bg-green-100 text-green-700';
+    default: return 'bg-gray-100 text-gray-600';
+  }
+}
+
 export default function AdminIncidenciasList({ adminEmail }: Props) {
   const [reports, setReports] = useState<ApiReport[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
@@ -61,7 +81,6 @@ export default function AdminIncidenciasList({ adminEmail }: Props) {
   const [selectedReport, setSelectedReport] = useState<ApiReport | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
-  // useCallback evita que load cambie en cada render
   const load = useCallback(async () => {
     const params = new URLSearchParams();
     if (filterStatus) params.set('status', filterStatus);
@@ -85,22 +104,15 @@ export default function AdminIncidenciasList({ adminEmail }: Props) {
     }
   }, [filterStatus, filterPriority, filterUnit]);
 
-  // Solo se dispara cuando cambian los filtros o reloadKey
   useEffect(() => {
     let ignore = false;
-
     const run = async () => {
-      // No llamamos setIsLoading(true) síncronamente: usamos una microtask
       if (!ignore) setIsLoading(true);
       await load();
       if (ignore) return;
     };
-
     run();
-
-    return () => {
-      ignore = true;
-    };
+    return () => { ignore = true; };
   }, [load, reloadKey]);
 
   const filtered = reports.filter((r) => {
@@ -115,6 +127,13 @@ export default function AdminIncidenciasList({ adminEmail }: Props) {
   const handleSaved = () => {
     setSelectedReport(null);
     setReloadKey((k) => k + 1);
+  };
+
+  const showRejected = () => {
+    setFilterStatus('Rechazado');
+    setFilterPriority('');
+    setFilterUnit('');
+    setSearch('');
   };
 
   return (
@@ -132,7 +151,7 @@ export default function AdminIncidenciasList({ adminEmail }: Props) {
       </div>
 
       {/* Contadores */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-6">
         {(['BAJA', 'MEDIA', 'ALTA', 'CRITICA', 'SIN_PRIORIDAD'] as const).map((p) => (
           <div key={p} className="bg-white rounded-xl border border-gray-200 p-4">
             <p className="text-xs text-gray-500 uppercase font-semibold">
@@ -143,6 +162,23 @@ export default function AdminIncidenciasList({ adminEmail }: Props) {
             </p>
           </div>
         ))}
+
+        {/* Card de rechazados (clickeable) */}
+        <button
+          onClick={showRejected}
+          className={`text-left rounded-xl border p-4 transition ${
+            filterStatus === 'Rechazado'
+              ? 'bg-red-50 border-red-300'
+              : 'bg-white border-gray-200 hover:border-red-300 hover:bg-red-50/50'
+          }`}
+        >
+          <p className="text-xs text-red-600 uppercase font-semibold flex items-center gap-1">
+            <AlertCircle size={12} /> Rechazados
+          </p>
+          <p className="text-2xl font-bold text-red-700 mt-1">
+            {counts.RECHAZADOS ?? 0}
+          </p>
+        </button>
       </div>
 
       {/* Filtros */}
@@ -156,6 +192,7 @@ export default function AdminIncidenciasList({ adminEmail }: Props) {
             <option value="">Todos los estados</option>
             <option value="Abierto">Abierto</option>
             <option value="En atención">En atención</option>
+            <option value="Rechazado">Rechazado</option>
             <option value="Resuelto">Resuelto</option>
             <option value="Cerrado">Cerrado</option>
           </select>
@@ -224,7 +261,11 @@ export default function AdminIncidenciasList({ adminEmail }: Props) {
                 {r.priority ?? 'Sin prioridad'}
               </span>
             </div>
-            <div className="col-span-2 text-sm text-gray-700">{r.status}</div>
+            <div className="col-span-2">
+              <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusStyles(r.status)}`}>
+                {r.status}
+              </span>
+            </div>
             <div className="col-span-1 text-right">
               <button
                 onClick={() => setSelectedReport(r)}
