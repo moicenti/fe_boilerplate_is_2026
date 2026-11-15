@@ -1,12 +1,20 @@
-import { Bell } from 'lucide-react';
-import { getSession } from '@/lib/session';
-import { apiFetch } from '@/lib/api';
+import { Bell } from "lucide-react";
+import { getSession } from "@/lib/session";
+import { apiFetch } from "@/lib/api";
+import Breadcrumb from "@/app/components/layout/Breadcrumb";
 
 type Me = {
   id: string;
   email: string;
+  isActive: boolean;
+  createdAt: string;
   role: 'RESIDENTE' | 'ADMINISTRADOR' | 'MANTENIMIENTO' | 'SEGURIDAD';
   unit?: { id: string; code: string; tower: string; description: string } | null;
+};
+
+const ROLE_LABEL: Record<string, string> = {
+  SEGURIDAD: "Seguridad · Los Olivos",
+  ADMINISTRADOR: "Administración",
 };
 
 async function getCurrentUser(): Promise<Me | null> {
@@ -52,11 +60,7 @@ export default async function Header() {
 
   return (
     <header className="h-16 border-b border-gray-200 bg-[#fbf8f1] flex items-center justify-between px-8">
-      <div className="flex items-center gap-2 text-sm text-gray-600">
-        <span>Mi comunidad</span>
-        <span className="text-gray-400">&gt;</span>
-        <span className="font-medium text-gray-900">Incidencias</span>
-      </div>
+      <Breadcrumb />
 
       <div className="flex items-center gap-6">
         <button className="relative text-gray-500 hover:text-gray-900">

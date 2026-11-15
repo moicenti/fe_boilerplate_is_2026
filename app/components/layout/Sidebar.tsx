@@ -4,6 +4,7 @@ import {
 } from 'lucide-react';
 import { getSession } from '@/lib/session';
 import { apiFetch } from '@/lib/api';
+import SecurityNav from '@/app/components/layout/SecurityNav';
 
 type Me = {
   id: string;
@@ -25,6 +26,8 @@ async function getCurrentUser(): Promise<Me | null> {
 export default async function Sidebar() {
   const user = await getCurrentUser();
   const isAdmin = user?.role === 'ADMINISTRADOR';
+  const unit = user?.unit ?? 'Sin unidad';
+  const isSecurity = user?.role === 'SEGURIDAD';
 
   return (
     <aside className="w-64 bg-[#0a2f1f] text-white min-h-screen flex flex-col justify-between p-4">
@@ -42,16 +45,18 @@ export default async function Sidebar() {
           </div>
         </div>
 
-        {/* Info Usuario */}
+      
         <div className="border border-gray-600 rounded-lg p-3 mb-6">
           <h2 className="font-semibold text-sm">Los Olivos</h2>
-          {user?.unit ? (
+                    {user?.unit ? (
             <>
               <p className="text-xs text-gray-300 mt-1">
                 {user.unit.tower} · {user.unit.code}
               </p>
               <p className="text-[11px] text-gray-400 mt-0.5">{user.unit.description}</p>
             </>
+          ) : isSecurity ? (
+            <p className="text-xs text-gray-300 mt-1">Caseta principal</p>
           ) : (
             <p className="text-xs text-gray-300 mt-1">{user?.role ?? 'Sin unidad asignada'}</p>
           )}
@@ -60,7 +65,7 @@ export default async function Sidebar() {
           </span>
         </div>
 
-        {/* Navegación */}
+        {isSecurity ? <SecurityNav /> : (
         <nav className="space-y-6">
           <div>
             <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
@@ -106,6 +111,7 @@ export default async function Sidebar() {
             </div>
           )}
         </nav>
+        )}
       </div>
 
       {/* Footer */}
@@ -116,7 +122,7 @@ export default async function Sidebar() {
             <span className="font-semibold">Estamos para ayudarte</span>
           </div>
           <p className="text-xs text-gray-300 mb-2">
-            ¿Una duda con tus reportes? Contacta a la administración.
+            {isSecurity ? '¿Una duda en caseta?' : '¿Una duda con tus reportes?'} Contacta a la administración.
           </p>
           <Link href="#" className="text-xs text-white underline">
             Contactar administración
