@@ -25,16 +25,20 @@ const GRUPOS: { titulo: string; items: NavItem[] }[] = [
     titulo: "Mi Comunidad",
     items: [
       { href: "/areas/disponibilidad", label: "Áreas comunes", icon: Grid },
-      { href: "#", label: "Nueva reserva", icon: CalendarPlus },
-      { href: "#", label: "Mis reservas", icon: Calendar },
+      { href: "/reservas/nueva", label: "Nueva reserva", icon: CalendarPlus },
+      { href: "/reservas", label: "Mis reservas", icon: Calendar },
       { href: "/incidencias", label: "Incidencias", icon: FileText },
     ],
   },
 ];
 
+const HREFS = GRUPOS.flatMap((g) => g.items.map((i) => i.href)).filter((h) => h !== "#");
+
+// Activo solo el enlace más específico: en /reservas/nueva no se marca también /reservas.
 function isActive(pathname: string, href: string): boolean {
-  if (href === "#") return false;
-  return pathname === href || pathname.startsWith(`${href}/`);
+  const coincide = (h: string) => pathname === h || pathname.startsWith(`${h}/`);
+  if (href === "#" || !coincide(href)) return false;
+  return !HREFS.some((h) => h.length > href.length && coincide(h));
 }
 
 export default function ResidentNav() {

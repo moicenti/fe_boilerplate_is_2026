@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { LayoutGrid, Plus } from "lucide-react";
 import { formatFranja, franjaId, type Franja } from "@/lib/disponibilidad";
+import { hrefNuevaReserva } from "@/lib/reservas";
 
 /** Estado de un área en una franja, ya resuelto para mostrarse. */
 export type Celda =
@@ -61,32 +63,43 @@ const CELDAS: Record<Celda, { titulo: string; detalle: string; clase: string }> 
   },
 };
 
-function CeldaFranja({ celda }: { celda: Celda }) {
+function CeldaFranja({ celda, reservarHref }: { celda: Celda; reservarHref: string }) {
   const { titulo, detalle, clase } = CELDAS[celda];
-  return (
-    <div
-      className={`flex min-h-[70px] flex-col items-center justify-center rounded-lg px-2 py-3 text-center ${clase}`}
-    >
+  const contenido = (
+    <>
       <span className="text-xs font-semibold">{titulo}</span>
       {celda === "sin-franja" ? (
         <span className="sr-only">{detalle}</span>
       ) : (
         <span className="mt-1 inline-flex items-center gap-1 text-[11px] text-secondary">
-          {/* TODO: enlazar a la nueva reserva cuando exista la historia de reservas. */}
           {celda === "disponible" && <Plus size={12} aria-hidden="true" />}
           {detalle}
         </span>
       )}
-    </div>
+    </>
   );
+  const base = `flex min-h-[70px] flex-col items-center justify-center rounded-lg px-2 py-3 text-center ${clase}`;
+
+  // Las franjas disponibles llevan a la nueva reserva con el área, la fecha y la franja elegidas.
+  if (celda === "disponible") {
+    return (
+      <Link href={reservarHref} className={`${base} transition-colors hover:bg-sage/40`}>
+        {contenido}
+      </Link>
+    );
+  }
+  return <div className={base}>{contenido}</div>;
 }
 
 export default function TablaDisponibilidad({
   franjas,
   filas,
+  fecha,
   descripcion,
 }: {
   franjas: Franja[];
+  /** Fecha consultada ("YYYY-MM-DD"), para enlazar a la nueva reserva. */
+  fecha: string;
   filas: FilaArea[];
   /** Texto para lectores de pantalla, p. ej. "Disponibilidad del sábado 07 …". */
   descripcion: string;
@@ -132,7 +145,10 @@ export default function TablaDisponibilidad({
               </th>
               {fila.celdas.map((celda, i) => (
                 <td key={franjaId(franjas[i])} className="px-1.5 py-5">
-                  <CeldaFranja celda={celda} />
+                  <CeldaFranja
+                    celda={celda}
+                    reservarHref={hrefNuevaReserva({ area: fila.id, fecha, franja: franjaId(franjas[i]) })}
+                  />
                 </td>
               ))}
             </tr>
