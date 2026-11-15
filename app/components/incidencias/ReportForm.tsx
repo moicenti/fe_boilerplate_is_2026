@@ -26,12 +26,11 @@ type PhotoPreview = { file: File; url: string };
 type ReportFormProps = {
   userUnit: string | null;
   userEmail: string;
-  userUnitLabel?: string | null;
 };
 
 const UNIT_REGEX = /^[A-Z]+-(?:[1-9]\d*)$/;
 
-export default function ReportForm({ userUnit, userEmail, userUnitLabel }: ReportFormProps) {
+export default function ReportForm({ userUnit, userEmail }: ReportFormProps) {
   const router = useRouter();
   const [photoPreviews, setPhotoPreviews] = useState<PhotoPreview[]>([]);
   const [photoError, setPhotoError] = useState<string | null>(null);
@@ -61,6 +60,7 @@ export default function ReportForm({ userUnit, userEmail, userUnitLabel }: Repor
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Subida de fotos + previews
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     setPhotoError(null);
@@ -86,6 +86,7 @@ export default function ReportForm({ userUnit, userEmail, userUnitLabel }: Repor
       url: URL.createObjectURL(file),
     }));
     setPhotoPreviews((prev) => [...prev, ...newPreviews]);
+
     e.target.value = '';
   };
 
@@ -99,7 +100,9 @@ export default function ReportForm({ userUnit, userEmail, userUnitLabel }: Repor
     setSubmitError(null);
 
     if (!hasUnit) {
-      setSubmitError('Tu usuario no tiene una unidad asignada. Contacta a la administración.');
+      setSubmitError(
+        'Tu usuario no tiene una unidad asignada. Contacta a la administración.',
+      );
       return;
     }
 
@@ -122,10 +125,13 @@ export default function ReportForm({ userUnit, userEmail, userUnitLabel }: Repor
       }
 
       photoPreviews.forEach((p) => URL.revokeObjectURL(p.url));
+
       router.push('/incidencias');
       router.refresh();
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : 'Error desconocido');
+      setSubmitError(
+        error instanceof Error ? error.message : 'Error desconocido',
+      );
     }
   };
 
@@ -158,73 +164,117 @@ export default function ReportForm({ userUnit, userEmail, userUnitLabel }: Repor
 
       {!hasUnit && (
         <div className="mb-6 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded-lg p-3 text-sm">
-          Tu usuario no tiene una unidad asignada. Contacta a la administración para poder crear reportes.
+          Tu usuario no tiene una unidad asignada. Contacta a la
+          administración para poder crear reportes.
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+      >
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-gray-900 mb-1">Describe el problema</h2>
-            <p className="text-sm text-gray-500 mb-6">Los campos con * son obligatorios.</p>
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">
+              Describe el problema
+            </h2>
+            <p className="text-sm text-gray-500 mb-6">
+              Los campos con * son obligatorios.
+            </p>
 
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Asunto *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Asunto *
+                </label>
                 <input
                   {...register('title')}
                   placeholder="Ej. Luminaria apagada en pasillo"
                   className={inputClass(!!errors.title)}
                 />
-                {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
+                {errors.title && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.title.message}
+                  </p>
+                )}
               </div>
 
+              {/* Categoría */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Categoría *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Categoría *
+                </label>
                 <select
                   {...register('category')}
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-800 focus:border-transparent outline-none transition ${
                     errors.category ? 'border-red-500' : 'border-gray-300'
                   } ${watch('category') === '' ? 'text-gray-400' : 'text-gray-900'}`}
                 >
-                  <option value="" disabled hidden>Selecciona una categoría</option>
+                  <option value="" disabled hidden>
+                    Selecciona una categoría
+                  </option>
                   <option value="Mantenimiento">Mantenimiento</option>
                   <option value="Plomería">Plomería</option>
                   <option value="Electricidad">Electricidad</option>
                   <option value="Seguridad">Seguridad</option>
                 </select>
-                {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category.message}</p>}
+                {errors.category && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.category.message}
+                  </p>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Ubicación del problema *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Ubicación del problema *
+                </label>
                 <input
                   {...register('location')}
                   placeholder="Ej. Torre A · Piso 3 · Pasillo frente al elevador"
                   className={inputClass(!!errors.location)}
                 />
-                {errors.location && <p className="text-red-500 text-xs mt-1">{errors.location.message}</p>}
-                <p className="text-xs text-gray-500 mt-1">Indica el área, torre, piso o una referencia para encontrar el problema.</p>
+                {errors.location && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.location.message}
+                  </p>
+                )}
+                <p className="text-xs text-gray-500 mt-1">
+                  Indica el área, torre, piso o una referencia para encontrar el
+                  problema.
+                </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descripción *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Descripción *
+                </label>
                 <textarea
                   {...register('description')}
                   rows={4}
                   placeholder="Describe qué ocurre y desde cuándo lo has notado..."
                   className={`${inputClass(!!errors.description)} resize-none`}
                 />
-                {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
-                <p className="text-xs text-gray-500 mt-1">Incluye qué ocurre y desde cuándo lo has notado.</p>
+                {errors.description && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.description.message}
+                  </p>
+                )}
+                <p className="text-xs text-gray-500 mt-1">
+                  Incluye qué ocurre y desde cuándo lo has notado.
+                </p>
               </div>
             </div>
           </div>
 
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Fotos del problema</h2>
-              <span className="text-sm text-gray-500">{photoPreviews.length} de 3 fotos</span>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Fotos del problema
+              </h2>
+              <span className="text-sm text-gray-500">
+                {photoPreviews.length} de 3 fotos
+              </span>
             </div>
 
             <div
@@ -245,13 +295,19 @@ export default function ReportForm({ userUnit, userEmail, userUnitLabel }: Repor
               <div className="flex flex-col items-center gap-2">
                 <UploadCloud className="text-gray-400" size={32} />
                 <p className="text-sm font-medium text-gray-700">
-                  {photoPreviews.length >= 3 ? 'Máximo alcanzado (3 fotos)' : 'Agregar foto o arrastrar aquí'}
+                  {photoPreviews.length >= 3
+                    ? 'Máximo alcanzado (3 fotos)'
+                    : 'Agregar foto o arrastrar aquí'}
                 </p>
-                <p className="text-xs text-gray-500">Opcional · Hasta 3 fotos · JPG o PNG · Máx. 5 MB por foto</p>
+                <p className="text-xs text-gray-500">
+                  Opcional · Hasta 3 fotos · JPG o PNG · Máx. 5 MB por foto
+                </p>
               </div>
             </div>
 
-            {photoError && <p className="text-red-500 text-sm mt-2">{photoError}</p>}
+            {photoError && (
+              <p className="text-red-500 text-sm mt-2">{photoError}</p>
+            )}
 
             {photoPreviews.length > 0 && (
               <div className="mt-4 space-y-2">
@@ -263,12 +319,19 @@ export default function ReportForm({ userUnit, userEmail, userUnitLabel }: Repor
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-12 h-12 rounded-md overflow-hidden border border-gray-200 shrink-0 bg-white">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={preview.url} alt={preview.file.name} className="w-full h-full object-cover" />
+                        <img
+                          src={preview.url}
+                          alt={preview.file.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-gray-700 truncate">{preview.file.name}</p>
+                        <p className="text-sm font-medium text-gray-700 truncate">
+                          {preview.file.name}
+                        </p>
                         <p className="text-xs text-gray-500">
-                          {(preview.file.size / 1024 / 1024).toFixed(1)} MB · Listo para enviar
+                          {(preview.file.size / 1024 / 1024).toFixed(1)} MB ·
+                          Listo para enviar
                         </p>
                       </div>
                     </div>
@@ -304,54 +367,84 @@ export default function ReportForm({ userUnit, userEmail, userUnitLabel }: Repor
               disabled={isSubmitting || !hasUnit}
               className="flex items-center gap-2 px-6 py-2.5 bg-[#0a2f1f] text-white rounded-lg text-sm font-medium hover:bg-[#164a33] transition disabled:opacity-50"
             >
-              <Send size={16} /> {isSubmitting ? 'Enviando...' : 'Enviar reporte'}
+              <Send size={16} />{' '}
+              {isSubmitting ? 'Enviando...' : 'Enviar reporte'}
             </button>
           </div>
         </div>
 
         <div className="space-y-6">
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Tu reporte, en buenas manos</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Tu reporte, en buenas manos
+            </h3>
             <p className="text-sm text-gray-600 mb-4">
-              Se enviará a la administración de Los Olivos con los datos de tu sesión.
+              Se enviará a la administración de Los Olivos con los datos de tu
+              sesión.
             </p>
             <hr className="border-gray-200 mb-4" />
             <div>
-              <p className="font-medium text-gray-900 truncate">{userEmail || 'Usuario'}</p>
-              <p className="text-sm text-gray-500">
-                Residente {hasUnit ? `· Unidad ${userUnitLabel ?? userUnit}` : '· Sin unidad asignada'}
+              <p className="font-medium text-gray-900 truncate">
+                {userEmail || 'Usuario'}
               </p>
-              <p className="text-xs text-gray-400 mt-2">Estos datos se agregan automáticamente.</p>
+              <p className="text-sm text-gray-500">
+                Residente {hasUnit ? `· Unidad ${userUnit}` : '· Sin unidad asignada'}
+              </p>
+              <p className="text-xs text-gray-400 mt-2">
+                Estos datos se agregan automáticamente.
+              </p>
             </div>
             <hr className="border-gray-200 my-4" />
             <div className="flex items-start gap-2 text-xs text-gray-500">
               <Info size={16} className="mt-0.5 shrink-0" />
-              <p>Solo tú y la administración podrán consultar el seguimiento.</p>
+              <p>
+                Solo tú y la administración podrán consultar el seguimiento.
+              </p>
             </div>
           </div>
 
           <div className="bg-[#f5f0e6] rounded-xl p-6">
-            <h3 className="text-lg font-serif text-gray-900 mb-4">¿Qué sucede después?</h3>
+            <h3 className="text-lg font-serif text-gray-900 mb-4">
+              ¿Qué sucede después?
+            </h3>
             <ul className="space-y-4">
               <li className="flex gap-3">
-                <span className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-700 shrink-0">1</span>
+                <span className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-700 shrink-0">
+                  1
+                </span>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">Recibe tu folio</p>
-                  <p className="text-xs text-gray-600">Al enviar, podrás consultar el reporte en Mis reportes.</p>
+                  <p className="text-sm font-semibold text-gray-900">
+                    Recibe tu folio
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    Al enviar, podrás consultar el reporte en Mis reportes.
+                  </p>
                 </div>
               </li>
               <li className="flex gap-3">
-                <span className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-700 shrink-0">2</span>
+                <span className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-700 shrink-0">
+                  2
+                </span>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">Sigue los avances</p>
-                  <p className="text-xs text-gray-600">La administración actualizará el estado y su respuesta.</p>
+                  <p className="text-sm font-semibold text-gray-900">
+                    Sigue los avances
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    La administración actualizará el estado y su respuesta.
+                  </p>
                 </div>
               </li>
               <li className="flex gap-3">
-                <span className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-700 shrink-0">3</span>
+                <span className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-700 shrink-0">
+                  3
+                </span>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">Revisa la resolución</p>
-                  <p className="text-xs text-gray-600">Confirma si quedó solucionado o rechaza la resolución.</p>
+                  <p className="text-sm font-semibold text-gray-900">
+                    Revisa la resolución
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    Confirma si quedó solucionado o rechaza la resolución.
+                  </p>
                 </div>
               </li>
             </ul>

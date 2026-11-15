@@ -1,12 +1,9 @@
+// app/(dashboard)/incidencias/nuevo/page.tsx
 import ReportForm from '@/app/components/incidencias/ReportForm';
 import { getSession } from '@/lib/session';
 import { apiFetch } from '@/lib/api';
 
-type Me = {
-  id: string;
-  email: string;
-  unit?: { id: string; code: string; tower: string; description: string } | null;
-};
+type Me = { id: string; email: string; unit?: string | null };
 
 async function getCurrentUser(): Promise<Me | null> {
   const token = await getSession();
@@ -21,17 +18,11 @@ async function getCurrentUser(): Promise<Me | null> {
 export default async function NuevoReportePage() {
   const user = await getCurrentUser();
 
-  const userUnitCode = user?.unit?.code ?? null;
-  const userUnitLabel = user?.unit
-    ? `${user.unit.tower} · ${user.unit.code}`
-    : null;
-
   return (
     <div className="py-8 px-4">
       <ReportForm
-        userUnit={userUnitCode}
+        userUnit={user?.unit ?? null}
         userEmail={user?.email ?? ''}
-        userUnitLabel={userUnitLabel}
       />
     </div>
   );
