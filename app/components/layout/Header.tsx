@@ -6,30 +6,24 @@ import Breadcrumb from "@/app/components/layout/Breadcrumb";
 type Me = {
   id: string;
   email: string;
+  role: 'RESIDENTE' | 'ADMINISTRADOR' | 'MANTENIMIENTO' | 'SEGURIDAD';
+  unit?: { id: string; code: string; tower: string; description: string } | null;
   isActive: boolean;
   createdAt: string;
-  role?: string;
-};
-
-const ROLE_LABEL: Record<string, string> = {
-  SEGURIDAD: "Seguridad · Los Olivos",
-  ADMINISTRADOR: "Administración",
 };
 
 async function getCurrentUser(): Promise<Me | null> {
   const token = await getSession();
   if (!token) return null;
-
   try {
-    return await apiFetch<Me>("/auth/me");
+    return await apiFetch<Me>('/auth/me');
   } catch {
     return null;
   }
 }
 
-
 function getInitials(email: string): string {
-  const local = email.split("@")[0] ?? "";
+  const local = email.split('@')[0] ?? '';
   const parts = local.split(/[._-]/).filter(Boolean);
   if (parts.length >= 2) {
     return (parts[0][0] + parts[1][0]).toUpperCase();
@@ -37,19 +31,27 @@ function getInitials(email: string): string {
   return local.slice(0, 2).toUpperCase();
 }
 
-
 function getDisplayName(email: string): string {
-  const local = email.split("@")[0] ?? "";
-  return local
-    .replace(/[._-]/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  const local = email.split('@')[0] ?? '';
+  return local.replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function getRoleLabel(role: Me['role'] | undefined): string {
+  switch (role) {
+    case 'ADMINISTRADOR': return 'Administrador';
+    case 'MANTENIMIENTO': return 'Mantenimiento';
+    case 'SEGURIDAD': return 'Seguridad';
+    case 'RESIDENTE': return 'Residente';
+    default: return 'Invitado';
+  }
 }
 
 export default async function Header() {
   const user = await getCurrentUser();
-  const email = user?.email ?? "Invitado";
-  const initials = user ? getInitials(user.email) : "??";
-  const displayName = user ? getDisplayName(user.email) : "Invitado";
+  const initials = user ? getInitials(user.email) : '??';
+  const displayName = user ? getDisplayName(user.email) : 'Invitado';
+  const roleLabel = getRoleLabel(user?.role);
+  const unitLabel = user?.unit ? `${user.unit.tower} · ${user.unit.code}` : null;
 
   return (
     <header className="h-16 border-b border-gray-200 bg-[#fbf8f1] flex items-center justify-between px-8">
@@ -70,7 +72,10 @@ export default async function Header() {
             <p className="font-semibold text-gray-900 leading-none truncate max-w-[160px]">
               {displayName}
             </p>
-            <p className="text-gray-500 text-xs">{ROLE_LABEL[user?.role ?? ""] ?? "Residente"}</p>
+            <p className="text-gray-500 text-xs">
+              {roleLabel}
+              {unitLabel && <span className="text-gray-400"> · {unitLabel}</span>}
+            </p>
           </div>
         </div>
       </div>
