@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Check, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Check, AlertCircle, X } from 'lucide-react';
 import Timeline, { TimelineEvent } from '@/app/components/incidencias/Timeline';
 import { useRouter } from 'next/navigation';
 
@@ -52,10 +52,7 @@ function formatDateTime(iso: string): { date: string; time: string } {
 function getPriorityLabel(p: Priority | null): string {
   if (!p) return 'Sin prioridad';
   const labels: Record<Priority, string> = {
-    BAJA: 'Baja',
-    MEDIA: 'Media',
-    ALTA: 'Alta',
-    CRITICA: 'Crítica',
+    BAJA: 'Baja', MEDIA: 'Media', ALTA: 'Alta', CRITICA: 'Crítica',
   };
   return labels[p];
 }
@@ -64,7 +61,6 @@ function buildTimeline(report: ApiReport): TimelineEvent[] {
   return (report.events ?? []).map((evt) => {
     const { date, time } = formatDateTime(evt.createdAt);
     const meta = evt.metadata ?? {};
-
     let title = evt.action;
     let description = '';
 
@@ -94,24 +90,21 @@ function buildTimeline(report: ApiReport): TimelineEvent[] {
         description = comment ?? 'La administración marcó el reporte como resuelto.';
         break;
       }
+      case 'CONFIRMADO':
+        title = 'Resolución confirmada';
+        description = 'Confirmaste que el problema quedó solucionado. Reporte cerrado.';
+        break;
       case 'RECHAZADO': {
         title = 'Resolución rechazada';
         const reason = typeof meta.rejectionComment === 'string' ? meta.rejectionComment : null;
-        description = reason ?? 'El residente rechazó la resolución.';
+        description = reason ?? 'Rechazaste la resolución. El reporte volverá a atención.';
         break;
       }
       default:
         description = '';
     }
 
-    return {
-      id: evt.id,
-      title,
-      date,
-      time,
-      description,
-      status: 'completed' as const,
-    };
+    return { id: evt.id, title, date, time, description, status: 'completed' as const };
   });
 }
 
@@ -121,7 +114,8 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [comment, setComment] = useState('');
-  const [isResolved, setIsResolved] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     let ignore = false;
@@ -142,23 +136,58 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
       }
     }
     load();
-    return () => {
-      ignore = true;
-    };
+    return () => { ignore = true; };
   }, [params]);
 
-  const handleConfirm = () => {
-    // TODO: conectar al backend cuando exista el endpoint
-    setIsResolved(true);
+  const handleConfirm = async () => {
+    if (!report) return;
+    setActionError(null);
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/incidencias/${report.id}/confirmar`, {
+        method: 'PATCH',
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.message ?? 'Error al confirmar');
+      }
+      router.refresh();
+      // recarga la página para reflejar el nuevo estado
+      window.location.reload();
+    } catch (e) {
+      setActionError(e instanceof Error ? e.message : 'Error desconocido');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleReject = () => {
-    if (!comment.trim()) {
-      alert('Por favor, describe qué sigue pendiente antes de rechazar.');
+  const handleReject = async () => {
+    if (!report) return;
+    setActionError(null);
+
+    if (comment.trim().length < 10 || comment.trim().length > 200) {
+      setActionError('El comentario debe tener entre 10 y 200 caracteres.');
       return;
     }
-    // TODO: conectar al backend cuando exista el endpoint
-    setIsResolved(true);
+
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/incidencias/${report.id}/rechazar`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment: comment.trim() }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.message ?? 'Error al rechazar');
+      }
+      router.refresh();
+      window.location.reload();
+    } catch (e) {
+      setActionError(e instanceof Error ? e.message : 'Error desconocido');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (isLoading) {
@@ -197,7 +226,7 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
       </div>
 
       {/* Banner de estado */}
-      {report.status === 'Resuelto' && !isResolved && (
+      {report.status === 'Resuelto' && (
         <div className="bg-[#f5f0e6] border border-[#e8dfcf] rounded-xl p-4 flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <AlertCircle className="text-[#0a2f1f]" size={24} />
@@ -215,7 +244,6 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Columna Izquierda */}
         <div className="lg:col-span-2 space-y-6">
           {/* Reporte original */}
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
@@ -268,7 +296,7 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
                         className="block aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-200 hover:opacity-90 transition"
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={fullUrl} alt="Evidencia del reporte" className="w-full h-full object-cover" />
+                        <img src={fullUrl} alt="Evidencia" className="w-full h-full object-cover" />
                       </a>
                     );
                   })}
@@ -280,9 +308,7 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
           {/* Timeline */}
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">Seguimiento de la administración</h2>
-            {timeline.length > 0 ? (
-              <Timeline events={timeline} />
-            ) : (
+            {timeline.length > 0 ? <Timeline events={timeline} /> : (
               <p className="text-sm text-gray-500">Aún no hay eventos de seguimiento.</p>
             )}
           </div>
@@ -294,7 +320,7 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
             <h3 className="text-lg font-semibold text-gray-900 mb-2">¿Quedó solucionado?</h3>
             <p className="text-sm text-gray-600 mb-4">Revisa la respuesta y verifica el área antes de tomar una decisión.</p>
 
-            {report.status === 'Resuelto' && !isResolved ? (
+            {report.status === 'Resuelto' ? (
               <>
                 {report.resolutionComment && (
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
@@ -306,7 +332,9 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
                 )}
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Comentario para la administración</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Comentario de rechazo (10-200 caracteres)
+                  </label>
                   <textarea
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
@@ -314,22 +342,33 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
                     rows={4}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-[#0a2f1f] focus:border-transparent outline-none transition resize-none"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Opcional al confirmar. Obligatorio si rechazas la resolución.</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Obligatorio solo si rechazas. Al confirmar puedes dejar el campo vacío.
+                  </p>
                 </div>
+
+                {actionError && (
+                  <div className="bg-red-50 text-red-700 border border-red-200 rounded-lg p-3 text-sm mb-3">
+                    {actionError}
+                  </div>
+                )}
+
                 <div className="space-y-3">
                   <button
                     onClick={handleConfirm}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#0a2f1f] text-white rounded-lg text-sm font-medium hover:bg-[#164a33] transition"
+                    disabled={submitting}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#0a2f1f] text-white rounded-lg text-sm font-medium hover:bg-[#164a33] transition disabled:opacity-50"
                   >
-                    <Check size={16} /> Confirmar resolución
+                    <Check size={16} /> {submitting ? 'Confirmando...' : 'Confirmar resolución'}
                   </button>
                   <p className="text-xs text-gray-500 text-center">Al confirmar, el reporte se cerrará y quedará en tu historial.</p>
                   <div className="pt-4 border-t border-gray-100">
                     <button
                       onClick={handleReject}
-                      className="w-full px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition"
+                      disabled={submitting}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-red-300 text-red-700 rounded-lg text-sm font-medium hover:bg-red-50 transition disabled:opacity-50"
                     >
-                      Rechazar resolución
+                      <X size={16} /> {submitting ? 'Rechazando...' : 'Rechazar resolución'}
                     </button>
                     <p className="text-xs text-gray-500 text-center mt-2">
                       Si el problema continúa, rechaza la resolución. El reporte volverá a atención con tu comentario.
@@ -337,9 +376,9 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
                   </div>
                 </div>
               </>
-            ) : isResolved ? (
+            ) : report.status === 'Cerrado' ? (
               <div className="bg-green-50 text-green-800 p-4 rounded-lg text-sm text-center">
-                Gracias. Tu decisión ha sido registrada.
+                Reporte cerrado. Gracias por confirmar.
               </div>
             ) : (
               <div className="bg-gray-50 text-gray-700 p-4 rounded-lg text-sm text-center">
@@ -348,7 +387,6 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
             )}
           </div>
 
-          {/* Resumen del expediente */}
           <div className="bg-[#f5f0e6] rounded-xl p-6">
             <h3 className="text-base font-semibold text-gray-900 mb-4">Resumen del expediente</h3>
             <div className="space-y-3 text-sm">
