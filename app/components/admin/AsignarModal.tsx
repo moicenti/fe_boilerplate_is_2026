@@ -50,7 +50,6 @@ export default function AsignarModal({ report, onClose, onSaved }: Props) {
   const handleAssign = async () => {
     setError(null);
     setSubmitting(true);
-
     try {
       const res = await fetch(`/api/incidencias/${report.id}/asignar`, {
         method: 'PATCH',
@@ -62,12 +61,10 @@ export default function AsignarModal({ report, onClose, onSaved }: Props) {
           ...(priority === 'CRITICA' && { priorityJustification: justification }),
         }),
       });
-
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body.message ?? 'Error al asignar');
       }
-
       onSaved();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Error desconocido');
@@ -79,19 +76,16 @@ export default function AsignarModal({ report, onClose, onSaved }: Props) {
   const handleResolve = async () => {
     setError(null);
     setSubmitting(true);
-
     try {
       const res = await fetch(`/api/incidencias/${report.id}/resolver`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ resolutionComment }),
       });
-
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body.message ?? 'Error al resolver');
       }
-
       onSaved();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Error desconocido');
@@ -99,8 +93,6 @@ export default function AsignarModal({ report, onClose, onSaved }: Props) {
       setSubmitting(false);
     }
   };
-
-  const canResolve = report.status === 'En atención';
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
@@ -175,8 +167,18 @@ export default function AsignarModal({ report, onClose, onSaved }: Props) {
           </button>
         </div>
 
-        {/* Resolución */}
-        {canResolve && (
+        {/* Comentario actual (solo lectura) */}
+        {report.resolutionComment && (
+          <div className="border-t border-gray-200 pt-4 mb-4">
+            <p className="text-sm font-medium text-gray-700 mb-2">Comentario registrado</p>
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-900">
+              {report.resolutionComment}
+            </div>
+          </div>
+        )}
+
+        {/* Resolución (solo si el reporte está En atención) */}
+        {report.status === 'En atención' && (
           <div className="border-t border-gray-200 pt-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Comentario de resolución (10-200 caracteres)
