@@ -1,4 +1,3 @@
-// lib/api.ts
 import { getSession } from "@/lib/session";
 
 const API_URL = process.env.API_URL;
@@ -8,49 +7,32 @@ if (!API_URL) {
 }
 
 function buildUrl(path: string): string {
-  const normalized = path.replace(/^\/+/, ""); // quita "/" iniciales
+  const normalized = path.replace(/^\/+/, "");
   return new URL(normalized, API_URL!.replace(/\/?$/, "/")).toString();
 }
-
 
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
     message: string,
+    public readonly codigo?: string,
   ) {
     super(message);
     this.name = "ApiError";
   }
 }
 
-// fetch contra API_URL (incluye el prefijo, p. ej. /api/v1) con el token de la sesión. Solo usar en el servidor.
-export async function apiFetch<T>(path: string, init: RequestInit = {}) {
-  const apiUrl = process.env.API_URL;
-  if (!apiUrl) {
-    throw new Error("Falta la variable de entorno API_URL.");
-  }
+type ErrorBody = {
+  message?: string | string[];
+  codigo?: string;
+  mensaje?: string;
+};
 
-  const token = await getSession();
-  const headers = new Headers(init.headers);
-  headers.set("Accept", "application/json");
-  if (init.body) headers.set("Content-Type", "application/json");
-  if (token) headers.set("Authorization", `Bearer ${token}`);
-
-  const url = new URL(path.replace(/^\//, ""), apiUrl.replace(/\/?$/, "/"));
-  const res = await fetch(url, { ...init, headers, cache: "no-store" });
-
-  if (!res.ok) {
-    let body: { codigo?: string; mensaje?: string } = {};
-    try {
-      body = await res.json();
-    } catch {
-
-    }
-    throw new ApiError(res.status, body.codigo, body.mensaje);
-  }
-
-  const text = await res.text();
-  return (text ? JSON.parse(text) : undefined) as T;
+function errorMessage(status: number, body: ErrorBody): string {
+  if (typeof body.mensaje === "string" && body.mensaje) return body.mensaje;
+  if (Array.isArray(body.message)) return body.message.join(", ");
+  if (typeof body.message === "string" && body.message) return body.message;
+  return `Error ${status}`;
 }
 
 export async function apiFetch<T = unknown>(
@@ -58,37 +40,29 @@ export async function apiFetch<T = unknown>(
   options: RequestInit = {},
 ): Promise<T> {
   const token = await getSession();
-  if (!token) {
-    throw new ApiError(401, "No hay una sesión activa.");
+  const headers = new Headers(options.headers);
+  headers.set("Accept", "application/json");
+  if (typeof options.body === "string" && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
   }
+  if (token) headers.set("Authorization", `Bearer ${token}`);
 
   const res = await fetch(buildUrl(path), {
     ...options,
-    headers: {
-      ...options.headers,
-      Authorization: `Bearer ${token}`,
-    },
+    headers,
     cache: "no-store",
   });
 
-  if (res.status === 204) {
-    return undefined as T;
-  }
-
   if (!res.ok) {
-
-    let message = `Error ${res.status}`;
+    let body: ErrorBody = {};
     try {
-      const body = await res.json();
-      if (Array.isArray(body?.message)) {
-        message = body.message.join(", ");
-      } else if (typeof body?.message === "string") {
-        message = body.message;
-      }
+      body = await res.json();
     } catch {
+      body = {};
     }
-    throw new ApiError(res.status, message);
+    throw new ApiError(res.status, errorMessage(res.status, body), body.codigo);
   }
 
-  return (await res.json()) as T;
+  const text = await res.text();
+  return (text ? JSON.parse(text) : undefined) as T;
 }
