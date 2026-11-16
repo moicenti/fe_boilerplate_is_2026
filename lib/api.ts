@@ -1,4 +1,3 @@
-// lib/api.ts
 import { getSession } from "@/lib/session";
 
 const API_URL = process.env.API_URL;
@@ -9,7 +8,7 @@ if (!API_URL) {
 
 // Resuelve `path` contra API_URL (que incluye el prefijo, p. ej. /api/v1).
 function buildUrl(path: string): string {
-  const normalized = path.replace(/^\/+/, ""); // quita "/" iniciales
+  const normalized = path.replace(/^\/+/, "");
   return new URL(normalized, API_URL!.replace(/\/?$/, "/")).toString();
 }
 
