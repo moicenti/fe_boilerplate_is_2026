@@ -29,7 +29,7 @@ function crumbsFor(pathname: string, role?: string): string[] {
   if (pathname === "/admin/asambleas") {
     return ["Administración", "Asambleas"];
   }
-  if (pathname.startsWith("/areas/disponibilidad")) {
+  if (pathname.startsWith("/areas/disponibilidad") || pathname.startsWith("/reservas")) {
     return ["Mi comunidad", "Áreas y reservas"];
   }
   return ["Mi comunidad", "Incidencias"];
