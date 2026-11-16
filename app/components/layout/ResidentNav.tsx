@@ -9,6 +9,7 @@ import {
   Grid,
   Package,
   ShieldCheck,
+  Users,
   Wallet,
   type LucideIcon,
 } from "lucide-react";
@@ -35,6 +36,7 @@ const GRUPOS: { titulo: string; items: NavItem[] }[] = [
       { href: "#", label: "Nueva reserva", icon: CalendarPlus },
       { href: "#", label: "Mis reservas", icon: Calendar },
       { href: "/incidencias", label: "Incidencias", icon: FileText },
+      { href: "/visitas", label: "Mis visitas", icon: Users, soloResidente: true },
       { href: "/paquetes", label: "Paquetes", icon: Package, soloResidente: true },
     ],
   },
@@ -42,7 +44,9 @@ const GRUPOS: { titulo: string; items: NavItem[] }[] = [
 
 const GRUPO_ADMIN = {
   titulo: "Administración",
-  items: [{ href: "/admin/incidencias", label: "Panel de incidencias", icon: ShieldCheck }],
+  items: [
+    { href: "/admin/incidencias", label: "Panel de incidencias", icon: ShieldCheck },
+  ],
 };
 
 function isActive(pathname: string, href: string): boolean {
@@ -52,6 +56,7 @@ function isActive(pathname: string, href: string): boolean {
 
 export default function ResidentNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
+
   const grupos = isAdmin
     ? [
         ...GRUPOS.map((grupo) => ({
