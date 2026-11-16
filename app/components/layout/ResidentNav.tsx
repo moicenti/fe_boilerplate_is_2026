@@ -7,6 +7,7 @@ import {
   CalendarPlus,
   FileText,
   Grid,
+  ShieldCheck,
   Wallet,
   type LucideIcon,
 } from "lucide-react";
@@ -32,17 +33,23 @@ const GRUPOS: { titulo: string; items: NavItem[] }[] = [
   },
 ];
 
+const GRUPO_ADMIN = {
+  titulo: "Administración",
+  items: [{ href: "/admin/incidencias", label: "Panel de incidencias", icon: ShieldCheck }],
+};
+
 function isActive(pathname: string, href: string): boolean {
   if (href === "#") return false;
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export default function ResidentNav() {
+export default function ResidentNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
+  const grupos = isAdmin ? [...GRUPOS, GRUPO_ADMIN] : GRUPOS;
 
   return (
     <nav className="space-y-6">
-      {GRUPOS.map((grupo) => (
+      {grupos.map((grupo) => (
         <div key={grupo.titulo}>
           <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
             {grupo.titulo}

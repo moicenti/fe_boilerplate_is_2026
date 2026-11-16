@@ -1,4 +1,3 @@
-// components/layout/Sidebar.tsx
 import Link from 'next/link';
 import { Home, MessageCircle, LogOut } from 'lucide-react';
 import { getCurrentUser } from '@/lib/current-user';
@@ -7,13 +6,13 @@ import ResidentNav from '@/app/components/layout/ResidentNav';
 
 export default async function Sidebar() {
   const user = await getCurrentUser();
-  const unit = user?.unit ?? 'Sin unidad';
+  const isAdmin = user?.role === 'ADMINISTRADOR';
   const isSecurity = user?.role === 'SEGURIDAD';
 
   return (
     <aside className="w-64 bg-[#0a2f1f] text-white min-h-screen flex flex-col justify-between p-4">
       <div>
-      
+        {/* Logo */}
         <div className="flex items-center gap-2 mb-8 px-2">
           <div className="w-8 h-8 border border-white rounded flex items-center justify-center">
             <Home size={18} />
@@ -26,20 +25,30 @@ export default async function Sidebar() {
           </div>
         </div>
 
-     
+      
         <div className="border border-gray-600 rounded-lg p-3 mb-6">
           <h2 className="font-semibold text-sm">Los Olivos</h2>
-          <p className="text-xs text-gray-300">{isSecurity ? 'Caseta principal' : `Unidad ${unit}`}</p>
+                    {user?.unit ? (
+            <>
+              <p className="text-xs text-gray-300 mt-1">
+                {user.unit.tower} · {user.unit.code}
+              </p>
+              <p className="text-[11px] text-gray-400 mt-0.5">{user.unit.description}</p>
+            </>
+          ) : isSecurity ? (
+            <p className="text-xs text-gray-300 mt-1">Caseta principal</p>
+          ) : (
+            <p className="text-xs text-gray-300 mt-1">{user?.role ?? 'Sin unidad asignada'}</p>
+          )}
           <span className="inline-block mt-2 bg-[#164a33] text-xs px-2 py-1 rounded">
-            {isSecurity ? 'Personal de seguridad' : 'Residente'}
+            {user?.role ?? 'Invitado'}
           </span>
         </div>
 
-
-        {isSecurity ? <SecurityNav /> : <ResidentNav />}
+        {isSecurity ? <SecurityNav /> : <ResidentNav isAdmin={isAdmin} />}
       </div>
 
-   
+      {/* Footer */}
       <div className="space-y-4">
         <div className="border border-gray-600 rounded-lg p-3 text-sm">
           <div className="flex items-center gap-2 mb-1">
