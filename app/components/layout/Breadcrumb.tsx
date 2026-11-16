@@ -2,7 +2,12 @@
 
 import { usePathname } from "next/navigation";
 
-function crumbsFor(pathname: string): [string, string] {
+function crumbsFor(pathname: string, role?: string): string[] {
+  if (role === "RESIDENTE" && pathname.startsWith("/paquetes")) {
+    return pathname === "/paquetes"
+      ? ["Mi comunidad", "Paquetes"]
+      : ["Mi comunidad", "Paquetes", "Detalle"];
+  }
   if (pathname === "/paquetes/nuevo") {
     return ["Caseta de seguridad", "Recepción de paquetes"];
   }
@@ -12,20 +17,41 @@ function crumbsFor(pathname: string): [string, string] {
   if (pathname.startsWith("/paquetes")) {
     return ["Caseta de seguridad", "Paquetes"];
   }
+  if (pathname === "/admin/asambleas/nueva") {
+    return ["Administración", "Convocar asamblea"];
+  }
+  if (/^\/admin\/asambleas\/[^/]+\/editar$/.test(pathname)) {
+    return ["Administración", "Asambleas", "Editar borrador"];
+  }
+  if (/^\/admin\/asambleas\/[^/]+$/.test(pathname)) {
+    return ["Administración", "Asambleas", "Convocatoria"];
+  }
+  if (pathname === "/admin/asambleas") {
+    return ["Administración", "Asambleas"];
+  }
   if (pathname.startsWith("/areas/disponibilidad") || pathname.startsWith("/reservas")) {
     return ["Mi comunidad", "Áreas y reservas"];
   }
   return ["Mi comunidad", "Incidencias"];
 }
 
-export default function Breadcrumb() {
-  const [section, page] = crumbsFor(usePathname());
+export default function Breadcrumb({ role }: { role?: string }) {
+  const crumbs = crumbsFor(usePathname(), role);
 
   return (
     <div className="flex items-center gap-2 text-sm text-gray-600">
-      <span>{section}</span>
-      <span className="text-gray-400">&gt;</span>
-      <span className="font-medium text-gray-900">{page}</span>
+      {crumbs.map((crumb, i) => (
+        <span key={crumb} className="flex items-center gap-2">
+          {i > 0 && <span className="text-gray-400">&gt;</span>}
+          <span
+            className={
+              i === crumbs.length - 1 ? "font-medium text-gray-900" : undefined
+            }
+          >
+            {crumb}
+          </span>
+        </span>
+      ))}
     </div>
   );
 }

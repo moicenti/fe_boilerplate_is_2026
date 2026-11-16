@@ -4,15 +4,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Calendar,
+  CalendarCheck,
   CalendarPlus,
   FileText,
   Grid,
+  Package,
   ShieldCheck,
   Wallet,
   type LucideIcon,
 } from "lucide-react";
 
-type NavItem = { href: string; label: string; icon: LucideIcon };
+type NavItem = {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  soloResidente?: boolean;
+};
 
 const GRUPOS: { titulo: string; items: NavItem[] }[] = [
   {
@@ -29,29 +36,47 @@ const GRUPOS: { titulo: string; items: NavItem[] }[] = [
       { href: "/reservas/nueva", label: "Nueva reserva", icon: CalendarPlus },
       { href: "/reservas", label: "Mis reservas", icon: Calendar },
       { href: "/incidencias", label: "Incidencias", icon: FileText },
+      { href: "/paquetes", label: "Paquetes", icon: Package, soloResidente: true },
     ],
   },
 ];
 
 const GRUPO_ADMIN = {
   titulo: "Administración",
-  items: [{ href: "/admin/incidencias", label: "Panel de incidencias", icon: ShieldCheck }],
+  items: [
+    { href: "/admin/incidencias", label: "Panel de incidencias", icon: ShieldCheck },
+    { href: "/admin/asambleas/nueva", label: "Convocar asamblea", icon: CalendarPlus },
+    { href: "/admin/asambleas", label: "Asambleas", icon: CalendarCheck },
+  ],
 };
 
-const HREFS = [...GRUPOS, GRUPO_ADMIN]
-  .flatMap((g) => g.items.map((i) => i.href))
-  .filter((h) => h !== "#");
+const HREFS = [...GRUPOS.flatMap((g) => g.items), ...GRUPO_ADMIN.items].map(
+  (item) => item.href,
+);
 
-// Activo solo el enlace más específico: en /reservas/nueva no se marca también /reservas.
+function matches(pathname: string, href: string): boolean {
+  if (href === "#") return false;
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 function isActive(pathname: string, href: string): boolean {
-  const coincide = (h: string) => pathname === h || pathname.startsWith(`${h}/`);
-  if (href === "#" || !coincide(href)) return false;
-  return !HREFS.some((h) => h.length > href.length && coincide(h));
+  if (!matches(pathname, href)) return false;
+  return !HREFS.some(
+    (other) => other.length > href.length && matches(pathname, other),
+  );
 }
 
 export default function ResidentNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
-  const grupos = isAdmin ? [...GRUPOS, GRUPO_ADMIN] : GRUPOS;
+  const grupos = isAdmin
+    ? [
+        ...GRUPOS.map((grupo) => ({
+          ...grupo,
+          items: grupo.items.filter((item) => !item.soloResidente),
+        })),
+        GRUPO_ADMIN,
+      ]
+    : GRUPOS;
 
   return (
     <nav className="space-y-6">
