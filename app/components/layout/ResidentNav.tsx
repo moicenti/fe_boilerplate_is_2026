@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Calendar,
+  CalendarCheck,
   CalendarPlus,
   FileText,
   Grid,
@@ -42,12 +43,27 @@ const GRUPOS: { titulo: string; items: NavItem[] }[] = [
 
 const GRUPO_ADMIN = {
   titulo: "Administración",
-  items: [{ href: "/admin/incidencias", label: "Panel de incidencias", icon: ShieldCheck }],
+  items: [
+    { href: "/admin/incidencias", label: "Panel de incidencias", icon: ShieldCheck },
+    { href: "/admin/asambleas/nueva", label: "Convocar asamblea", icon: CalendarPlus },
+    { href: "/admin/asambleas", label: "Asambleas", icon: CalendarCheck },
+  ],
 };
 
-function isActive(pathname: string, href: string): boolean {
+const HREFS = [...GRUPOS.flatMap((g) => g.items), ...GRUPO_ADMIN.items].map(
+  (item) => item.href,
+);
+
+function matches(pathname: string, href: string): boolean {
   if (href === "#") return false;
   return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function isActive(pathname: string, href: string): boolean {
+  if (!matches(pathname, href)) return false;
+  return !HREFS.some(
+    (other) => other.length > href.length && matches(pathname, other),
+  );
 }
 
 export default function ResidentNav({ isAdmin = false }: { isAdmin?: boolean }) {

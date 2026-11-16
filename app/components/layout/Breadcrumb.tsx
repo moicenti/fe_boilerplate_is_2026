@@ -17,6 +17,18 @@ function crumbsFor(pathname: string, role?: string): string[] {
   if (pathname.startsWith("/paquetes")) {
     return ["Caseta de seguridad", "Paquetes"];
   }
+  if (pathname === "/admin/asambleas/nueva") {
+    return ["Administración", "Convocar asamblea"];
+  }
+  if (/^\/admin\/asambleas\/[^/]+\/editar$/.test(pathname)) {
+    return ["Administración", "Asambleas", "Editar borrador"];
+  }
+  if (/^\/admin\/asambleas\/[^/]+$/.test(pathname)) {
+    return ["Administración", "Asambleas", "Convocatoria"];
+  }
+  if (pathname === "/admin/asambleas") {
+    return ["Administración", "Asambleas"];
+  }
   if (pathname.startsWith("/areas/disponibilidad")) {
     return ["Mi comunidad", "Áreas y reservas"];
   }
