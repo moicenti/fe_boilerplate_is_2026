@@ -35,7 +35,7 @@ export default async function Header() {
 
   return (
     <header className="h-16 border-b border-gray-200 bg-[#fbf8f1] flex items-center justify-between px-8">
-      <Breadcrumb />
+      <Breadcrumb role={user?.role} />
 
       <div className="flex items-center gap-6">
         <button className="relative text-gray-500 hover:text-gray-900">
