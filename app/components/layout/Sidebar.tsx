@@ -1,32 +1,12 @@
 import Link from 'next/link';
-import {
-  Home, Wallet, Grid, CalendarPlus, Calendar, FileText, MessageCircle, LogOut, ShieldCheck,
-} from 'lucide-react';
-import { getSession } from '@/lib/session';
-import { apiFetch } from '@/lib/api';
+import { Home, MessageCircle, LogOut } from 'lucide-react';
+import { getCurrentUser } from '@/lib/current-user';
 import SecurityNav from '@/app/components/layout/SecurityNav';
-
-type Me = {
-  id: string;
-  email: string;
-  role: 'RESIDENTE' | 'ADMINISTRADOR' | 'MANTENIMIENTO' | 'SEGURIDAD';
-  unit?: { id: string; code: string; tower: string; description: string } | null;
-};
-
-async function getCurrentUser(): Promise<Me | null> {
-  const token = await getSession();
-  if (!token) return null;
-  try {
-    return await apiFetch<Me>('/auth/me');
-  } catch {
-    return null;
-  }
-}
+import ResidentNav from '@/app/components/layout/ResidentNav';
 
 export default async function Sidebar() {
   const user = await getCurrentUser();
   const isAdmin = user?.role === 'ADMINISTRADOR';
-  const unit = user?.unit ?? 'Sin unidad';
   const isSecurity = user?.role === 'SEGURIDAD';
 
   return (
@@ -65,53 +45,7 @@ export default async function Sidebar() {
           </span>
         </div>
 
-        {isSecurity ? <SecurityNav /> : (
-        <nav className="space-y-6">
-          <div>
-            <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
-              Mi Cuenta
-            </p>
-            <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
-              <FileText size={18} /> Estado de cuenta
-            </Link>
-            <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
-              <Wallet size={18} /> Realizar pago
-            </Link>
-          </div>
-
-          <div>
-            <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
-              Mi Comunidad
-            </p>
-            <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
-              <Grid size={18} /> Áreas comunes
-            </Link>
-            <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
-              <CalendarPlus size={18} /> Nueva reserva
-            </Link>
-            <Link href="#" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition">
-              <Calendar size={18} /> Mis reservas
-            </Link>
-            <Link href="/incidencias" className="flex items-center gap-3 px-2 py-2 text-sm bg-[#164a33] text-white rounded-md mt-1">
-              <FileText size={18} /> Incidencias
-            </Link>
-          </div>
-
-          {isAdmin && (
-            <div>
-              <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
-                Administración
-              </p>
-              <Link
-                href="/admin/incidencias"
-                className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#164a33] rounded-md transition"
-              >
-                <ShieldCheck size={18} /> Panel de incidencias
-              </Link>
-            </div>
-          )}
-        </nav>
-        )}
+        {isSecurity ? <SecurityNav /> : <ResidentNav isAdmin={isAdmin} />}
       </div>
 
       {/* Footer */}

@@ -1,6 +1,7 @@
 import { apiFetch } from "@/lib/api";
 import type { Area, AreaInput } from "@/lib/areas";
 import type { Bloqueo, BloqueoInput } from "@/lib/bloqueos";
+import type { ConsultaDisponibilidad, Disponibilidad } from "@/lib/disponibilidad";
 
 export function listAreas() {
   return apiFetch<Area[]>("areas");
@@ -22,6 +23,14 @@ export function updateArea(id: number, input: AreaInput) {
 
 export function deleteArea(id: number) {
   return apiFetch<void>(`areas/${id}`, { method: "DELETE" });
+}
+
+// Disponibilidad (H4): qué áreas están libres en un intervalo. Solo lectura.
+
+export function consultarDisponibilidad({ fecha, hora, duracionMin, areaId }: ConsultaDisponibilidad) {
+  const params = new URLSearchParams({ fecha, hora, duracionMin: String(duracionMin) });
+  if (areaId !== undefined) params.set("areaId", String(areaId));
+  return apiFetch<Disponibilidad>(`areas/disponibilidad?${params}`);
 }
 
 // Bloqueos de un área.
