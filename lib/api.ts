@@ -1,4 +1,3 @@
-// lib/api.ts
 import { getSession } from "@/lib/session";
 
 const API_URL = process.env.API_URL;
@@ -8,49 +7,19 @@ if (!API_URL) {
 }
 
 function buildUrl(path: string): string {
-  const normalized = path.replace(/^\/+/, ""); // quita "/" iniciales
+  const normalized = path.replace(/^\/+/, "");
   return new URL(normalized, API_URL!.replace(/\/?$/, "/")).toString();
 }
-
 
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
     message: string,
+    public readonly codigo?: string,
   ) {
     super(message);
     this.name = "ApiError";
   }
-}
-
-// fetch contra API_URL (incluye el prefijo, p. ej. /api/v1) con el token de la sesión. Solo usar en el servidor.
-export async function apiFetch<T>(path: string, init: RequestInit = {}) {
-  const apiUrl = process.env.API_URL;
-  if (!apiUrl) {
-    throw new Error("Falta la variable de entorno API_URL.");
-  }
-
-  const token = await getSession();
-  const headers = new Headers(init.headers);
-  headers.set("Accept", "application/json");
-  if (init.body) headers.set("Content-Type", "application/json");
-  if (token) headers.set("Authorization", `Bearer ${token}`);
-
-  const url = new URL(path.replace(/^\//, ""), apiUrl.replace(/\/?$/, "/"));
-  const res = await fetch(url, { ...init, headers, cache: "no-store" });
-
-  if (!res.ok) {
-    let body: { codigo?: string; mensaje?: string } = {};
-    try {
-      body = await res.json();
-    } catch {
-
-    }
-    throw new ApiError(res.status, body.codigo, body.mensaje);
-  }
-
-  const text = await res.text();
-  return (text ? JSON.parse(text) : undefined) as T;
 }
 
 export async function apiFetch<T = unknown>(
@@ -67,6 +36,7 @@ export async function apiFetch<T = unknown>(
     headers: {
       ...options.headers,
       Authorization: `Bearer ${token}`,
+      Accept: "application/json",
     },
     cache: "no-store",
   });
@@ -76,19 +46,28 @@ export async function apiFetch<T = unknown>(
   }
 
   if (!res.ok) {
-
     let message = `Error ${res.status}`;
+    let codigo: string | undefined;
+
     try {
       const body = await res.json();
       if (Array.isArray(body?.message)) {
         message = body.message.join(", ");
       } else if (typeof body?.message === "string") {
         message = body.message;
+      } else if (typeof body?.mensaje === "string") {
+        message = body.mensaje;
+      }
+      if (typeof body?.codigo === "string") {
+        codigo = body.codigo;
       }
     } catch {
+      // Sin JSON, se queda el mensaje genérico
     }
-    throw new ApiError(res.status, message);
+
+    throw new ApiError(res.status, message, codigo);
   }
 
-  return (await res.json()) as T;
+  const text = await res.text();
+  return (text ? JSON.parse(text) : undefined) as T;
 }
