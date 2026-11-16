@@ -75,7 +75,7 @@ export default async function MisReservasPage(props: PageProps<"/reservas">) {
   }
 
   const usuario = await getCurrentUser();
-  const unidad = usuario?.unit;
+  const unidad = usuario?.unit?.code;
 
   const vistaParam = first(searchParams.vista);
   const vista: Vista = vistaParam && vistaParam in VISTAS ? (vistaParam as Vista) : "todas";

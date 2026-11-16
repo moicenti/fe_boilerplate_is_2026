@@ -7,6 +7,7 @@ import {
   CalendarPlus,
   FileText,
   Grid,
+  ShieldCheck,
   Wallet,
   type LucideIcon,
 } from "lucide-react";
@@ -32,7 +33,14 @@ const GRUPOS: { titulo: string; items: NavItem[] }[] = [
   },
 ];
 
-const HREFS = GRUPOS.flatMap((g) => g.items.map((i) => i.href)).filter((h) => h !== "#");
+const GRUPO_ADMIN = {
+  titulo: "Administración",
+  items: [{ href: "/admin/incidencias", label: "Panel de incidencias", icon: ShieldCheck }],
+};
+
+const HREFS = [...GRUPOS, GRUPO_ADMIN]
+  .flatMap((g) => g.items.map((i) => i.href))
+  .filter((h) => h !== "#");
 
 // Activo solo el enlace más específico: en /reservas/nueva no se marca también /reservas.
 function isActive(pathname: string, href: string): boolean {
@@ -41,12 +49,13 @@ function isActive(pathname: string, href: string): boolean {
   return !HREFS.some((h) => h.length > href.length && coincide(h));
 }
 
-export default function ResidentNav() {
+export default function ResidentNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
+  const grupos = isAdmin ? [...GRUPOS, GRUPO_ADMIN] : GRUPOS;
 
   return (
     <nav className="space-y-6">
-      {GRUPOS.map((grupo) => (
+      {grupos.map((grupo) => (
         <div key={grupo.titulo}>
           <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
             {grupo.titulo}

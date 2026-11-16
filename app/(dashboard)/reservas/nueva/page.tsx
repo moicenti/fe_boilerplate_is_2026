@@ -130,7 +130,7 @@ export default async function NuevaReservaPage(props: PageProps<"/reservas/nueva
           hoy={hoy}
           franjas={franjas}
           franjaInicial={first(searchParams.franja)}
-          unidad={usuario?.unit ?? null}
+          unidad={usuario?.unit?.code ?? null}
           correo={usuario?.email ?? null}
         />
       )}
