@@ -12,6 +12,16 @@ export function hoyEnCondominio() {
   return new Intl.DateTimeFormat("en-CA", { timeZone: CONDOMINIO.zonaHoraria }).format(new Date());
 }
 
+/** Hora actual ("HH:mm") en la zona horaria del condominio. */
+export function horaEnCondominio(ahora = new Date()) {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: CONDOMINIO.zonaHoraria,
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).format(ahora);
+}
+
 /** Fecha y hora local del condominio a ISO 8601 con desfase: "2026-11-14T10:00:00-06:00". */
 export function aIsoCondominio(fecha: string, hora: string) {
   const instante = new Date(`${fecha}T${hora}:00Z`);

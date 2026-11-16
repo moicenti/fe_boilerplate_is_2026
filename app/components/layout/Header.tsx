@@ -1,26 +1,6 @@
 import { Bell } from "lucide-react";
-import { getSession } from "@/lib/session";
-import { apiFetch } from "@/lib/api";
+import { getCurrentUser, type Role } from "@/lib/current-user";
 import Breadcrumb from "@/app/components/layout/Breadcrumb";
-
-type Me = {
-  id: string;
-  email: string;
-  role: 'RESIDENTE' | 'ADMINISTRADOR' | 'MANTENIMIENTO' | 'SEGURIDAD';
-  unit?: { id: string; code: string; tower: string; description: string } | null;
-  isActive: boolean;
-  createdAt: string;
-};
-
-async function getCurrentUser(): Promise<Me | null> {
-  const token = await getSession();
-  if (!token) return null;
-  try {
-    return await apiFetch<Me>('/auth/me');
-  } catch {
-    return null;
-  }
-}
 
 function getInitials(email: string): string {
   const local = email.split('@')[0] ?? '';
@@ -36,7 +16,7 @@ function getDisplayName(email: string): string {
   return local.replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-function getRoleLabel(role: Me['role'] | undefined): string {
+function getRoleLabel(role: Role | undefined): string {
   switch (role) {
     case 'ADMINISTRADOR': return 'Administrador';
     case 'MANTENIMIENTO': return 'Mantenimiento';
