@@ -6,6 +6,7 @@ if (!API_URL) {
   throw new Error("Falta la variable de entorno API_URL.");
 }
 
+// Resuelve `path` contra API_URL (que incluye el prefijo, p. ej. /api/v1).
 function buildUrl(path: string): string {
   const normalized = path.replace(/^\/+/, "");
   return new URL(normalized, API_URL!.replace(/\/?$/, "/")).toString();
@@ -15,6 +16,7 @@ export class ApiError extends Error {
   constructor(
     public readonly status: number,
     message: string,
+    /** Código de error de la API (p. ej. "AREA_DUPLICADA"), si lo envía. */
     public readonly codigo?: string,
   ) {
     super(message);
@@ -22,6 +24,27 @@ export class ApiError extends Error {
   }
 }
 
+// La API responde errores como { codigo, mensaje } o { message: string | string[] }.
+async function readError(res: Response): Promise<ApiError> {
+  let message = `Error ${res.status}`;
+  let codigo: string | undefined;
+  try {
+    const body = await res.json();
+    if (typeof body?.codigo === "string") codigo = body.codigo;
+    if (typeof body?.mensaje === "string") {
+      message = body.mensaje;
+    } else if (Array.isArray(body?.message)) {
+      message = body.message.join(", ");
+    } else if (typeof body?.message === "string") {
+      message = body.message;
+    }
+  } catch {
+    // Cuerpo vacío o no JSON: se queda el mensaje genérico.
+  }
+  return new ApiError(res.status, message, codigo);
+}
+
+// fetch contra API_URL con el token de la sesión. Solo usar en el servidor.
 export async function apiFetch<T = unknown>(
   path: string,
   options: RequestInit = {},
@@ -31,41 +54,22 @@ export async function apiFetch<T = unknown>(
     throw new ApiError(401, "No hay una sesión activa.");
   }
 
+  const headers = new Headers(options.headers);
+  headers.set("Accept", "application/json");
+  headers.set("Authorization", `Bearer ${token}`);
+  // Los cuerpos string son JSON; FormData define su propio Content-Type (multipart).
+  if (typeof options.body === "string" && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+
   const res = await fetch(buildUrl(path), {
     ...options,
-    headers: {
-      ...options.headers,
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-    },
+    headers,
     cache: "no-store",
   });
 
-  if (res.status === 204) {
-    return undefined as T;
-  }
-
   if (!res.ok) {
-    let message = `Error ${res.status}`;
-    let codigo: string | undefined;
-
-    try {
-      const body = await res.json();
-      if (Array.isArray(body?.message)) {
-        message = body.message.join(", ");
-      } else if (typeof body?.message === "string") {
-        message = body.message;
-      } else if (typeof body?.mensaje === "string") {
-        message = body.mensaje;
-      }
-      if (typeof body?.codigo === "string") {
-        codigo = body.codigo;
-      }
-    } catch {
-      // Sin JSON, se queda el mensaje genérico
-    }
-
-    throw new ApiError(res.status, message, codigo);
+    throw await readError(res);
   }
 
   const text = await res.text();

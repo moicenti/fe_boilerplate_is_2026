@@ -1,31 +1,6 @@
 import { Bell } from "lucide-react";
-import { getSession } from "@/lib/session";
-import { apiFetch } from "@/lib/api";
+import { getCurrentUser, type Role } from "@/lib/current-user";
 import Breadcrumb from "@/app/components/layout/Breadcrumb";
-
-type Me = {
-  id: string;
-  email: string;
-  isActive: boolean;
-  createdAt: string;
-  role: 'RESIDENTE' | 'ADMINISTRADOR' | 'MANTENIMIENTO' | 'SEGURIDAD';
-  unit?: { id: string; code: string; tower: string; description: string } | null;
-};
-
-const ROLE_LABEL: Record<string, string> = {
-  SEGURIDAD: "Seguridad · Los Olivos",
-  ADMINISTRADOR: "Administración",
-};
-
-async function getCurrentUser(): Promise<Me | null> {
-  const token = await getSession();
-  if (!token) return null;
-  try {
-    return await apiFetch<Me>('/auth/me');
-  } catch {
-    return null;
-  }
-}
 
 function getInitials(email: string): string {
   const local = email.split('@')[0] ?? '';
@@ -41,7 +16,7 @@ function getDisplayName(email: string): string {
   return local.replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-function getRoleLabel(role: Me['role'] | undefined): string {
+function getRoleLabel(role: Role | undefined): string {
   switch (role) {
     case 'ADMINISTRADOR': return 'Administrador';
     case 'MANTENIMIENTO': return 'Mantenimiento';
@@ -60,7 +35,7 @@ export default async function Header() {
 
   return (
     <header className="h-16 border-b border-gray-200 bg-[#fbf8f1] flex items-center justify-between px-8">
-      <Breadcrumb />
+      <Breadcrumb role={user?.role} />
 
       <div className="flex items-center gap-6">
         <button className="relative text-gray-500 hover:text-gray-900">

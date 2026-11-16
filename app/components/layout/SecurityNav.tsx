@@ -18,7 +18,7 @@ const ITEMS: NavItem[] = [
   { href: "#", label: "Visitantes dentro", icon: Users },
   { href: "/paquetes/nuevo", label: "Llegada de paquete", icon: PackagePlus },
   { href: "/paquetes", label: "Paquetes pendientes", icon: Package },
-  { href: "#", label: "Disponibilidad de áreas", icon: LayoutGrid },
+  { href: "/areas/disponibilidad", label: "Disponibilidad de áreas", icon: LayoutGrid },
 ];
 
 function isActive(pathname: string, href: string): boolean {
