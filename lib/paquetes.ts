@@ -15,6 +15,16 @@ export type Package = {
   deliveredTo: string | null;
   deliveredAt: string | null;
   deliveredBy: { id: string; email: string } | null;
+  pickupCode?: string;
+};
+
+export type MyPackagePage = {
+  items: Package[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+  pendingCount: number;
 };
 
 export type PackagePage = {

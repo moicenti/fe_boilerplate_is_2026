@@ -7,12 +7,18 @@ import {
   CalendarPlus,
   FileText,
   Grid,
+  Package,
   ShieldCheck,
   Wallet,
   type LucideIcon,
 } from "lucide-react";
 
-type NavItem = { href: string; label: string; icon: LucideIcon };
+type NavItem = {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  soloResidente?: boolean;
+};
 
 const GRUPOS: { titulo: string; items: NavItem[] }[] = [
   {
@@ -29,6 +35,7 @@ const GRUPOS: { titulo: string; items: NavItem[] }[] = [
       { href: "#", label: "Nueva reserva", icon: CalendarPlus },
       { href: "#", label: "Mis reservas", icon: Calendar },
       { href: "/incidencias", label: "Incidencias", icon: FileText },
+      { href: "/paquetes", label: "Paquetes", icon: Package, soloResidente: true },
     ],
   },
 ];
@@ -45,7 +52,15 @@ function isActive(pathname: string, href: string): boolean {
 
 export default function ResidentNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
-  const grupos = isAdmin ? [...GRUPOS, GRUPO_ADMIN] : GRUPOS;
+  const grupos = isAdmin
+    ? [
+        ...GRUPOS.map((grupo) => ({
+          ...grupo,
+          items: grupo.items.filter((item) => !item.soloResidente),
+        })),
+        GRUPO_ADMIN,
+      ]
+    : GRUPOS;
 
   return (
     <nav className="space-y-6">
