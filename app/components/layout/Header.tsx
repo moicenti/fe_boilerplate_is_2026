@@ -2,11 +2,6 @@ import { Bell } from "lucide-react";
 import { getCurrentUser, type Role } from "@/lib/current-user";
 import Breadcrumb from "@/app/components/layout/Breadcrumb";
 
-const ROLE_LABEL: Record<string, string> = {
-  SEGURIDAD: "Seguridad · Los Olivos",
-  ADMINISTRADOR: "Administración",
-};
-
 function getInitials(email: string): string {
   const local = email.split('@')[0] ?? '';
   const parts = local.split(/[._-]/).filter(Boolean);

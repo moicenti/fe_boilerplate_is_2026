@@ -25,10 +25,10 @@ export default async function Sidebar() {
           </div>
         </div>
 
-      
+        {/* Info Usuario */}
         <div className="border border-gray-600 rounded-lg p-3 mb-6">
           <h2 className="font-semibold text-sm">Los Olivos</h2>
-                    {user?.unit ? (
+          {user?.unit ? (
             <>
               <p className="text-xs text-gray-300 mt-1">
                 {user.unit.tower} · {user.unit.code}
@@ -45,6 +45,7 @@ export default async function Sidebar() {
           </span>
         </div>
 
+        {/* Navegación (delegada a componentes) */}
         {isSecurity ? <SecurityNav /> : <ResidentNav isAdmin={isAdmin} />}
       </div>
 
