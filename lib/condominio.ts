@@ -35,3 +35,16 @@ export function aIsoCondominio(fecha: string, hora: string) {
   const desfase = nombre === "GMT" ? "+00:00" : nombre.replace("GMT", "");
   return `${fecha}T${hora}:00${desfase}`;
 }
+
+/** "05 nov 2026, 11:10 h" en la hora local del condominio. */
+export function marcaHoraCondominio(ahora = new Date()) {
+  const fecha = new Intl.DateTimeFormat("es", {
+    timeZone: CONDOMINIO.zonaHoraria,
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  })
+    .format(ahora)
+    .replace(".", "");
+  return `${fecha}, ${horaEnCondominio(ahora)} h`;
+}
