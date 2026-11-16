@@ -41,7 +41,7 @@ const NAV: { titulo: string; items: NavItem[] }[] = [
     items: [
       { label: "Estado de cuenta", icon: WalletIcon },
       { label: "Morosidad", icon: ClockIcon },
-      { label: "Reglas de cuotas", icon: SlidersIcon },
+      { label: "Reglas de cuotas", icon: SlidersIcon, href: "/cuotas/reglas" },
       { label: "Generación manual", icon: FilePlusIcon },
     ],
   },
