@@ -270,7 +270,7 @@ export default async function ReglasCuotaPage(props: PageProps<"/cuotas/reglas">
                   </div>
                 ) : (
                   <>
-                    <div className="overflow-x-auto">
+                    <div className="relative overflow-x-auto">
                       <table className="w-full min-w-[860px] text-left text-sm">
                         <thead className="bg-sand/30 text-[11px] font-semibold tracking-wide text-foreground uppercase">
                           <tr>

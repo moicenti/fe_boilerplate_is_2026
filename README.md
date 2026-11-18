@@ -108,3 +108,34 @@ Pantalla de administración en `/cuotas/generacion` (shell `(panel)`, menú «Ge
 | Sin conexión o error 5xx al ejecutar | No se sabe si la generación corrió: se pide revisar el historial; reintentar es seguro porque solo crea lo que falte |
 
 Código: `lib/generacion-cuotas.ts` (tipos, etiquetas, periodos, comparación con la vista previa), `lib/generacion-cuotas-api.ts` (llamadas al backend, solo servidor), `app/(panel)/cuotas/generacion/` (página, confirmación, recalcular, carga).
+
+## H2 · Unidades en mora
+
+### Ruta y permisos
+
+`/morosidad` (shell `(panel)`, menú «Morosidad»). Solo `ADMINISTRADOR`: el menú de residentes y seguridad no la muestra, la página responde «Acceso restringido» a cualquier otro rol y el backend también responde `403 ROL_NO_PERMITIDO`.
+
+### Datos
+
+`GET /unidades/mora` devuelve por unidad: código y torre, responsable (correo del residente activo más antiguo; «Sin residente asignado» si no hay), cuotas vencidas, monto adeudado, en mora desde y días de atraso. La tabla los muestra tal como llegan. Una unidad está en mora si tiene al menos una cuota `PENDIENTE` o `PARCIAL` vencida antes de hoy (una que vence hoy no cuenta); al pagar todo lo vencido deja de aparecer. La fecha de corte (`fechaCorte`) se muestra en la tabla.
+
+Las tarjetas de arriba (total vencido, unidades con adeudo «X de Y», mayor antigüedad) suman la lista completa del servicio con los filtros activos: el backend no devuelve agregados, así que `resumenMora` recorre todas sus páginas de 100. «Y» sale de `GET /unidades`.
+
+### Filtros, orden y paginación
+
+Todo vive en la URL, así que la vista se puede recargar y compartir:
+
+| Parámetro | Valores | Se envía al backend como |
+|---|---|---|
+| `torre` | Torre exacta (lista de `GET /unidades`) | `torre` |
+| `antiguedad` | Días mínimos de atraso: 30, 60 o 90 (otro entero escrito a mano también vale) | `antiguedadMinDias` |
+| `orden` | `unidad`, `responsable`, `cuotasVencidas`, `montoAdeudado`, `enMoraDesde`, `diasAtraso`; con `-` delante, descendente. Por defecto `-diasAtraso` | `orden` |
+| `pagina` | ≥ 1, de 10 en 10 | `pagina`, `tamano=10` |
+
+Cada encabezado ordena por su columna: el primer clic pone lo más urgente primero (más días, más monto, la fecha más antigua; texto de la A a la Z) y el segundo invierte. Los filtros activos aparecen como etiquetas que se quitan una por una, y «Limpiar filtros» los quita todos. Cambiar un filtro vuelve a la página 1. Un valor inválido en la URL se ignora en vez de provocar un 400.
+
+### Estados
+
+Cargando (`loading.tsx`), error con «Reintentar», vacío («No hay unidades en mora» o «Ninguna unidad en mora cumple los filtros» con enlace para limpiarlos) y página fuera de rango. «Ver cuenta» abre `/estado-de-cuenta?unidad=<id>`, el estado de cuenta de la unidad para el administrador.
+
+Código: `lib/morosidad.ts` (tipos, orden, lectura de filtros, resumen), `lib/morosidad-api.ts` (llamadas al backend, solo servidor), `app/(panel)/morosidad/`.
