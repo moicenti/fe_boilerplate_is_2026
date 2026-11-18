@@ -1,6 +1,8 @@
 // Reglas de cuota (H3): tipos del contrato, etiquetas y validación compartida
 // entre el formulario (cliente) y la server action.
 
+import { MONEDA, formatMonto } from "@/lib/moneda";
+
 export type EstadoRegla = "ACTIVA" | "PAUSADA" | "INACTIVA";
 export type TipoMonto = "FIJO" | "POR_TIPO_UNIDAD";
 export type Alcance = "TODAS" | "TIPO" | "TORRE" | "SELECCION";
@@ -57,7 +59,8 @@ export type UnidadCondominio = {
 
 export const RUTA_REGLAS = "/cuotas/reglas";
 
-export const MONEDA = "USD";
+// La moneda se configura con NEXT_PUBLIC_MONEDA (lib/moneda.ts).
+export { MONEDA, formatMonto };
 
 export const ESTADO_REGLA: Record<EstadoRegla, { label: string; className: string }> = {
   ACTIVA: { label: "Activa", className: "bg-sage/30 text-foreground" },
@@ -125,17 +128,6 @@ export function describirAlcance(regla: Pick<ReglaCuota, "alcance" | "alcanceVal
       return `${n} ${n === 1 ? "unidad seleccionada" : "unidades seleccionadas"}`;
     }
   }
-}
-
-const formatoMoneda = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  minimumFractionDigits: 2,
-});
-
-/** "$2,400.00" (el símbolo es el mismo para MXN). */
-export function formatMonto(monto: number) {
-  return formatoMoneda.format(monto);
 }
 
 /** Importe que se muestra en la tabla: fijo o rango por tipo. */

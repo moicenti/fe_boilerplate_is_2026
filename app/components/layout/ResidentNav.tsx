@@ -26,8 +26,8 @@ const GRUPOS: { titulo: string; items: NavItem[] }[] = [
   {
     titulo: "Mi Cuenta",
     items: [
-      { href: "#", label: "Estado de cuenta", icon: FileText },
-      { href: "#", label: "Realizar pago", icon: Wallet },
+      { href: "/estado-de-cuenta", label: "Estado de cuenta", icon: FileText },
+      { href: "/pagos", label: "Realizar pago", icon: Wallet, soloResidente: true },
     ],
   },
   {

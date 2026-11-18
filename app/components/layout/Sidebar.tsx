@@ -10,7 +10,7 @@ export default async function Sidebar() {
   const isSecurity = user?.role === 'SEGURIDAD';
 
   return (
-    <aside className="w-64 bg-[#0a2f1f] text-white min-h-screen flex flex-col justify-between p-4">
+    <aside className="hidden w-64 shrink-0 bg-[#0a2f1f] text-white min-h-screen md:flex flex-col justify-between p-4">
       <div>
         {/* Logo */}
         <div className="flex items-center gap-2 mb-8 px-2">

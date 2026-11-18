@@ -6,36 +6,45 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-"Habita" — a condominium management frontend (Spanish UI, `lang="es"`) built with Next.js 16 (App Router), React 19, Tailwind CSS v4, TypeScript. It is a thin BFF in front of a separate REST backend; there is no database here. Features are developed per user story on `feature/H<n>-<descripcion>` branches and merged into `develop`, then `main`.
+"Habita" — a condominium management frontend (Spanish UI, `lang="es"`) built with Next.js 16 (App Router), React 19, Tailwind CSS v4, TypeScript. It is a thin BFF in front of a separate NestJS REST backend (sibling repo `../be_boilerplate_is_2026`); there is no database here. Features are developed per user story (H1, H4, H5…) on `feature/H<n>-<descripcion>` branches and merged into `develop`, then `main`. Each story's backend contract comes from a design PDF, but the backend implementation is the source of truth when they differ — check its controllers and DTOs.
 
 ## Commands
 
-- `npm run dev` — dev server on http://localhost:3000 (also regenerates `AGENTS.md`)
+- `npm run dev` — dev server on http://localhost:3000 (also regenerates `AGENTS.md`). Next 16 allows only one `next dev` per project directory.
 - `npm run build` — production build (also the main type check)
 - `npm run lint` — ESLint (flat config, `eslint-config-next`)
 - `npx next typegen && npx tsc --noEmit` — type check without building. `PageProps`/`LayoutProps` are global types generated into `.next/types`, so plain `tsc` fails until `typegen` (or `dev`/`build`) has run.
 - No test framework is configured.
 
-Copy `.env.example` to `.env.local`. `API_URL` is the backend base **including** the version prefix (e.g. `http://localhost:8000/api/v1`); `lib/api.ts` throws at import time if it is missing.
+Copy `.env.example` to `.env.local`.
+- `API_URL` — backend base **including** the version prefix (e.g. `http://localhost:8000/api/v1`); `apiFetch` throws if it is missing.
+- `NEXT_PUBLIC_MONEDA` — ISO 4217 code (default `USD`) for every amount. Always format money with `formatMonto` / `MONEDA` / `SIMBOLO_MONEDA` from `lib/moneda.ts`; never hardcode a currency code or symbol. It is inlined at build time, so changing it needs a dev-server restart or rebuild.
 
 ## Architecture
 
-**Auth/session.** `app/actions/auth.ts` (`login`) POSTs to `${API_URL}/auth/login` and stores the returned bearer token in an httpOnly cookie named `session` (`lib/session.ts`). `proxy.ts` (Next 16's replacement for `middleware.ts`) only checks that cookie exists and redirects to `/login` otherwise; real validation happens when the backend returns 401, at which point server actions call `expireSession()` to clear the cookie and redirect. The current user (`id`, `email`, `unit`, `role`: `RESIDENTE | ADMINISTRADOR | SEGURIDAD`) comes from `GET /auth/me` via `lib/current-user.ts`.
+**Auth/session.** `app/actions/auth.ts` (`login`) POSTs to `${API_URL}/auth/login` and stores the returned bearer token in an httpOnly cookie named `session` (`lib/session.ts`). `proxy.ts` (Next 16's replacement for `middleware.ts`) only checks that the cookie exists and redirects to `/login` otherwise; real validation happens when the backend returns 401, at which point Server Actions call `expireSession()` to clear the cookie and redirect (Server Components can't modify cookies, so pages show a "sesión vencida" notice with a logout form instead). The current user comes from `GET /auth/me` via `getCurrentUser()` in `lib/current-user.ts`: `id`, `email`, `role` (`RESIDENTE | ADMINISTRADOR | MANTENIMIENTO | SEGURIDAD`) and `unit` (`{ id (uuid), code, tower, description }` or null). Use it rather than calling `/auth/me` ad hoc. When a request needs the resident's unit, take it from the session on the server, never from the client.
 
-**Backend access — server only.** All backend calls go through `apiFetch` in `lib/api.ts`, which resolves paths against `API_URL`, attaches `Authorization: Bearer <session>`, disables caching, sets `Content-Type: application/json` only for string bodies (so `FormData` uploads stay multipart), and throws `ApiError(status, message, codigo?)` on non-2xx — it understands both backend error shapes, `{ codigo, mensaje }` and `{ message: string | string[] }`. Use `getCurrentUser()` from `lib/current-user.ts` rather than calling `/auth/me` ad hoc. The token never reaches the browser. Two patterns sit on top of it:
+**Backend access — server only.** All backend calls go through `apiFetch` in `lib/api.ts` (marked `server-only`; the token never reaches the browser). It resolves the path against `API_URL`, attaches `Authorization: Bearer <session>`, disables caching, and throws `ApiError(status, message, codigo?)`:
+- Caller `headers` are merged in. `Content-Type: application/json` is added only for string bodies, so send JSON as `JSON.stringify(...)`; a `FormData` body is sent as multipart (incidencia photos).
+- Errors are read from both backend shapes: `{ codigo, mensaje }` (modules using `ApiExceptionFilter`) and Nest's default `{ message: string | string[] }` (the rest). Branch on `codigo` when present. No session → `ApiError(401, …, "NO_AUTENTICADO")`; network failure → `ApiError(0, …, "SIN_CONEXION")`.
+- An empty success body (e.g. `204 No Content` from DELETE) resolves to `undefined`.
 
-1. **Server Components + Server Actions** (used by `app/(panel)/areas`): pages call typed wrappers in `lib/*-api.ts` directly; mutations live in `app/actions/*.ts` as `useActionState`-style actions returning `{ error, fieldErrors, values }`, then `revalidatePath` + `redirect` with an `?ok=` query param for success banners. Backend error `codigo`s are mapped to Spanish messages in the action.
-2. **Client Components + Route Handler proxy** (used by `incidencias`, `paquetes`): `"use client"` components `fetch('/api/...')`; the handlers in `app/api/**/route.ts` just forward to the backend with `forward(() => apiFetch(...))` and `jsonBody()` from `lib/api-route.ts`, which converts `ApiError` into a JSON `{ message }` response with the same status.
+Two patterns sit on top of it:
 
-**Route groups / layouts.** Two parallel UI shells exist, from different feature branches:
-- `app/(panel)/` — uses `components/` (root: `sidebar.tsx`, `topbar.tsx`, `icons.tsx` with inline SVG icons) and semantic theme tokens.
-- `app/(dashboard)/` — uses `app/components/layout/*` (Sidebar, Header), `lucide-react` icons, and some hardcoded colors. Feature components live in `app/components/<feature>/`.
-When editing a feature, follow the conventions of the shell it already lives in.
+1. **Server Components + Server Actions** (most screens: `(panel)` areas and cuota rules; `(dashboard)` disponibilidad, reservas, estado de cuenta, pagos). Pages call typed wrappers in `lib/*-api.ts` directly and keep filters/pagination in the URL (`searchParams`). Mutations live in `app/actions/*.ts`: either `useActionState` actions returning `{ error, fieldErrors, values }` followed by `revalidatePath` + `redirect` with `?ok=…` for a success banner, or actions called directly from a client component that return a result union (e.g. `pagarCuotas` → `{ ok: true, pago } | { ok: false, error }`). Backend `codigo`s are mapped to Spanish messages in the action. `revalidatePath` inside a Server Action also re-renders the current page in the same round trip, so the UI refreshes without a reload.
+2. **Client Components + Route Handler proxy** (incidencias, paquetes, asambleas, visitas): `"use client"` components `fetch('/api/...')`; the handlers in `app/api/**/route.ts` forward to the backend with `forward(() => apiFetch(...))` from `lib/api-route.ts`, which converts `ApiError` into a JSON `{ message }` response with the same status.
 
-**Domain modules in `lib/`.** Types, constants and formatters per domain (`areas.ts`, `bloqueos.ts`, `paquetes.ts`), separated from the fetch wrappers (`areas-api.ts`). Dates for the condo are handled in `America/El_Salvador` time via `lib/condominio.ts` (`hoyEnCondominio`, `aIsoCondominio`); `CONDOMINIO` also holds placeholder name/role data pending API support.
+**Route groups / layouts.** Three UI shells exist, from different feature branches. When editing a feature, follow the conventions of the shell it already lives in.
+- `app/(dashboard)/` — the main shell for residents, security and admins: `app/components/layout/*` (`Sidebar` picks `ResidentNav` or `SecurityNav` by role; `Header`; `Breadcrumb` maps pathnames to crumbs; `MenuMovil` replaces the sidebar below `md`), `lucide-react` icons. Feature components live in `app/components/<feature>/`. New pages need a nav entry in `ResidentNav`/`SecurityNav` and a case in `Breadcrumb`.
+- `app/(panel)/` — older admin shell: `components/` (`sidebar.tsx`, `topbar.tsx`, `icons.tsx` with inline SVG icons).
+- `app/(residente)/` — notifications shell: `components/residente/*`; its sidebar only links items marked `disponible: true`.
 
-**Validation.** Mix of hand-written validation in server actions (areas) and Zod schemas + `react-hook-form` (`lib/validation.ts`, incidencias form).
+**Domain modules in `lib/`.** Each domain has a client-safe module with types, constants and formatters (`areas.ts`, `bloqueos.ts`, `disponibilidad.ts`, `reservas.ts`, `estado-cuenta.ts`, `reglas-cuota.ts`, `paquetes.ts`…) and a separate server-only `*-api.ts` with the `apiFetch` wrappers. Condo dates use `America/El_Salvador` via `lib/condominio.ts` (`hoyEnCondominio`, `horaEnCondominio`, `aIsoCondominio`); `CONDOMINIO` also holds placeholder name/role data pending API support.
 
-**Styling.** Tailwind v4 configured CSS-first in `app/globals.css` via `@theme` (no `tailwind.config`). Prefer semantic tokens (`bg-background`, `text-foreground`, `bg-primary`, `text-muted`, `border-border`, `bg-surface`, `text-danger`) over raw palette colors (`forest`, `moss`, `sage`, `cream`, `sand`); use opacity modifiers for intermediate shades. Fonts: Inter (`font-sans`) and Source Serif 4 (`font-serif`).
+**Payments (H1).** The backend computes every balance (`saldo`, `saldoTotal`); the UI shows them and must not recompute them. "Vencida" is derived on the client per the project definition: `PENDIENTE`/`PARCIAL` with a due date before today (`esVencida`). The card gateway is simulated by the backend (`POST /pagos` with `tarjetaUltimos4`: it waits 5 s, always declines cards ending in 2000 and approves the rest, including 2026). The UI must not reveal that rule. Full card data never leaves the browser: `lib/tarjeta.ts` validates the one-time card client-side and only the last 4 digits are sent. Each review step generates a unique `referencia`, so the backend answers a duplicate submit with 409 instead of charging twice.
+
+**Validation.** Mix of hand-written validation in Server Actions (areas, reservas, pagos), client-side helpers (`lib/tarjeta.ts`), and Zod schemas + `react-hook-form` (`lib/validation.ts`, incidencias form).
+
+**Styling.** Tailwind v4 configured CSS-first in `app/globals.css` via `@theme` (no `tailwind.config`). Prefer semantic tokens (`bg-background`, `text-foreground`, `bg-primary`, `text-muted`, `border-border`, `bg-surface`, `text-danger`) over raw palette colors (`forest`, `moss`, `sage`, `cream`, `sand`); use opacity modifiers for intermediate shades. Fonts: Inter (`font-sans`) and Source Serif 4 (`font-serif`). Pages must work at 360 px wide.
 
 **Path alias:** `@/*` → repo root.
