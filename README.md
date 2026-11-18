@@ -86,3 +86,25 @@ incrusta al compilar: tras cambiarla, reinicia `npm run dev` o vuelve a hacer `n
 | 403 / 401 | No puede pagar esa unidad / la sesión venció y se redirige al login |
 
 En todos los errores se conserva la selección para reintentar.
+
+## H34 · Generación manual de cuotas
+
+Pantalla de administración en `/cuotas/generacion` (shell `(panel)`, menú «Generación manual»). Cada fila de `/cuotas/reglas` enlaza a ella con «Generar periodo» (o «Ver ejecuciones» si la regla no está activa).
+
+### Flujo de generación manual (FE-34.1)
+
+1. **Regla y periodo.** Se eligen en dos selectores que viven en la URL (`?regla=&periodo=&pagina=`), así la vista se puede recargar y compartir. El periodo ofrece el actual y los 11 anteriores; nunca futuros. Sin `?regla=` se abre la primera regla activa.
+2. **Vista previa.** La página llama a `POST /reglas-cuota/{id}/generacion/vista-previa` al renderizar (no escribe nada): cuotas por crear, monto total, vencimiento, unidades que ya tienen la cuota y excepciones (unidad, motivo y si quedará omitida o con error). Avisa si el vencimiento ya pasó, porque las cuotas nacerán vencidas. «Recalcular vista» la vuelve a pedir. Si la regla no está activa no se pide la vista previa (el backend respondería 422) y solo se muestra el historial.
+3. **Confirmación.** `ConfirmarGeneracion` exige marcar «He revisado…» y solo confirma la vista previa que se está mostrando. El botón se deshabilita mientras corre y una referencia bloquea el doble clic antes del siguiente render. Si no hay cuotas por crear, no se puede ejecutar.
+4. **Resumen.** La Server Action `generarPeriodo` (`app/actions/generacion-cuotas.ts`) llama a `POST /reglas-cuota/{id}/generacion` y muestra creadas, omitidas, con error y la causa de cada error, tal como responde el servicio. Si el resultado no coincide con la vista previa confirmada (otra ejecución o datos que cambiaron en medio), lo indica. `revalidatePath` actualiza la vista previa y el historial en la misma respuesta.
+5. **Historial.** `GET /reglas-cuota/{id}/ejecuciones`, paginado de 10 en 10: fecha, periodo, origen (automática o manual), usuario («Sistema» en las automáticas), estado y totales.
+
+| Código | Cómo se muestra |
+|---|---|
+| `EJECUCION_EN_CURSO` (409) | «Ya hay una generación en curso»: no se creó nada; botón para actualizar vista previa e historial |
+| `REGLA_INACTIVA` (422) | «No se puede generar este periodo» con el mensaje del backend (regla no activa o periodo futuro) |
+| `REGLA_INEXISTENTE` (404) | «La regla ya no existe» |
+| `ROL_NO_PERMITIDO` (403) | «Acceso restringido» en la página / «Sin permiso» en la acción |
+| Sin conexión o error 5xx al ejecutar | No se sabe si la generación corrió: se pide revisar el historial; reintentar es seguro porque solo crea lo que falte |
+
+Código: `lib/generacion-cuotas.ts` (tipos, etiquetas, periodos, comparación con la vista previa), `lib/generacion-cuotas-api.ts` (llamadas al backend, solo servidor), `app/(panel)/cuotas/generacion/` (página, confirmación, recalcular, carga).
