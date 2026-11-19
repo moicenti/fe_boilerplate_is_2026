@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LogIn,
+  Users,
   PackagePlus,
   Package,
   LayoutGrid,
@@ -14,6 +15,7 @@ type NavItem = { href: string; label: string; icon: LucideIcon };
 
 const ITEMS: NavItem[] = [
   { href: "/seguridad/visitas", label: "Registro de entrada", icon: LogIn },
+  { href: "/seguridad/panel", label: "Panel de seguridad", icon: Users },
   { href: "/paquetes/nuevo", label: "Llegada de paquete", icon: PackagePlus },
   { href: "/paquetes", label: "Paquetes pendientes", icon: Package },
   { href: "/areas/disponibilidad", label: "Disponibilidad de áreas", icon: LayoutGrid },
@@ -24,10 +26,7 @@ function isActive(pathname: string, href: string): boolean {
   if (href === "/paquetes") {
     return pathname === "/paquetes" || /^\/paquetes\/[^/]+\/entrega$/.test(pathname);
   }
-  if (href.startsWith("/seguridad/visitas")) {
-    return pathname === "/seguridad/visitas" || pathname.startsWith("/seguridad/visitas/");
-  }
-  return pathname === href;
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 export default function SecurityNav() {
