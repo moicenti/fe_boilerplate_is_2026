@@ -1,3 +1,5 @@
+import { CONDOMINIO } from "@/lib/condominio";
+
 export type PackageStatus = "PENDIENTE_RETIRO" | "ENTREGADO";
 
 export type Package = {
@@ -25,6 +27,7 @@ export type MyPackagePage = {
   total: number;
   totalPages: number;
   pendingCount: number;
+  counts: { TODOS: number; PENDIENTE_RETIRO: number; ENTREGADO: number };
 };
 
 export type PackagePage = {
@@ -46,7 +49,7 @@ export type Unit = {
 };
 
 export const PICKUP_LOCATION = "Caseta principal";
-export const CONDOMINIUM = "Los Olivos";
+export const CONDOMINIUM = CONDOMINIO.nombre;
 
 export const CARRIERS = [
   "DHL",

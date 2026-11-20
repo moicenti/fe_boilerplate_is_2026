@@ -1,10 +1,9 @@
-// components/notificaciones/filter-tabs.tsx
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { MODULOS, type Filtro, type ModuloFiltro } from "@/lib/notificaciones";
 
-// ✅ ACTUALIZADO: Ahora acepta 3 parámetros (filtro, page, modulo)
+// ✅ AHORA ACEPTA 3 ARGUMENTOS
 export function hrefNotificaciones(filtro: Filtro, page: number, modulo?: ModuloFiltro) {
   const params = new URLSearchParams();
   if (filtro !== "todas") params.set("filtro", filtro);
@@ -13,10 +12,11 @@ export function hrefNotificaciones(filtro: Filtro, page: number, modulo?: Modulo
   return `/notificaciones${params.toString() ? `?${params.toString()}` : ""}`;
 }
 
+// ✅ PROPS ACTUALIZADAS CON moduloActivo
 type Props = {
   activo: Filtro;
   noLeidas: number | null;
-  moduloActivo: ModuloFiltro; // ✅ NUEVA PROP
+  moduloActivo: ModuloFiltro;
 };
 
 export function FilterTabs({ activo, noLeidas, moduloActivo }: Props) {

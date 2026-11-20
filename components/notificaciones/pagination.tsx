@@ -1,13 +1,13 @@
-// components/notificaciones/pagination.tsx
 "use client";
 
 import Link from "next/link";
 import { hrefNotificaciones } from "./filter-tabs";
 import type { Filtro, ModuloFiltro } from "@/lib/notificaciones";
 
+// ✅ PROPS ACTUALIZADAS CON modulo
 type Props = {
   filtro: Filtro;
-  modulo: ModuloFiltro; // ✅ NUEVA PROP
+  modulo: ModuloFiltro;
   page: number;
   size: number;
   total: number;

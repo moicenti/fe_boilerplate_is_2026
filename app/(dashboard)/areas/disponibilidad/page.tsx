@@ -258,6 +258,7 @@ export default async function DisponibilidadPage(props: PageProps<"/areas/dispon
                 <TablaDisponibilidad
                   franjas={columnas}
                   filas={filas}
+                  fecha={fecha}
                   descripcion={`Disponibilidad de áreas comunes del ${fechaTitulo(fecha).toLowerCase()}`}
                 />
                 <div className="flex items-center justify-between px-6 py-4 text-xs text-secondary">

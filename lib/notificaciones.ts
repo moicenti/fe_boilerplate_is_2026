@@ -1,5 +1,4 @@
-// Tipos y utilidades de notificaciones. Sin dependencias de servidor, para poder
-// importarlo también desde componentes de cliente.
+// lib/notificaciones.ts
 
 export type Notificacion = {
   id: number;
@@ -11,7 +10,6 @@ export type Notificacion = {
   enlaceAccion: string | null;
 };
 
-// ✅ EXPORTADO: Tipo para la respuesta paginada
 export type PaginaNotificaciones = {
   total: number;
   page: number;
@@ -19,12 +17,10 @@ export type PaginaNotificaciones = {
   items: Notificacion[];
 };
 
-// ✅ CAMBIADO: "sin_leer" con guion bajo (coincide con el backend)
+// ✅ TIPOS EXACTOS (con guion bajo en sin_leer)
 export type Filtro = "todas" | "sin_leer" | "leidas";
-
 export type ModuloFiltro = "todos" | "pagos" | "reservas" | "incidencias" | "visitas" | "paqueteria" | "votaciones" | "anuncios";
 
-// ✅ EXPORTADO: Constante de tamaño de página
 export const TAMANO_PAGINA = 20;
 
 export function parseFiltro(valor: string | undefined): Filtro {
@@ -33,6 +29,7 @@ export function parseFiltro(valor: string | undefined): Filtro {
   return "todas";
 }
 
+// ✅ FUNCIÓN EXPORTADA CORRECTAMENTE
 export function parseModulo(valor: string | undefined): ModuloFiltro {
   const validos: ModuloFiltro[] = ["todos", "pagos", "reservas", "incidencias", "visitas", "paqueteria", "votaciones", "anuncios"];
   return validos.includes(valor as ModuloFiltro) ? (valor as ModuloFiltro) : "todos";
@@ -61,26 +58,16 @@ export function rutaSegura(enlace: string | null): string | null {
   return enlace.startsWith("/") && !enlace.startsWith("//") ? enlace : null;
 }
 
-// ✅ EXPORTADO: Función de formateo de fecha
 const TZ = "America/El_Salvador";
 
 export function formatearFecha(iso: string) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
   const fecha = new Intl.DateTimeFormat("es-SV", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    timeZone: TZ,
-  })
-      .format(d)
-      .replace(/\./g, "")
-      .replace(/ de /g, " ");
+    day: "2-digit", month: "short", year: "numeric", timeZone: TZ,
+  }).format(d).replace(/\./g, "").replace(/ de /g, " ");
   const hora = new Intl.DateTimeFormat("es-SV", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: TZ,
+    hour: "2-digit", minute: "2-digit", hour12: false, timeZone: TZ,
   }).format(d);
   return `${fecha} · ${hora} h`;
 }

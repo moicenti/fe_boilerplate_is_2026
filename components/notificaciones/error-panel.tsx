@@ -3,13 +3,19 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-export function ErrorPanel({ mensaje }: { mensaje: string }) {
+export function ErrorPanel({
+  mensaje,
+  titulo = "No pudimos cargar tus notificaciones",
+}: {
+  mensaje: string;
+  titulo?: string;
+}) {
   const router = useRouter();
   const [pendiente, iniciar] = useTransition();
 
   return (
     <div role="alert" className="px-6 py-14 text-center">
-      <p className="font-semibold">No pudimos cargar tus notificaciones</p>
+      <p className="font-semibold">{titulo}</p>
       <p className="mt-1 text-sm text-habita-700">{mensaje}</p>
       <button
         type="button"

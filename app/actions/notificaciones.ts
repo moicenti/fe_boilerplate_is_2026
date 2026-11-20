@@ -1,15 +1,15 @@
-// app/actions/notificaciones.ts
 "use server";
 
 import { redirect } from "next/navigation";
 import { ApiError } from "@/lib/api";
-import { cambiarLeida, marcarTodasLeidas } from "@/lib/notificaciones-api";
+import { cambiarLeida } from "@/lib/notificaciones-api";
 
 export type ResultadoAccion = { ok: true } | { ok: false; mensaje: string };
 
+
 export async function marcarLeida(
-    id: number,
-    leida: boolean,
+  id: number,
+  leida: boolean,
 ): Promise<ResultadoAccion> {
   try {
     await cambiarLeida(id, leida);
@@ -30,9 +30,9 @@ export async function marcarLeida(
   }
 }
 
-// ✅ NUEVA: Server Action para marcar todas como leídas
 export async function marcarTodasLeidasAccion(): Promise<ResultadoAccion> {
   try {
+    const { marcarTodasLeidas } = await import("@/lib/notificaciones-api");
     await marcarTodasLeidas();
     return { ok: true };
   } catch (error) {

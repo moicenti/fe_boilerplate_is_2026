@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { Home, MessageCircle, LogOut } from 'lucide-react';
-import { getCurrentUser } from '@/lib/current-user';
+import { etiquetaRol, getCurrentUser } from '@/lib/current-user';
 import SecurityNav from '@/app/components/layout/SecurityNav';
 import ResidentNav from '@/app/components/layout/ResidentNav';
+import { logout } from '@/app/actions/auth';
+import { CONDOMINIO } from '@/lib/condominio';
 
 export default async function Sidebar() {
   const user = await getCurrentUser();
@@ -10,7 +12,7 @@ export default async function Sidebar() {
   const isSecurity = user?.role === 'SEGURIDAD';
 
   return (
-    <aside className="w-64 bg-[#0a2f1f] text-white min-h-screen flex flex-col justify-between p-4">
+    <aside className="hidden w-64 shrink-0 bg-[#0a2f1f] text-white min-h-screen md:flex flex-col justify-between p-4">
       <div>
         {/* Logo */}
         <div className="flex items-center gap-2 mb-8 px-2">
@@ -27,7 +29,7 @@ export default async function Sidebar() {
 
         {/* Info Usuario */}
         <div className="border border-gray-600 rounded-lg p-3 mb-6">
-          <h2 className="font-semibold text-sm">Los Olivos</h2>
+          <h2 className="font-semibold text-sm">{CONDOMINIO.nombre}</h2>
           {user?.unit ? (
             <>
               <p className="text-xs text-gray-300 mt-1">
@@ -38,15 +40,15 @@ export default async function Sidebar() {
           ) : isSecurity ? (
             <p className="text-xs text-gray-300 mt-1">Caseta principal</p>
           ) : (
-            <p className="text-xs text-gray-300 mt-1">{user?.role ?? 'Sin unidad asignada'}</p>
+            <p className="text-xs text-gray-300 mt-1">{isAdmin ? 'Administración del condominio' : 'Sin unidad asignada'}</p>
           )}
           <span className="inline-block mt-2 bg-[#164a33] text-xs px-2 py-1 rounded">
-            {user?.role ?? 'Invitado'}
+            {etiquetaRol(user?.role)}
           </span>
         </div>
 
         {/* Navegación (delegada a componentes) */}
-        {isSecurity ? <SecurityNav /> : <ResidentNav isAdmin={isAdmin} />}
+        {isSecurity ? <SecurityNav /> : <ResidentNav role={user?.role} />}
       </div>
 
       {/* Footer */}
@@ -63,9 +65,11 @@ export default async function Sidebar() {
             Contactar administración
           </Link>
         </div>
-        <button className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white w-full transition">
-          <LogOut size={18} /> Cerrar sesión
-        </button>
+        <form action={logout}>
+          <button type="submit" className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white w-full transition">
+            <LogOut size={18} /> Cerrar sesión
+          </button>
+        </form>
       </div>
     </aside>
   );

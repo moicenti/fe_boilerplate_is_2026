@@ -1,4 +1,3 @@
-// components/notificaciones/marcar-todas-button.tsx
 "use client";
 
 import { useState, useTransition } from "react";

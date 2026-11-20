@@ -7,6 +7,7 @@ import * as z from 'zod';
 import { UploadCloud, X, Info, Send, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { CONDOMINIO } from '@/lib/condominio';
 
 const reportSchema = z.object({
   title: z.string()
@@ -313,7 +314,7 @@ export default function ReportForm({ userUnit, userEmail, userUnitLabel }: Repor
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Tu reporte, en buenas manos</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Se enviará a la administración de Los Olivos con los datos de tu sesión.
+              Se enviará a la administración de {CONDOMINIO.nombre} con los datos de tu sesión.
             </p>
             <hr className="border-gray-200 mb-4" />
             <div>

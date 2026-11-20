@@ -1,8 +1,7 @@
-// Datos del condominio y del usuario que se muestran en el panel.
-// TODO: reemplazar por los datos de la sesión cuando la API los exponga.
+// Datos del condominio que gestiona esta instalación del frontend.
 export const CONDOMINIO = {
-  nombre: "Los Olivos",
-  rol: "Administrador",
+  /** NEXT_PUBLIC_CONDOMINIO. Se incrusta al compilar: cambiarlo exige reiniciar `npm run dev` o reconstruir. */
+  nombre: process.env.NEXT_PUBLIC_CONDOMINIO?.trim() || "Condominio",
   /** Zona horaria en la que se interpretan y muestran las fechas (UTC-06:00). */
   zonaHoraria: "America/El_Salvador",
 };
@@ -34,4 +33,17 @@ export function aIsoCondominio(fecha: string, hora: string) {
       .find((p) => p.type === "timeZoneName")?.value ?? "GMT";
   const desfase = nombre === "GMT" ? "+00:00" : nombre.replace("GMT", "");
   return `${fecha}T${hora}:00${desfase}`;
+}
+
+/** "05 nov 2026, 11:10 h" en la hora local del condominio. */
+export function marcaHoraCondominio(ahora = new Date()) {
+  const fecha = new Intl.DateTimeFormat("es", {
+    timeZone: CONDOMINIO.zonaHoraria,
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  })
+    .format(ahora)
+    .replace(".", "");
+  return `${fecha}, ${horaEnCondominio(ahora)} h`;
 }
