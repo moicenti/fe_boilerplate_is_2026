@@ -52,7 +52,10 @@ export function Sidebar() {
             </p>
             <ul className="flex flex-col gap-0.5">
               {grupo.items.map((item) => {
-                const activo = pathname.startsWith(item.href);
+                // "Preferencias de avisos" cuelga del centro de notificaciones.
+                const activo =
+                  pathname.startsWith(item.href) ||
+                  (item.href === "/notificaciones" && pathname.startsWith("/preferencias"));
                 const base = "block rounded-lg px-3 py-2 text-sm";
                 return (
                   <li key={item.href}>

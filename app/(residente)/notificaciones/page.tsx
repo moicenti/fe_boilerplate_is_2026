@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ApiError } from "@/lib/api";
 import { contarNoLeidas, listarNotificaciones } from "@/lib/notificaciones-api";
@@ -75,13 +76,28 @@ export default async function NotificacionesPage({ searchParams }: Props) {
 
   return (
     <div className="mx-auto max-w-5xl">
-      <p className="text-[11px] font-semibold tracking-[0.18em] text-habita-700">
-        MI COMUNIDAD · AVISOS
-      </p>
-      <h1 className="mt-2 font-serif text-4xl">Centro de notificaciones</h1>
-      <p className="mt-2 text-sm text-habita-700">
-        Todas las novedades de tu unidad y tu comunidad, organizadas para ti.
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="text-[11px] font-semibold tracking-[0.18em] text-habita-700">
+            MI COMUNIDAD · AVISOS
+          </p>
+          <h1 className="mt-2 font-serif text-4xl">Centro de notificaciones</h1>
+          <p className="mt-2 text-sm text-habita-700">
+            Todas las novedades de tu unidad y tu comunidad, organizadas para ti.
+          </p>
+        </div>
+        <Link
+          href="/preferencias"
+          className="flex items-center gap-2 rounded-lg border border-borde bg-white px-4 py-2.5 text-sm font-medium hover:bg-arena"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true">
+            <path d="M4 7h10M18 7h2M4 17h2M10 17h10" />
+            <circle cx="16" cy="7" r="2" />
+            <circle cx="8" cy="17" r="2" />
+          </svg>
+          Preferencias de avisos
+        </Link>
+      </div>
 
       {noLeidas !== null && (
         <section
