@@ -17,7 +17,7 @@ export default function RedactarComunicadoPage() {
   const [categoria, setCategoria] = useState<'MANTENIMIENTO' | 'SEGURIDAD' | 'ADMINISTRATIVO'>('MANTENIMIENTO');
   const [prioridad, setPrioridad] = useState<'INFORMATIVO' | 'IMPORTANTE' | 'URGENTE'>('URGENTE');
   const [audienciaTipo, setAudienciaTipo] = useState<'TODO_EL_CONDOMINIO' | 'POR_TORRE' | 'POR_SECCION'>('POR_TORRE');
-  const [audienciaTarget, setAudienciaTarget] = useState('Torre A y B');
+  const [audienciaTarget, setAudienciaTarget] = useState('Torre A');
 
   // Control de adjuntos y confirmación
   const [archivos, setArchivos] = useState<File[]>([]);
@@ -97,77 +97,14 @@ export default function RedactarComunicadoPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F9FAFB] text-[#1F2937]">
+    <div className="space-y-6">
       {/* Barra lateral */}
-      <aside className="w-64 bg-[#112922] text-[#E5E7EB] flex flex-col justify-between shrink-0">
-        <div>
-          {/* Logo */}
-          <div className="p-6 border-b border-[#1E3E34] flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#1F483D] flex items-center justify-center font-bold text-white">
-              ⌂
-            </div>
-            <div>
-              <h2 className="font-semibold text-white tracking-wide text-sm">habita</h2>
-              <p className="text-[10px] text-gray-400">GESTIÓN DE CONDOMINIOS</p>
-            </div>
-          </div>
-
-          {/* Contexto del condominio */}
-          <div className="p-4 mx-3 my-4 bg-[#1A3A31] rounded-xl">
-            <p className="text-xs font-semibold text-white">Los Olivos</p>
-            <p className="text-[11px] text-gray-300">Administración del condominio</p>
-            <span className="inline-block mt-2 px-2 py-0.5 bg-[#254F43] text-[10px] text-emerald-200 rounded">
-              Administrador
-            </span>
-          </div>
-
-          {/* Menú de navegación */}
-          <nav className="px-3 space-y-1 text-xs">
-            <p className="px-3 py-2 text-[10px] uppercase tracking-wider text-gray-400 font-medium">Comunidad</p>
-            <Link href="/residentes" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-[#1A3A31]">
-              <span>👥</span> Residentes
-            </Link>
-            <Link href="/areas" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-[#1A3A31]">
-              <span>▦</span> Áreas comunes
-            </Link>
-            <Link href="/incidencias" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-[#1A3A31]">
-              <span>📋</span> Incidencias
-            </Link>
-            <Link href="/asambleas" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-[#1A3A31]">
-              <span>📅</span> Asambleas
-            </Link>
-            <Link href="/cartelera" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#244E42] text-white font-medium">
-              <span>📢</span> Cartelera
-            </Link>
-          </nav>
-        </div>
-
-        {/* Cierre de sesión */}
-        <div className="p-4 border-t border-[#1E3E34] text-xs text-gray-400">
-          <button className="flex items-center gap-2 hover:text-white">
-            <span>⎋</span> Cerrar sesión
-          </button>
-          <p className="text-[10px] mt-4 text-gray-500">© 2026 Habita</p>
-        </div>
-      </aside>
+      
 
       {/* Contenido principal */}
-      <main className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col">
         {/* Cabecera superior */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8">
-          <div className="text-xs text-gray-500">
-            Administración <span className="mx-1">&gt;</span> Cartelera / <span className="font-medium text-gray-800">Nuevo comunicado</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[#E8EDE9] text-[#1B4332] flex items-center justify-center font-bold text-xs">
-              LF
-            </div>
-            <div className="text-right">
-              <p className="text-xs font-semibold text-gray-900 leading-none">Lucía Fernández</p>
-              <p className="text-[10px] text-gray-500 leading-none mt-0.5">Administradora · Los Olivos</p>
-            </div>
-          </div>
-        </header>
+        
 
         {/* Área de formulario */}
         <div className="p-8 max-w-7xl w-full mx-auto space-y-6">
@@ -457,7 +394,7 @@ export default function RedactarComunicadoPage() {
             </div>
           </form>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
