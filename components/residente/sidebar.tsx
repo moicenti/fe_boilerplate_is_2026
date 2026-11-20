@@ -11,8 +11,8 @@ const GRUPOS: { titulo: string; items: Item[] }[] = [
   {
     titulo: "Mi cuenta",
     items: [
-      { label: "Estado de cuenta", href: "/estado-de-cuenta" },
-      { label: "Realizar pago", href: "/pagos" },
+      { label: "Estado de cuenta", href: "/estado-de-cuenta", disponible: true },
+      { label: "Realizar pago", href: "/pagos", disponible: true },
     ],
   },
   {

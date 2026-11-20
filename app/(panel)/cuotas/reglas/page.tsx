@@ -25,6 +25,7 @@ import {
   type UnidadCondominio,
 } from "@/lib/reglas-cuota";
 import { listReglasCuota, listUnidades } from "@/lib/reglas-cuota-api";
+import { RUTA_GENERACION } from "@/lib/generacion-cuotas";
 import { EstadoReglaPanel } from "./estado-regla";
 import { ReglaForm } from "./regla-form";
 
@@ -269,7 +270,7 @@ export default async function ReglasCuotaPage(props: PageProps<"/cuotas/reglas">
                   </div>
                 ) : (
                   <>
-                    <div className="overflow-x-auto">
+                    <div className="relative overflow-x-auto">
                       <table className="w-full min-w-[860px] text-left text-sm">
                         <thead className="bg-sand/30 text-[11px] font-semibold tracking-wide text-foreground uppercase">
                           <tr>
@@ -315,13 +316,22 @@ export default async function ReglasCuotaPage(props: PageProps<"/cuotas/reglas">
                                 </span>
                               </td>
                               <td className="px-6 py-4">
-                                <Link
-                                  href={href({ regla: regla.id, estado: filtro, pagina })}
-                                  className="font-semibold text-secondary underline underline-offset-4 hover:text-foreground"
-                                >
-                                  Configurar
-                                  <span className="sr-only"> {regla.concepto}</span>
-                                </Link>
+                                <div className="flex flex-col items-start gap-1">
+                                  <Link
+                                    href={href({ regla: regla.id, estado: filtro, pagina })}
+                                    className="font-semibold text-secondary underline underline-offset-4 hover:text-foreground"
+                                  >
+                                    Configurar
+                                    <span className="sr-only"> {regla.concepto}</span>
+                                  </Link>
+                                  <Link
+                                    href={`${RUTA_GENERACION}?regla=${regla.id}`}
+                                    className="text-xs text-secondary underline underline-offset-4 hover:text-foreground"
+                                  >
+                                    {regla.estado === "ACTIVA" ? "Generar periodo" : "Ver ejecuciones"}
+                                    <span className="sr-only"> de {regla.concepto}</span>
+                                  </Link>
+                                </div>
                               </td>
                             </tr>
                           ))}
