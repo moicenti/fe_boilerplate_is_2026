@@ -4,9 +4,10 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import ResidentNav from "@/app/components/layout/ResidentNav";
 import SecurityNav from "@/app/components/layout/SecurityNav";
+import type { Role } from "@/lib/current-user";
 
 // En pantallas angostas el menú lateral se oculta; este botón muestra la misma navegación.
-export default function MenuMovil({ role }: { role?: string }) {
+export default function MenuMovil({ role }: { role?: Role }) {
   const [abierto, setAbierto] = useState(false);
 
   return (
@@ -49,7 +50,7 @@ export default function MenuMovil({ role }: { role?: string }) {
                 <X size={20} />
               </button>
             </div>
-            {role === "SEGURIDAD" ? <SecurityNav /> : <ResidentNav isAdmin={role === "ADMINISTRADOR"} />}
+            {role === "SEGURIDAD" ? <SecurityNav /> : <ResidentNav role={role} />}
           </div>
         </div>
       )}

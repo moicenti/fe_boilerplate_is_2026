@@ -55,21 +55,6 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
   );
 
   const headers = new Headers(init.headers);
-
-  headers.set("Accept", "application/json");
-  headers.set("Authorization", `Bearer ${token}`);
-
-  if (init.body instanceof FormData) {
-    // FormData necesita que fetch genere automáticamente el boundary.
-    headers.delete("Content-Type");
-  } else if (init.body !== undefined && init.body !== null) {
-    // Las peticiones JSON conservan su Content-Type.
-    if (!headers.has("Content-Type")) {
-      headers.set("Content-Type", "application/json");
-    }
-  }
-
-  const headers = new Headers(init.headers);
   headers.set("Accept", "application/json");
   headers.set("Authorization", `Bearer ${token}`);
   // Los cuerpos de texto son JSON. Un FormData no lleva Content-Type: fetch pone el
