@@ -13,6 +13,7 @@ import {
   Package,
   ShieldCheck,
   Users,
+  Vote,
   Wallet,
   Bell,
   ClipboardList,
@@ -49,6 +50,7 @@ const GRUPOS: NavGroup[] = [
       { href: "/incidencias", label: "Incidencias", icon: FileText },
       { href: "/visitas", label: "Mis visitas", icon: Users, soloResidente: true },
       { href: "/paquetes", label: "Paquetes", icon: Package, soloResidente: true },
+      { href: "/asambleas", label: "Asambleas", icon: Vote, soloResidente: true },
     ],
   },
 ];

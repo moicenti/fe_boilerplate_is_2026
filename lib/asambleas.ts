@@ -13,6 +13,20 @@ export type VotingTopic = {
   position: number;
   status: AssemblyStatus;
   options: { id: string; text: string; position: number }[];
+  unitVote: { votedAt: string } | null;
+};
+
+export const OPTION_HINT: Record<string, string> = {
+  "a favor": "Apoyo la propuesta.",
+  "en contra": "No apoyo la propuesta.",
+  "abstención": "Prefiero abstenerme.",
+};
+
+export const RESIDENT_STATUS_LABEL: Record<AssemblyStatus, string> = {
+  BORRADOR: "No publicada",
+  PROGRAMADA: "Próxima",
+  ABIERTA: "Votación abierta",
+  CERRADA: "Cerrada",
 };
 
 export type AssemblySummary = {
@@ -30,6 +44,7 @@ export type AssemblySummary = {
   votingClosesAt: string | null;
   topicCount: number;
   agendaCount: number;
+  pendingVotesForUnit: number | null;
 };
 
 export type Assembly = AssemblySummary & {
