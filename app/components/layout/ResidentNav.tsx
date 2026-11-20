@@ -24,6 +24,7 @@ type NavItem = {
   href: string;
   label: string;
   icon: LucideIcon;
+  soloResidente?: boolean;
 };
 
 type NavGroup = {
@@ -46,8 +47,8 @@ const GRUPOS: NavGroup[] = [
       { href: "/reservas/nueva", label: "Nueva reserva", icon: CalendarPlus },
       { href: "/reservas", label: "Mis reservas", icon: Calendar },
       { href: "/incidencias", label: "Incidencias", icon: FileText },
-      { href: "/visitas", label: "Mis visitas", icon: Users },
-      { href: "/paquetes", label: "Paquetes", icon: Package },
+      { href: "/visitas", label: "Mis visitas", icon: Users, soloResidente: true },
+      { href: "/paquetes", label: "Paquetes", icon: Package, soloResidente: true },
     ],
   },
 ];
@@ -100,7 +101,12 @@ export default function ResidentNav({ role }: { role?: Role }) {
   const pathname = usePathname();
 
   const grupos: NavGroup[] = [
-    ...GRUPOS,
+    ...(role === "RESIDENTE"
+      ? GRUPOS
+      : GRUPOS.map((grupo) => ({
+          ...grupo,
+          items: grupo.items.filter((item) => !item.soloResidente),
+        }))),
     ...(role === "ADMINISTRADOR" ? [GRUPO_ADMIN] : []),
     ...(role === "MANTENIMIENTO" ? [GRUPO_MANTENIMIENTO] : []),
   ];
