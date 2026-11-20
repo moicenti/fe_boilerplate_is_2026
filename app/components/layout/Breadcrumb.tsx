@@ -1,36 +1,72 @@
+
 "use client";
 
 import { usePathname } from "next/navigation";
+import type { Role } from "@/lib/current-user";
 
-function crumbsFor(pathname: string, role?: string): string[] {
-  if (role === "RESIDENTE" && pathname.startsWith("/paquetes")) {
-    return pathname === "/paquetes"
-      ? ["Mi comunidad", "Paquetes"]
-      : ["Mi comunidad", "Paquetes", "Detalle"];
+function crumbsFor(pathname: string, role?: Role): string[] {
+  if (pathname === "/mi-comunidad") {
+    return ["Mi comunidad", "Inicio"];
   }
-  if (pathname === "/paquetes/nuevo") {
-    return ["Caseta de seguridad", "Recepción de paquetes"];
+
+  if (pathname.startsWith("/notificaciones")) {
+    return ["Mi comunidad", "Notificaciones"];
   }
-  if (/^\/paquetes\/[^/]+\/entrega$/.test(pathname)) {
-    return ["Caseta de seguridad", "Paquetes · Entrega"];
+
+  if (pathname.startsWith("/cuotas/reglas")) {
+    return ["Administración", "Cuotas y reglas"];
   }
+
+  if (pathname.startsWith("/areas/disponibilidad")) {
+    return ["Mi comunidad", "Áreas comunes", "Disponibilidad"];
+  }
+
+  if (pathname === "/areas" || pathname.startsWith("/areas/")) {
+    return ["Administración", "Gestión de áreas"];
+  }
+
   if (pathname.startsWith("/paquetes")) {
+    if (role === "RESIDENTE") {
+      if (pathname === "/paquetes") {
+        return ["Mi comunidad", "Paquetes"];
+      }
+
+      return ["Mi comunidad", "Paquetes", "Detalle"];
+    }
+
+    if (pathname === "/paquetes/nuevo") {
+      return ["Caseta de seguridad", "Recepción de paquetes"];
+    }
+
+    if (/^\/paquetes\/[^/]+\/entrega$/.test(pathname)) {
+      return ["Caseta de seguridad", "Paquetes", "Entrega"];
+    }
+
     return ["Caseta de seguridad", "Paquetes"];
   }
+
   if (pathname === "/admin/asambleas/nueva") {
     return ["Administración", "Convocar asamblea"];
   }
+
   if (/^\/admin\/asambleas\/[^/]+\/editar$/.test(pathname)) {
     return ["Administración", "Asambleas", "Editar borrador"];
   }
+
   if (/^\/admin\/asambleas\/[^/]+$/.test(pathname)) {
     return ["Administración", "Asambleas", "Convocatoria"];
   }
+
   if (pathname === "/admin/asambleas") {
     return ["Administración", "Asambleas"];
   }
-  if (pathname.startsWith("/areas/disponibilidad") || pathname.startsWith("/reservas")) {
-    return ["Mi comunidad", "Áreas y reservas"];
+
+  if (pathname.startsWith("/admin/incidencias")) {
+    return ["Administración", "Panel de incidencias"];
+  }
+
+  if (pathname.startsWith("/seguridad/panel")) {
+    return ["Seguridad", "Panel de seguridad"];
   }
   if (pathname.startsWith("/estado-de-cuenta") || pathname.startsWith("/pagos")) {
     return role === "ADMINISTRADOR"
@@ -40,8 +76,9 @@ function crumbsFor(pathname: string, role?: string): string[] {
   return ["Mi comunidad", "Incidencias"];
 }
 
-export default function Breadcrumb({ role }: { role?: string }) {
-  const crumbs = crumbsFor(usePathname(), role);
+export default function Breadcrumb({ role }: { role?: Role }) {
+  const pathname = usePathname();
+  const crumbs = crumbsFor(pathname, role);
 
   return (
     <div className="flex min-w-0 items-center gap-2 text-sm text-gray-600">

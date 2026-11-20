@@ -1,8 +1,10 @@
+
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Home,
   Calendar,
   CalendarCheck,
   CalendarPlus,
@@ -12,19 +14,26 @@ import {
   ShieldCheck,
   Users,
   Wallet,
+  Bell,
+  ClipboardList,
   type LucideIcon,
 } from "lucide-react";
+import type { Role } from "@/lib/current-user";
 
 type NavItem = {
   href: string;
   label: string;
   icon: LucideIcon;
-  soloResidente?: boolean;
 };
 
-const GRUPOS: { titulo: string; items: NavItem[] }[] = [
+type NavGroup = {
+  titulo: string;
+  items: NavItem[];
+};
+
+const GRUPOS: NavGroup[] = [
   {
-    titulo: "Mi Cuenta",
+    titulo: "General",
     items: [
       { href: "/estado-de-cuenta", label: "Estado de cuenta", icon: FileText },
       { href: "/pagos", label: "Realizar pago", icon: Wallet, soloResidente: true },
@@ -37,49 +46,64 @@ const GRUPOS: { titulo: string; items: NavItem[] }[] = [
       { href: "/reservas/nueva", label: "Nueva reserva", icon: CalendarPlus },
       { href: "/reservas", label: "Mis reservas", icon: Calendar },
       { href: "/incidencias", label: "Incidencias", icon: FileText },
-      { href: "/visitas", label: "Mis visitas", icon: Users, soloResidente: true },
-      { href: "/paquetes", label: "Paquetes", icon: Package, soloResidente: true },
+      { href: "/visitas", label: "Mis visitas", icon: Users },
+      { href: "/paquetes", label: "Paquetes", icon: Package },
     ],
   },
 ];
 
-const GRUPO_ADMIN = {
+const GRUPO_ADMIN: NavGroup = {
   titulo: "Administración",
   items: [
     { href: "/admin/incidencias", label: "Panel de incidencias", icon: ShieldCheck },
     { href: "/admin/asambleas/nueva", label: "Convocar asamblea", icon: CalendarPlus },
     { href: "/admin/asambleas", label: "Asambleas", icon: CalendarCheck },
+    { href: "/areas", label: "Gestión de áreas", icon: Grid },
+    { href: "/cuotas/reglas", label: "Cuotas y reglas", icon: Wallet },
   ],
 };
 
-const HREFS = [...GRUPOS.flatMap((g) => g.items), ...GRUPO_ADMIN.items].map(
-  (item) => item.href,
-);
+const GRUPO_MANTENIMIENTO: NavGroup = {
+  titulo: "Mantenimiento",
+  items: [
+    { href: "/incidencias", label: "Incidencias", icon: ClipboardList },
+    { href: "/areas", label: "Áreas comunes", icon: Grid },
+  ],
+};
+
+const HREFS = [
+  ...GRUPOS.flatMap((group) => group.items),
+  ...GRUPO_ADMIN.items,
+  ...GRUPO_MANTENIMIENTO.items,
+].map((item) => item.href);
 
 function matches(pathname: string, href: string): boolean {
-  if (href === "#") return false;
+  if (href === "/reservas") {
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }
+
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 function isActive(pathname: string, href: string): boolean {
   if (!matches(pathname, href)) return false;
+
   return !HREFS.some(
-    (other) => other.length > href.length && matches(pathname, other),
+    (other) =>
+      other !== href &&
+      other.length > href.length &&
+      matches(pathname, other),
   );
 }
 
-export default function ResidentNav({ isAdmin = false }: { isAdmin?: boolean }) {
+export default function ResidentNav({ role }: { role?: Role }) {
   const pathname = usePathname();
 
-  const grupos = isAdmin
-    ? [
-        ...GRUPOS.map((grupo) => ({
-          ...grupo,
-          items: grupo.items.filter((item) => !item.soloResidente),
-        })),
-        GRUPO_ADMIN,
-      ]
-    : GRUPOS;
+  const grupos: NavGroup[] = [
+    ...GRUPOS,
+    ...(role === "ADMINISTRADOR" ? [GRUPO_ADMIN] : []),
+    ...(role === "MANTENIMIENTO" ? [GRUPO_MANTENIMIENTO] : []),
+  ];
 
   return (
     <nav className="space-y-6">
@@ -88,8 +112,10 @@ export default function ResidentNav({ isAdmin = false }: { isAdmin?: boolean }) 
           <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
             {grupo.titulo}
           </p>
+
           {grupo.items.map(({ href, label, icon: Icon }) => {
             const active = isActive(pathname, href);
+
             return (
               <Link
                 key={label}
@@ -101,7 +127,8 @@ export default function ResidentNav({ isAdmin = false }: { isAdmin?: boolean }) 
                     : "text-gray-300 hover:text-white hover:bg-[#164a33]"
                 }`}
               >
-                <Icon size={18} /> {label}
+                <Icon size={18} />
+                {label}
               </Link>
             );
           })}

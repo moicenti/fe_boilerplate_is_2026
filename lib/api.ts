@@ -1,3 +1,4 @@
+
 import "server-only";
 import { getSession } from "@/lib/session";
 
@@ -37,16 +38,36 @@ async function leerError(res: Response): Promise<ApiError> {
 // fetch contra API_URL (incluye el prefijo, p. ej. /api/v1) con el token de la sesión. Solo servidor.
 export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
   const apiUrl = process.env.API_URL;
+
   if (!apiUrl) {
     throw new Error("Falta la variable de entorno API_URL.");
   }
 
   const token = await getSession();
+
   if (!token) {
     throw new ApiError(401, "No hay sesión iniciada.", "NO_AUTENTICADO");
   }
 
-  const url = new URL(path.replace(/^\//, ""), apiUrl.replace(/\/?$/, "/"));
+  const url = new URL(
+    path.replace(/^\/+/, ""),
+    `${apiUrl.replace(/\/+$/, "")}/`,
+  );
+
+  const headers = new Headers(init.headers);
+
+  headers.set("Accept", "application/json");
+  headers.set("Authorization", `Bearer ${token}`);
+
+  if (init.body instanceof FormData) {
+    // FormData necesita que fetch genere automáticamente el boundary.
+    headers.delete("Content-Type");
+  } else if (init.body !== undefined && init.body !== null) {
+    // Las peticiones JSON conservan su Content-Type.
+    if (!headers.has("Content-Type")) {
+      headers.set("Content-Type", "application/json");
+    }
+  }
 
   const headers = new Headers(init.headers);
   headers.set("Accept", "application/json");
@@ -58,10 +79,15 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
   }
 
   let res: Response;
+
   try {
     res = await fetch(url, { ...init, headers, cache: "no-store" });
   } catch {
-    throw new ApiError(0, "No se pudo conectar con el servidor.", "SIN_CONEXION");
+    throw new ApiError(
+      0,
+      "No se pudo conectar con el servidor.",
+      "SIN_CONEXION",
+    );
   }
 
   if (!res.ok) {

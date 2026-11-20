@@ -15,7 +15,7 @@ export function proxy(request: NextRequest) {
   }
 
   if (isPublicRoute && hasSession) {
-    return NextResponse.redirect(new URL("/", request.nextUrl));
+    return NextResponse.redirect(new URL("/mi-comunidad", request.nextUrl));
   }
 
   return NextResponse.next();

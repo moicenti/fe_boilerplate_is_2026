@@ -11,8 +11,16 @@ export async function POST(request: Request) {
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     if (error instanceof ApiError) {
-      return NextResponse.json({ message: error.message }, { status: error.status });
+      // FIX: propagar el mensaje real del backend
+      return NextResponse.json(
+        { message: error.message, codigo: error.codigo },
+        { status: error.status },
+      );
     }
-    return NextResponse.json({ message: 'Error interno.' }, { status: 500 });
+    console.error('[api/visitas/entrada] Error inesperado:', error);
+    return NextResponse.json(
+      { message: error instanceof Error ? error.message : 'Error interno.' },
+      { status: 500 },
+    );
   }
 }
