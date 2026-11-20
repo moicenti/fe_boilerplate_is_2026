@@ -1,6 +1,7 @@
 'use server';
 
-import { apiFetch } from '@/lib/api';
+import { ApiError, apiFetch } from '@/lib/api';
+import { expireSession } from '@/lib/session';
 
 export interface PreferenciasPrivacidadPayload {
   visibleGlobal: boolean;
@@ -15,6 +16,8 @@ export async function obtenerPreferenciasDirectorioAction() {
     const data = await apiFetch<any>('directorio/preferencias');
     return { success: true, data };
   } catch (error: any) {
+    // Sesión vencida: borra la cookie y vuelve al login en vez de mostrar el error.
+    if (error instanceof ApiError && error.status === 401) await expireSession();
     return { success: false, error: error?.message || 'No se pudo cargar tu configuración.' };
   }
 }
@@ -29,6 +32,8 @@ export async function actualizarPreferenciasDirectorioAction(
     });
     return { success: true, data };
   } catch (error: any) {
+    // Sesión vencida: borra la cookie y vuelve al login en vez de mostrar el error.
+    if (error instanceof ApiError && error.status === 401) await expireSession();
     return { success: false, error: error?.message || 'Error de conexión al guardar preferencias.' };
   }
 }
@@ -50,6 +55,8 @@ export async function buscarDirectorioAction(params: {
     const data = await apiFetch<any>(qs ? `directorio?${qs}` : 'directorio');
     return { success: true, data };
   } catch (error: any) {
+    // Sesión vencida: borra la cookie y vuelve al login en vez de mostrar el error.
+    if (error instanceof ApiError && error.status === 401) await expireSession();
     return {
       success: false,
       error: error?.message || 'No se pudo cargar el directorio de vecinos.',

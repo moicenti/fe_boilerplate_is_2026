@@ -1,6 +1,7 @@
 'use server';
 
-import { apiFetch } from '@/lib/api';
+import { ApiError, apiFetch } from '@/lib/api';
+import { expireSession } from '@/lib/session';
 
 export async function obtenerReporteIncidenciasAction(params: {
   desde?: string;
@@ -17,6 +18,8 @@ export async function obtenerReporteIncidenciasAction(params: {
     const data = await apiFetch<any>(qs ? `reportes/incidencias?${qs}` : 'reportes/incidencias');
     return { success: true, data };
   } catch (error: any) {
+    // Sesión vencida: borra la cookie y vuelve al login en vez de mostrar el error.
+    if (error instanceof ApiError && error.status === 401) await expireSession();
     return {
       success: false,
       error: error?.message || 'No se pudo cargar el reporte de incidencias abiertas.',
@@ -39,6 +42,8 @@ export async function obtenerReporteVotacionesAction(params: {
     const data = await apiFetch<any>(qs ? `reportes/votaciones?${qs}` : 'reportes/votaciones');
     return { success: true, data };
   } catch (error: any) {
+    // Sesión vencida: borra la cookie y vuelve al login en vez de mostrar el error.
+    if (error instanceof ApiError && error.status === 401) await expireSession();
     return {
       success: false,
       error: error?.message || 'No se pudo cargar el reporte de participación.',

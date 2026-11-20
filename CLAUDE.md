@@ -23,7 +23,8 @@ Copy `.env.example` to `.env.local`.
 
 ## Architecture
 
-**Auth/session.** `app/actions/auth.ts` (`login`) POSTs to `${API_URL}/auth/login` and stores the returned bearer token in an httpOnly cookie named `session` (`lib/session.ts`). `proxy.ts` (Next 16's replacement for `middleware.ts`) guards every page:
+**Auth/session.** `app/actions/auth.ts` (`login`) POSTs to `${API_URL}/auth/login` and stores the returned bearer token in an httpOnly cookie named `session` (`lib/session.ts`). `proxy.ts` (Next 16's replacement for `middleware.ts`) guards every page on GET:
+- Non-GET requests (Server Actions are POSTs to the page) pass through untouched. A redirect there breaks the action on the client ("An unexpected response was received from the server"), e.g. logging out with an expired token. So **every Server Action must handle a 401 itself**, with `if (error instanceof ApiError && error.status === 401) await expireSession();`. `expireSession()` clears the cookie and goes to `/login?motivo=vencida`.
 - No cookie → `/login`.
 - Otherwise it validates the token with `GET /auth/me` (the JWT carries no role). The result is cached in memory for 60 s per token.
   - Rejected token → the cookie is cleared and the user goes to `/login?motivo=vencida`.

@@ -70,14 +70,17 @@ export async function proxy(request: NextRequest) {
   const enLogin = pathname === "/login";
   const token = request.cookies.get(SESSION_COOKIE)?.value;
 
-  if (!token) {
-    return enLogin ? NextResponse.next() : redirigir(request, "/login");
+  // Las Server Actions llegan como POST a la página. Una redirección aquí rompe la acción en el
+  // cliente ("An unexpected response was received from the server"), p. ej. al cerrar sesión con
+  // el token vencido. Pasan sin tocarse y cada acción valida la sesión: ante un 401 llama a
+  // expireSession() (borra la cookie y va a /login), y logout la borra siempre. Tampoco se borra
+  // la cookie aquí, porque pisaría la sesión nueva que crea la acción de login.
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    return NextResponse.next();
   }
 
-  // El envío del formulario de login (Server Action, POST) pasa sin tocar la cookie: borrarla
-  // aquí podría pisar la sesión nueva que crea la acción en la misma respuesta.
-  if (enLogin && request.method !== "GET") {
-    return NextResponse.next();
+  if (!token) {
+    return enLogin ? NextResponse.next() : redirigir(request, "/login");
   }
 
   const sesion = await leerSesion(token);

@@ -1,6 +1,7 @@
 'use server';
 
-import { apiFetch } from '@/lib/api';
+import { ApiError, apiFetch } from '@/lib/api';
+import { expireSession } from '@/lib/session';
 
 export async function publicarComunicadoAction(formData: FormData) {
   try {
@@ -10,6 +11,8 @@ export async function publicarComunicadoAction(formData: FormData) {
     });
     return { success: true, data };
   } catch (error: any) {
+    // Sesión vencida: borra la cookie y vuelve al login en vez de mostrar el error.
+    if (error instanceof ApiError && error.status === 401) await expireSession();
     return {
       success: false,
       error: error?.message || 'Error al publicar el comunicado',
@@ -22,6 +25,8 @@ export async function obtenerMuroComunicadosAction() {
     const data = await apiFetch<any>('anuncios/muro');
     return { success: true, data };
   } catch (error: any) {
+    // Sesión vencida: borra la cookie y vuelve al login en vez de mostrar el error.
+    if (error instanceof ApiError && error.status === 401) await expireSession();
     return {
       success: false,
       error: error?.message || 'No se pudieron cargar los comunicados.',
@@ -37,6 +42,8 @@ export async function marcarComunicadoLeidoAction(comunicadoId: number) {
     });
     return { success: true, data };
   } catch (error: any) {
+    // Sesión vencida: borra la cookie y vuelve al login en vez de mostrar el error.
+    if (error instanceof ApiError && error.status === 401) await expireSession();
     return {
       success: false,
       error: error?.message || 'No se pudo registrar la lectura.',
