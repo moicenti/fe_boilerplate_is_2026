@@ -13,6 +13,20 @@ export type VotingTopic = {
   position: number;
   status: AssemblyStatus;
   options: { id: string; text: string; position: number }[];
+  unitVote: { votedAt: string } | null;
+};
+
+export const OPTION_HINT: Record<string, string> = {
+  "a favor": "Apoyo la propuesta.",
+  "en contra": "No apoyo la propuesta.",
+  "abstención": "Prefiero abstenerme.",
+};
+
+export const RESIDENT_STATUS_LABEL: Record<AssemblyStatus, string> = {
+  BORRADOR: "No publicada",
+  PROGRAMADA: "Próxima",
+  ABIERTA: "Votación abierta",
+  CERRADA: "Cerrada",
 };
 
 export type AssemblySummary = {
@@ -30,6 +44,7 @@ export type AssemblySummary = {
   votingClosesAt: string | null;
   topicCount: number;
   agendaCount: number;
+  pendingVotesForUnit: number | null;
 };
 
 export type Assembly = AssemblySummary & {
@@ -147,4 +162,43 @@ export function apiErrorMessages(body: unknown, status: number): string[] {
   if (Array.isArray(message)) return message.map((m) => humanize(String(m)));
   if (typeof message === "string" && message) return message.split(", ").map(humanize);
   return [`Error ${status}`];
+}
+
+export type OptionTally = {
+  optionId: string;
+  text: string;
+  votes: number;
+  percentage: number;
+};
+
+export type TopicTally = {
+  options: OptionTally[];
+  totalVotes: number;
+  unitsVoted: number;
+  eligibleUnits: number;
+  participation: number;
+  outcome: "GANADOR" | "EMPATE" | "SIN_VOTOS";
+  winner: { optionId: string; text: string } | null;
+  tiedOptions: string[];
+  consistent: boolean;
+};
+
+export type TopicResults = {
+  topicId: string;
+  title: string;
+  status: AssemblyStatus;
+  opensAt: string;
+  closesAt: string;
+  unitsVoted: number;
+  eligibleUnits: number | null;
+  results: TopicTally | null;
+};
+
+export type TopicAudit = {
+  participations: { unitCode: string; unitDescription: string; votedAt: string }[];
+  events: { at: string; event: string; responsible: string; detail: string }[];
+};
+
+export function formatPercent(value: number): string {
+  return `${value.toLocaleString("es-MX", { minimumFractionDigits: 1, maximumFractionDigits: 2 })} %`;
 }

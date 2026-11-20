@@ -337,10 +337,10 @@ export default function AssemblyList({
                     </td>
                     <td className="px-6 py-5">
                       <Link
-                        href={a.status === "BORRADOR" ? `/admin/asambleas/${a.id}/editar` : `/admin/asambleas/${a.id}`}
+                        href={a.status === "BORRADOR" ? `/admin/asambleas/${a.id}/editar` : a.status === "CERRADA" ? `/admin/asambleas/${a.id}/resultados` : `/admin/asambleas/${a.id}`}
                         className="text-sm font-semibold text-[#0a2f1f] underline underline-offset-4 hover:text-[#164a33]"
                       >
-                        {a.status === "BORRADOR" ? "Editar borrador" : "Ver convocatoria"}
+                        {a.status === "BORRADOR" ? "Editar borrador" : a.status === "CERRADA" ? "Ver resultados" : "Ver convocatoria"}
                       </Link>
                     </td>
                   </tr>
@@ -411,13 +411,13 @@ export default function AssemblyList({
               </p>
               <p className="text-sm text-gray-700 mb-4">
                 La votación cerró el {lastClosed.votingClosesAt ? shortDateTime(lastClosed.votingClosesAt) : "—"}.
-                Consulta la convocatoria y sus propuestas.
+                Consulta el recuento por opción, la participación y los eventos del proceso.
               </p>
               <Link
-                href={`/admin/asambleas/${lastClosed.id}`}
+                href={`/admin/asambleas/${lastClosed.id}/resultados`}
                 className="inline-block px-5 py-3 bg-[#0a2f1f] text-white rounded-lg text-sm font-medium hover:bg-[#164a33]"
               >
-                Ver convocatoria
+                Resultados y auditoría
               </Link>
             </div>
           )}
