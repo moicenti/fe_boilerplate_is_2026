@@ -44,4 +44,5 @@ export async function obtenerReporteVotacionesAction(params: {
       error: error?.message || 'No se pudo cargar el reporte de participación.',
     };
   }
+  
 }
