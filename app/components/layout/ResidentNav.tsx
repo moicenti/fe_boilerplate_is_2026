@@ -4,7 +4,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Home,
   Calendar,
   CalendarCheck,
   CalendarPlus,
@@ -15,7 +14,6 @@ import {
   Users,
   Vote,
   Wallet,
-  Bell,
   ClipboardList,
   type LucideIcon,
 } from "lucide-react";
@@ -45,8 +43,8 @@ const GRUPOS: NavGroup[] = [
     titulo: "Mi Comunidad",
     items: [
       { href: "/areas/disponibilidad", label: "Áreas comunes", icon: Grid },
-      { href: "/reservas/nueva", label: "Nueva reserva", icon: CalendarPlus },
-      { href: "/reservas", label: "Mis reservas", icon: Calendar },
+      { href: "/reservas/nueva", label: "Nueva reserva", icon: CalendarPlus, soloResidente: true },
+      { href: "/reservas", label: "Mis reservas", icon: Calendar, soloResidente: true },
       { href: "/incidencias", label: "Incidencias", icon: FileText },
       { href: "/visitas", label: "Mis visitas", icon: Users, soloResidente: true },
       { href: "/paquetes", label: "Paquetes", icon: Package, soloResidente: true },

@@ -129,12 +129,17 @@ export default async function MiComunidadPage() {
         ]
       : []),
 
-    {
-      title: "Notificaciones",
-      description: "Consulta los avisos y novedades del condominio.",
-      href: "/notificaciones",
-      icon: Bell,
-    },
+    // El backend solo da notificaciones a residentes.
+    ...(role === "RESIDENTE"
+      ? [
+          {
+            title: "Notificaciones",
+            description: "Consulta los avisos y novedades del condominio.",
+            href: "/notificaciones",
+            icon: Bell,
+          },
+        ]
+      : []),
   ];
 
   return (

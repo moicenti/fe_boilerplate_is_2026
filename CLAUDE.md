@@ -22,7 +22,15 @@ Copy `.env.example` to `.env.local`.
 
 ## Architecture
 
-**Auth/session.** `app/actions/auth.ts` (`login`) POSTs to `${API_URL}/auth/login` and stores the returned bearer token in an httpOnly cookie named `session` (`lib/session.ts`). `proxy.ts` (Next 16's replacement for `middleware.ts`) only checks that the cookie exists and redirects to `/login` otherwise; real validation happens when the backend returns 401, at which point Server Actions call `expireSession()` to clear the cookie and redirect (Server Components can't modify cookies, so pages show a "sesión vencida" notice with a logout form instead). The current user comes from `GET /auth/me` via `getCurrentUser()` in `lib/current-user.ts`: `id`, `email`, `role` (`RESIDENTE | ADMINISTRADOR | MANTENIMIENTO | SEGURIDAD`) and `unit` (`{ id (uuid), code, tower, description }` or null). Use it rather than calling `/auth/me` ad hoc. When a request needs the resident's unit, take it from the session on the server, never from the client.
+**Auth/session.** `app/actions/auth.ts` (`login`) POSTs to `${API_URL}/auth/login` and stores the returned bearer token in an httpOnly cookie named `session` (`lib/session.ts`). `proxy.ts` (Next 16's replacement for `middleware.ts`) guards every page:
+- No cookie → `/login`.
+- Otherwise it validates the token with `GET /auth/me` (the JWT carries no role). The result is cached in memory for 60 s per token.
+  - Rejected token → the cookie is cleared and the user goes to `/login?motivo=vencida`.
+  - Role other than `RESIDENTE`/`ADMINISTRADOR`/`SEGURIDAD` (i.e. `MANTENIMIENTO`) → `/login?motivo=rol`. The `login` action also refuses those accounts.
+  - Backend unreachable → the request passes through and the page shows its own error.
+- A valid session on `/login`, or on a route its role may not open, is redirected to `INICIO` (`/mi-comunidad`).
+
+Per-route roles live in `REGLAS` in `lib/rutas.ts`, mirroring the backend `@Roles`. First match wins and an unlisted route is closed to everyone, so **every new page needs a rule there**. `/api/*` route handlers are outside the proxy matcher; the backend authorizes them. A 401 later on still makes Server Actions call `expireSession()` (Server Components can't modify cookies, so pages show a "sesión vencida" notice with a logout form instead). The current user comes from `GET /auth/me` via `getCurrentUser()` in `lib/current-user.ts`: `id`, `email`, `role` (`RESIDENTE | ADMINISTRADOR | MANTENIMIENTO | SEGURIDAD`) and `unit` (`{ id (uuid), code, tower, description }` or null). Use it rather than calling `/auth/me` ad hoc. When a request needs the resident's unit, take it from the session on the server, never from the client.
 
 **Backend access — server only.** All backend calls go through `apiFetch` in `lib/api.ts` (marked `server-only`; the token never reaches the browser). It resolves the path against `API_URL`, attaches `Authorization: Bearer <session>`, disables caching, and throws `ApiError(status, message, codigo?)`:
 - Caller `headers` are merged in. `Content-Type: application/json` is added only for string bodies, so send JSON as `JSON.stringify(...)`; a `FormData` body is sent as multipart (incidencia photos).
@@ -35,7 +43,7 @@ Two patterns sit on top of it:
 2. **Client Components + Route Handler proxy** (incidencias, paquetes, asambleas, visitas): `"use client"` components `fetch('/api/...')`; the handlers in `app/api/**/route.ts` forward to the backend with `forward(() => apiFetch(...))` from `lib/api-route.ts`, which converts `ApiError` into a JSON `{ message }` response with the same status.
 
 **Route groups / layouts.** Three UI shells exist, from different feature branches. When editing a feature, follow the conventions of the shell it already lives in.
-- `app/(dashboard)/` — the main shell for residents, security and admins: `app/components/layout/*` (`Sidebar` picks `ResidentNav` or `SecurityNav` by role; `Header`; `Breadcrumb` maps pathnames to crumbs; `MenuMovil` replaces the sidebar below `md`), `lucide-react` icons. Feature components live in `app/components/<feature>/`. New pages need a nav entry in `ResidentNav`/`SecurityNav` and a case in `Breadcrumb`.
+- `app/(dashboard)/` — the main shell for residents, security and admins: `app/components/layout/*` (`Sidebar` picks `ResidentNav` or `SecurityNav` by role; `Header`; `Breadcrumb` maps pathnames to crumbs; `MenuMovil` replaces the sidebar below `md`), `lucide-react` icons. Feature components live in `app/components/<feature>/`. New pages need a nav entry in `ResidentNav`/`SecurityNav`, a case in `Breadcrumb` and a rule in `lib/rutas.ts`.
 - `app/(panel)/` — older admin shell: `components/` (`sidebar.tsx`, `topbar.tsx`, `icons.tsx` with inline SVG icons).
 - `app/(residente)/` — notifications shell: `components/residente/*`; its sidebar only links items marked `disponible: true`.
 
