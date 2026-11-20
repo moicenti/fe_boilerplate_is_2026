@@ -25,6 +25,7 @@ export type MyPackagePage = {
   total: number;
   totalPages: number;
   pendingCount: number;
+  counts: { TODOS: number; PENDIENTE_RETIRO: number; ENTREGADO: number };
 };
 
 export type PackagePage = {
