@@ -1,9 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  // Genera .next/standalone (server.js + solo las dependencias que usa) para la imagen Docker.
+  output: "standalone",
 };
 
 export default nextConfig;
