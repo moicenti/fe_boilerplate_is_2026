@@ -50,6 +50,9 @@ function crumbsFor(pathname: string, role?: Role): string[] {
   if (/^\/asambleas\/[^/]+$/.test(pathname)) {
     return ["Mi comunidad", "Asambleas", "Detalle"];
   }
+  if (/^\/admin\/asambleas\/[^/]+\/resultados$/.test(pathname)) {
+    return ["Administración", "Asambleas / Resultados"];
+  }
   if (pathname === "/admin/asambleas/nueva") {
     return ["Administración", "Convocar asamblea"];
   }

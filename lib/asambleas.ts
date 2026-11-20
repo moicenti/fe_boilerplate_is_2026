@@ -163,3 +163,42 @@ export function apiErrorMessages(body: unknown, status: number): string[] {
   if (typeof message === "string" && message) return message.split(", ").map(humanize);
   return [`Error ${status}`];
 }
+
+export type OptionTally = {
+  optionId: string;
+  text: string;
+  votes: number;
+  percentage: number;
+};
+
+export type TopicTally = {
+  options: OptionTally[];
+  totalVotes: number;
+  unitsVoted: number;
+  eligibleUnits: number;
+  participation: number;
+  outcome: "GANADOR" | "EMPATE" | "SIN_VOTOS";
+  winner: { optionId: string; text: string } | null;
+  tiedOptions: string[];
+  consistent: boolean;
+};
+
+export type TopicResults = {
+  topicId: string;
+  title: string;
+  status: AssemblyStatus;
+  opensAt: string;
+  closesAt: string;
+  unitsVoted: number;
+  eligibleUnits: number | null;
+  results: TopicTally | null;
+};
+
+export type TopicAudit = {
+  participations: { unitCode: string; unitDescription: string; votedAt: string }[];
+  events: { at: string; event: string; responsible: string; detail: string }[];
+};
+
+export function formatPercent(value: number): string {
+  return `${value.toLocaleString("es-MX", { minimumFractionDigits: 1, maximumFractionDigits: 2 })} %`;
+}

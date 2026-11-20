@@ -334,7 +334,17 @@ export default function AssemblyDetail({ assemblyId }: { assemblyId: string }) {
               {TYPE_LABEL[assembly.type]} · {MODALITY_LABEL[assembly.modality]}
             </p>
           </div>
-          <Badge status={assembly.status} />
+          <div className="flex items-center gap-3">
+            <Badge status={assembly.status} />
+            {assembly.status !== "BORRADOR" && (
+              <Link
+                href={`/admin/asambleas/${assembly.id}/resultados`}
+                className="text-sm font-semibold text-[#0a2f1f] underline underline-offset-4"
+              >
+                Resultados y auditoría
+              </Link>
+            )}
+          </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-5">
           <Detail
