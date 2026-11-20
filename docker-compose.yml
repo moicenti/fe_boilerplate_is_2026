@@ -1,0 +1,17 @@
+frontend:
+  build:
+    context: ./frontend
+    dockerfile: Dockerfile
+    args:
+      NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-}
+      NEXT_PUBLIC_MONEDA: ${NEXT_PUBLIC_MONEDA:-USD}
+  container_name: si_fe_web
+  restart: unless-stopped
+  depends_on:
+    - api
+  environment:
+    NODE_ENV: production
+    PORT: 3000
+    API_URL: ${API_URL:-http://api:3000/api/v1}
+    NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-}
+    NEXT_PUBLIC_MONEDA: ${NEXT_PUBLIC_MONEDA:-USD}
