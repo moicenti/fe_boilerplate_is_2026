@@ -1,13 +1,17 @@
-
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/current-user";
 import {
+  BarChart3,
   Bell,
+  BookOpen,
   CalendarDays,
   ClipboardList,
+  FilePlus,
   FileText,
   Grid2X2,
+  Megaphone,
   Package,
+  PieChart,
   ShieldCheck,
   Users,
   Wallet,
@@ -27,6 +31,18 @@ export default async function MiComunidadPage() {
   const sections = [
     ...(role === "RESIDENTE"
       ? [
+          {
+            title: "Cartelera de comunicados",
+            description: "Lee avisos oficiales y comunicados urgentes del condominio.",
+            href: "/cartelera",
+            icon: Megaphone,
+          },
+          {
+            title: "Directorio de vecinos",
+            description: "Consulta contactos autorizados y configura tu privacidad.",
+            href: "/directorio",
+            icon: BookOpen,
+          },
           {
             title: "Áreas comunes",
             description: "Consulta la disponibilidad de las áreas del condominio.",
@@ -62,6 +78,24 @@ export default async function MiComunidadPage() {
 
     ...(role === "ADMINISTRADOR"
       ? [
+          {
+            title: "Publicar comunicado",
+            description: "Redacta y envía comunicados informativos o urgentes.",
+            href: "/administracion/cartelera/nuevo",
+            icon: FilePlus,
+          },
+          {
+            title: "Reporte de incidencias",
+            description: "Analiza incidencias abiertas por fecha y sección.",
+            href: "/reportes/incidencias",
+            icon: BarChart3,
+          },
+          {
+            title: "Reporte de votaciones",
+            description: "Consulta el porcentaje de participación en asambleas.",
+            href: "/reportes/votaciones",
+            icon: PieChart,
+          },
           {
             title: "Administración de incidencias",
             description: "Consulta y gestiona los reportes del condominio.",

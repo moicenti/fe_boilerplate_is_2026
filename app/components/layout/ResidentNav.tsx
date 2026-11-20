@@ -1,15 +1,19 @@
-
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BarChart3,
+  BookOpen,
   Calendar,
   CalendarCheck,
   CalendarPlus,
+  FilePlus,
   FileText,
   Grid,
+  Megaphone,
   Package,
+  PieChart,
   ShieldCheck,
   Users,
   Vote,
@@ -42,6 +46,8 @@ const GRUPOS: NavGroup[] = [
   {
     titulo: "Mi Comunidad",
     items: [
+      { href: "/cartelera", label: "Cartelera", icon: Megaphone },
+      { href: "/directorio", label: "Directorio", icon: BookOpen },
       { href: "/areas/disponibilidad", label: "Áreas comunes", icon: Grid },
       { href: "/reservas/nueva", label: "Nueva reserva", icon: CalendarPlus, soloResidente: true },
       { href: "/reservas", label: "Mis reservas", icon: Calendar, soloResidente: true },
@@ -56,11 +62,14 @@ const GRUPOS: NavGroup[] = [
 const GRUPO_ADMIN: NavGroup = {
   titulo: "Administración",
   items: [
+    { href: "/administracion/cartelera/nuevo", label: "Publicar comunicado", icon: FilePlus },
     { href: "/admin/incidencias", label: "Panel de incidencias", icon: ShieldCheck },
     { href: "/admin/asambleas/nueva", label: "Convocar asamblea", icon: CalendarPlus },
     { href: "/admin/asambleas", label: "Asambleas", icon: CalendarCheck },
     { href: "/areas", label: "Gestión de áreas", icon: Grid },
     { href: "/cuotas/reglas", label: "Cuotas y reglas", icon: Wallet },
+    { href: "/reportes/incidencias", label: "Reporte incidencias", icon: BarChart3 },
+    { href: "/reportes/votaciones", label: "Reporte votaciones", icon: PieChart },
   ],
 };
 
@@ -79,10 +88,6 @@ const HREFS = [
 ].map((item) => item.href);
 
 function matches(pathname: string, href: string): boolean {
-  if (href === "/reservas") {
-    return pathname === href || pathname.startsWith(`${href}/`);
-  }
-
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 

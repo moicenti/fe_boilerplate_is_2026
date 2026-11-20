@@ -139,167 +139,13 @@ export default function PrivacidadDirectorioPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#FAF8F4] text-[#1F2937]">
+    <div className="space-y-6">
       {/* Barra lateral izquierda estilo Habita */}
-      <aside className="w-64 bg-[#143728] text-[#E5E7EB] flex flex-col justify-between shrink-0">
-        <div>
-          <div className="p-6 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl border border-[#2C5E47] flex items-center justify-center text-white text-lg">
-              ⌂
-            </div>
-            <div>
-              <h2 className="font-serif text-white tracking-wide text-lg leading-none">habita</h2>
-              <p className="text-[9px] tracking-widest text-[#9CA3AF] mt-1">
-                GESTIÓN DE CONDOMINIOS
-              </p>
-            </div>
-          </div>
-
-          <div className="mx-4 my-2 p-4 bg-[#1B4634] border border-[#285C46] rounded-xl">
-            <p className="text-xs font-semibold text-white">Los Olivos</p>
-            <p className="text-[11px] text-[#D1D5DB] mt-0.5">
-              {unidadTorre} · Unidad {unidadCodigo}
-            </p>
-            <span className="inline-block mt-2.5 px-2.5 py-0.5 bg-[#2A624B] text-[10px] text-white rounded-md font-medium">
-              Residente
-            </span>
-          </div>
-
-          <nav className="px-4 mt-4 space-y-5 text-xs">
-            <div>
-              <p className="px-3 mb-2 text-[10px] uppercase tracking-wider text-[#9CA3AF] font-semibold">
-                Mi cuenta
-              </p>
-              <div className="space-y-1">
-                <Link
-                  href="/estado-de-cuenta"
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#D1D5DB] hover:bg-[#1B4634]"
-                >
-                  <span>💳</span> Estado de cuenta
-                </Link>
-                <Link
-                  href="/pagos"
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#D1D5DB] hover:bg-[#1B4634]"
-                >
-                  <span>🧾</span> Realizar pago
-                </Link>
-              </div>
-            </div>
-
-            <div>
-              <p className="px-3 mb-2 text-[10px] uppercase tracking-wider text-[#9CA3AF] font-semibold">
-                Mi comunidad
-              </p>
-              <div className="space-y-1">
-                <Link
-                  href="/areas"
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#D1D5DB] hover:bg-[#1B4634]"
-                >
-                  <span>▦</span> Áreas comunes
-                </Link>
-                <Link
-                  href="/incidencias"
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#D1D5DB] hover:bg-[#1B4634]"
-                >
-                  <span>📋</span> Incidencias
-                </Link>
-                <Link
-                  href="/visitas"
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#D1D5DB] hover:bg-[#1B4634]"
-                >
-                  <span>🪪</span> Visitas
-                </Link>
-                <Link
-                  href="/mis-paquetes"
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#D1D5DB] hover:bg-[#1B4634]"
-                >
-                  <span>📦</span> Paquetes
-                </Link>
-                <Link
-                  href="/mis-asambleas"
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#D1D5DB] hover:bg-[#1B4634]"
-                >
-                  <span>🗳️</span> Asambleas
-                </Link>
-                <Link
-                  href="/cartelera"
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#D1D5DB] hover:bg-[#1B4634]"
-                >
-                  <span>📰</span> Cartelera
-                </Link>
-                <Link
-                  href="/directorio"
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#2A624B] text-white font-medium"
-                >
-                  <span>📖</span> Directorio
-                </Link>
-                <Link
-                  href="/notificaciones"
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#D1D5DB] hover:bg-[#1B4634]"
-                >
-                  <span>🔔</span> Notificaciones
-                </Link>
-              </div>
-            </div>
-          </nav>
-        </div>
-
-        <div className="p-4 space-y-4">
-          <div className="p-3.5 bg-[#1B4634] border border-[#285C46] rounded-xl text-[11px] space-y-1.5">
-            <p className="font-semibold text-white">Estamos para ayudarte</p>
-            <p className="text-[#D1D5DB] leading-relaxed">
-              ¿Una duda con tu comunidad? Contacta a la administración.
-            </p>
-            <Link href="/incidencias" className="inline-block underline text-white pt-1">
-              Contactar administración
-            </Link>
-          </div>
-
-          <button
-            type="button"
-            className="flex items-center gap-2 px-2 text-xs text-[#D1D5DB] hover:text-white"
-          >
-            <span>⎋</span> Cerrar sesión
-          </button>
-          <p className="px-2 text-[10px] text-[#9CA3AF]">© 2026 Habita</p>
-        </div>
-      </aside>
+      
 
       {/* Área principal */}
-      <main className="flex-1 flex flex-col">
-        <header className="h-16 bg-[#FAF8F4] border-b border-[#EAE5DC] flex items-center justify-between px-8">
-          <div className="text-xs text-[#6B7280]">
-            Mi comunidad <span className="mx-1.5">&gt;</span>
-            <Link href="/directorio" className="hover:text-[#111827]">
-              Directorio
-            </Link>
-            <span className="mx-1.5">&gt;</span>
-            <span className="font-medium text-[#111827]">Privacidad</span>
-          </div>
-
-          <div className="flex items-center gap-5">
-            <Link href="/notificaciones" className="relative text-gray-600 hover:text-gray-900">
-              <span className="text-base">🔔</span>
-              <span className="absolute -top-1.5 -right-2 px-1.5 py-0.2 bg-[#E5DEC9] text-[#143728] text-[10px] font-bold rounded-full">
-                2
-              </span>
-            </Link>
-
-            <div className="h-6 w-px bg-[#E5E0D5]" />
-
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#EFECE4] text-[#143728] flex items-center justify-center font-semibold text-xs">
-                {iniciales}
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-[#111827] leading-none">{nombreCompleto}</p>
-                <p className="text-[10px] text-[#6B7280] leading-none mt-1">
-                  Residente · {unidadCodigo}
-                </p>
-              </div>
-            </div>
-          </div>
-        </header>
+      <div className="flex-1 flex flex-col">
+        
 
         <div className="p-8 max-w-6xl w-full mx-auto space-y-6">
           {/* Encabezado de página */}
@@ -540,68 +386,7 @@ export default function PrivacidadDirectorioPage() {
 
               {/* Columna derecha (Vista previa y tarjetas informativas) */}
               <div className="lg:col-span-4 space-y-4">
-                <aside className="bg-white rounded-2xl border border-[#E5E0D5] p-6 space-y-4">
-                  <div>
-                    <h2 className="text-base font-semibold text-[#111827]">
-                      Así te ven tus vecinos
-                    </h2>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#6B7280] mt-2">
-                      VISTA PREVIA DEL DIRECTORIO
-                    </p>
-                  </div>
-
-                  {!opciones.visibleGlobal ? (
-                    <div className="p-4 rounded-xl bg-[#FAF8F4] border border-[#EFECE4] text-xs text-[#6B7280]">
-                      Tu ficha aparecerá únicamente como <strong>Unidad {unidadCodigo} · Contacto privado</strong>.
-                    </div>
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-3.5">
-                        <div className="w-11 h-11 rounded-full bg-[#EFECE4] text-[#143728] flex items-center justify-center font-semibold text-sm shrink-0">
-                          {opciones.mostrarNombre ? iniciales : '••'}
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-[#111827]">
-                            {opciones.mostrarNombre ? nombreCompleto : 'Residente (Nombre oculto)'}
-                          </p>
-                          <p className="text-xs text-[#6B7280] mt-0.5">
-                            {opciones.mostrarUnidad ? `Unidad ${unidadCodigo}` : 'Unidad oculta'}
-                          </p>
-                        </div>
-                      </div>
-
-                      <hr className="border-[#EFECE4]" />
-
-                      <div className="space-y-2 text-xs">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-[#6B7280]">
-                          CORREO COMPARTIDO
-                        </p>
-                        {opciones.mostrarCorreo ? (
-                          <p className="text-[#143728] font-medium break-all">{correo}</p>
-                        ) : (
-                          <p className="text-[#6B7280] flex items-center gap-1.5">
-                            <span>🚫</span> Correo no compartido
-                          </p>
-                        )}
-
-                        {opciones.mostrarTelefono && telefono ? (
-                          <p className="text-[#111827] pt-1">📞 {telefono}</p>
-                        ) : (
-                          <p className="text-[#6B7280] flex items-center gap-1.5 pt-1">
-                            <span>🚫</span> Teléfono no compartido
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="pt-1">
-                        <span className="inline-block px-3 py-1 bg-[#EFECE4] text-[#374151] text-[11px] font-medium rounded-full">
-                          Perfil visible · {datosCompartidosCount}{' '}
-                          {datosCompartidosCount === 1 ? 'dato compartido' : 'datos compartidos'}
-                        </span>
-                      </div>
-                    </>
-                  )}
-                </aside>
+                
 
                 <div className="bg-[#EFECE4] border border-[#E4DFD3] rounded-2xl p-5 flex items-start gap-3">
                   <span className="text-sm text-[#4B5563] mt-0.5">🔒</span>
@@ -636,7 +421,7 @@ export default function PrivacidadDirectorioPage() {
             <span>Privacidad y términos</span>
           </footer>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
