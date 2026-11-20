@@ -1,18 +1,29 @@
-// Tipos y textos de las preferencias de avisos. Sin dependencias de servidor.
+// lib/preferencias.ts
+import { MODULOS } from "./notificaciones";
 
-export type Preferencia = { modulo: string; activo: boolean };
-
-// Texto de ayuda de cada módulo (el nombre visible sale de lib/notificaciones).
-export const DESCRIPCIONES: Record<string, string> = {
-  pagos: "Cuotas, recordatorios de pago y novedades de tu estado de cuenta.",
-  reservas: "Confirmaciones y cambios de tus reservas de áreas comunes.",
-  incidencias: "Respuestas y seguimiento de las incidencias que reportes.",
-  visitas: "Autorizaciones y llegada de tus visitas.",
-  paqueteria: "Llegada de paquetes y código de retiro.",
-  votaciones: "Asambleas y votaciones abiertas en tu comunidad.",
-  anuncios: "Comunicados y avisos de la administración.",
+export type PreferenciaModulo = {
+  modulo: keyof typeof MODULOS;
+  activo: boolean;
 };
 
-export function descripcionModulo(modulo: string) {
-  return DESCRIPCIONES[modulo] ?? "";
+export type PreferenciasResponse = PreferenciaModulo[];
+
+// Reutilizamos el catálogo de notificaciones para mantener consistencia
+export const MODULOS_PREFERENCIAS = Object.entries(MODULOS).map(([key, val]) => ({
+  modulo: key as keyof typeof MODULOS,
+  etiqueta: val.etiqueta,
+  descripcion: getDescripcionModulo(key),
+}));
+
+function getDescripcionModulo(modulo: string): string {
+  const descripciones: Record<string, string> = {
+    pagos: "Avisos sobre cuotas vencidas o próximas a vencer",
+    reservas: "Confirmaciones y cancelaciones de áreas comunes",
+    incidencias: "Actualizaciones de tus reportes y solicitudes",
+    visitas: "Autorizaciones y registros de visitantes",
+    paqueteria: "Notificaciones de paquetes recibidos",
+    votaciones: "Convocatorias y resultados de asambleas",
+    anuncios: "Comunicados generales de la administración",
+  };
+  return descripciones[modulo] ?? "Avisos generales";
 }

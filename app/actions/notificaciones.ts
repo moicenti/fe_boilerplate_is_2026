@@ -29,3 +29,20 @@ export async function marcarLeida(
     return { ok: false, mensaje: "No se pudo actualizar. Intenta de nuevo." };
   }
 }
+
+export async function marcarTodasLeidasAccion(): Promise<ResultadoAccion> {
+  try {
+    const { marcarTodasLeidas } = await import("@/lib/notificaciones-api");
+    await marcarTodasLeidas();
+    return { ok: true };
+  } catch (error) {
+    if (error instanceof ApiError) {
+      if (error.status === 401) redirect("/login");
+      if (error.status === 0) {
+        return { ok: false, mensaje: "No se pudo conectar con el servidor." };
+      }
+    }
+    console.error("Error al marcar todas como leídas:", error);
+    return { ok: false, mensaje: "No se pudieron marcar todas. Intenta de nuevo." };
+  }
+}
