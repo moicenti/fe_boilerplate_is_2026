@@ -53,6 +53,7 @@ const REGLAS: { ruta: RegExp; roles: readonly RolPermitido[] }[] = [
   { ruta: /^\/administracion\/cartelera\/nuevo$/, roles: [A] },
 
   // Comunidad y avisos (el backend solo da notificaciones y preferencias a residentes)
+  { ruta: /^\/cartelera$/, roles: [R, A] },
   { ruta: /^\/directorio$/, roles: [R, A] },
   { ruta: /^\/perfil\/privacidad$/, roles: [R] },
   { ruta: /^\/(notificaciones|preferencias)$/, roles: [R] },
