@@ -68,40 +68,12 @@ function crumbsFor(pathname: string, role?: Role): string[] {
   if (pathname.startsWith("/seguridad/panel")) {
     return ["Seguridad", "Panel de seguridad"];
   }
-
-  if (pathname.startsWith("/seguridad/visitas")) {
-    return ["Seguridad", "Registro de visitas"];
+  if (pathname.startsWith("/estado-de-cuenta") || pathname.startsWith("/pagos")) {
+    return role === "ADMINISTRADOR"
+      ? ["Administración financiera", "Estado de cuenta"]
+      : ["Mi cuenta", "Cuotas y pagos"];
   }
-
-  if (pathname === "/visitas/nueva") {
-    return ["Mi comunidad", "Mis visitas", "Nueva visita"];
-  }
-
-  if (pathname.startsWith("/visitas")) {
-    return ["Mi comunidad", "Mis visitas"];
-  }
-
-  if (pathname === "/reservas/nueva") {
-    return ["Mi comunidad", "Áreas y reservas", "Nueva reserva"];
-  }
-
-  if (pathname.startsWith("/reservas")) {
-    return ["Mi comunidad", "Áreas y reservas", "Mis reservas"];
-  }
-
-  if (pathname === "/incidencias/nuevo") {
-    return ["Mi comunidad", "Incidencias", "Nueva incidencia"];
-  }
-
-  if (/^\/incidencias\/[^/]+$/.test(pathname)) {
-    return ["Mi comunidad", "Incidencias", "Detalle"];
-  }
-
-  if (pathname.startsWith("/incidencias")) {
-    return ["Mi comunidad", "Incidencias"];
-  }
-
-  return ["Mi comunidad", "Inicio"];
+  return ["Mi comunidad", "Incidencias"];
 }
 
 export default function Breadcrumb({ role }: { role?: Role }) {
@@ -109,28 +81,17 @@ export default function Breadcrumb({ role }: { role?: Role }) {
   const crumbs = crumbsFor(pathname, role);
 
   return (
-    <nav aria-label="Ruta de navegación">
-      <div className="flex items-center gap-2 text-sm text-gray-600">
-        {crumbs.map((crumb, index) => (
-          <span key={`${crumb}-${index}`} className="flex items-center gap-2">
-            {index > 0 && (
-              <span className="text-gray-400" aria-hidden="true">
-                &gt;
-              </span>
-            )}
-
-            <span
-              className={
-                index === crumbs.length - 1
-                  ? "font-medium text-gray-900"
-                  : undefined
-              }
-            >
-              {crumb}
-            </span>
+    <div className="flex min-w-0 items-center gap-2 text-sm text-gray-600">
+      {crumbs.map((crumb, i) => {
+        const ultimo = i === crumbs.length - 1;
+        return (
+          // En pantallas angostas solo se muestra la sección actual.
+          <span key={crumb} className={`min-w-0 items-center gap-2 ${ultimo ? "flex" : "hidden sm:flex"}`}>
+            {i > 0 && <span className="hidden text-gray-400 sm:inline">&gt;</span>}
+            <span className={ultimo ? "truncate font-medium text-gray-900" : undefined}>{crumb}</span>
           </span>
-        ))}
-      </div>
-    </nav>
+        );
+      })}
+    </div>
   );
 }

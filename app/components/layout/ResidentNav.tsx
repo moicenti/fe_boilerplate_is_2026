@@ -35,8 +35,8 @@ const GRUPOS: NavGroup[] = [
   {
     titulo: "General",
     items: [
-      { href: "/mi-comunidad", label: "Mi comunidad", icon: Home },
-      { href: "/notificaciones", label: "Notificaciones", icon: Bell },
+      { href: "/estado-de-cuenta", label: "Estado de cuenta", icon: FileText },
+      { href: "/pagos", label: "Realizar pago", icon: Wallet, soloResidente: true },
     ],
   },
   {

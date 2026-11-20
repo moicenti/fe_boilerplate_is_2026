@@ -40,9 +40,9 @@ const NAV: { titulo: string; items: NavItem[] }[] = [
     titulo: "Administración financiera",
     items: [
       { label: "Estado de cuenta", icon: WalletIcon },
-      { label: "Morosidad", icon: ClockIcon },
+      { label: "Morosidad", icon: ClockIcon, href: "/morosidad" },
       { label: "Reglas de cuotas", icon: SlidersIcon, href: "/cuotas/reglas" },
-      { label: "Generación manual", icon: FilePlusIcon },
+      { label: "Generación manual", icon: FilePlusIcon, href: "/cuotas/generacion" },
     ],
   },
 ];
