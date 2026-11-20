@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { logout } from "@/app/actions/auth";
 import { AlertIcon, CheckCircleIcon, ChevronLeftIcon, InfoIcon, PlusIcon } from "@/components/icons";
-import { Topbar } from "@/components/topbar";
 import { ApiError } from "@/lib/api";
 import { listAreas, listBloqueos } from "@/lib/areas-api";
 import { ESTADO_AREA, formatHoras, resumirHorarios, type Area } from "@/lib/areas";
@@ -78,15 +77,7 @@ export default async function AreasPage(props: PageProps<"/areas">) {
 
   return (
     <>
-      <Topbar
-        crumbs={
-          editando
-            ? ["Administración", "Áreas comunes", seleccionada?.nombre ?? "Nueva área"]
-            : ["Administración", "Áreas comunes"]
-        }
-      />
-
-      <main className="flex flex-col gap-6 px-4 py-10 sm:px-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             {editando ? (
@@ -297,7 +288,7 @@ export default async function AreasPage(props: PageProps<"/areas">) {
             </div>
           </div>
         )}
-      </main>
+      </div>
     </>
   );
 }

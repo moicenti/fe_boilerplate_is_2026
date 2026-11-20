@@ -6,6 +6,7 @@ import {
   buscarDirectorioAction,
   obtenerPreferenciasDirectorioAction,
 } from '@/app/actions/directorio';
+import { CONDOMINIO } from '@/lib/condominio';
 
 interface VecinoDirectorio {
   id: string;
@@ -178,7 +179,7 @@ export default function DirectorioVecinosPage() {
             <div className="p-6 space-y-4">
               {/* Título de tarjeta y contador */}
               <div className="flex items-center justify-between">
-                <h2 className="text-base font-semibold text-[#111827]">Vecinos de Los Olivos</h2>
+                <h2 className="text-base font-semibold text-[#111827]">Vecinos de {CONDOMINIO.nombre}</h2>
                 <span className="text-xs text-[#6B7280]">
                   {perfilesVisibles} {perfilesVisibles === 1 ? 'perfil visible' : 'perfiles visibles'}
                 </span>
@@ -428,7 +429,7 @@ export default function DirectorioVecinosPage() {
             </div>
           </div>
 
-          <div className="text-[10px] text-[#9CA3AF]">Fechas y horas locales de Los Olivos.</div>
+          <div className="text-[10px] text-[#9CA3AF]">Fechas y horas locales de {CONDOMINIO.nombre}.</div>
 
           <footer className="pt-4 pb-6 border-t border-[#EAE5DC] flex justify-between text-[10px] text-[#9CA3AF]">
             <span>Entorno de demostración · Datos simulados.</span>

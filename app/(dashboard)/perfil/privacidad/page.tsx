@@ -7,6 +7,7 @@ import {
   actualizarPreferenciasDirectorioAction,
   PreferenciasPrivacidadPayload,
 } from '@/app/actions/directorio';
+import { CONDOMINIO } from '@/lib/condominio';
 
 function ToggleSwitch({
   checked,
@@ -178,7 +179,7 @@ export default function PrivacidadDirectorioPage() {
               </div>
               <div>
                 <p className="text-xs font-semibold text-[#111827]">
-                  {nombreCompleto} · Los Olivos
+                  {nombreCompleto} · {CONDOMINIO.nombre}
                 </p>
                 <p className="text-[11px] text-[#6B7280] mt-0.5">
                   Residente · Unidad {unidadCodigo} · Datos de tu sesión, no editables aquí.
@@ -380,7 +381,7 @@ export default function PrivacidadDirectorioPage() {
 
                 <div className="space-y-1 text-[11px] text-[#6B7280]">
                   <p>La vista previa refleja las opciones mostradas. Guarda para conservar tu elección.</p>
-                  <p className="text-[10px] text-[#9CA3AF]">Fechas y horas locales de Los Olivos.</p>
+                  <p className="text-[10px] text-[#9CA3AF]">Fechas y horas locales de {CONDOMINIO.nombre}.</p>
                 </div>
               </div>
 

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, Check, AlertCircle } from 'lucide-react';
 import Timeline, { TimelineEvent } from '@/app/components/incidencias/Timeline';
 import { useRouter } from 'next/navigation';
+import { CONDOMINIO } from '@/lib/condominio';
 
 type Priority = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA';
 
@@ -185,7 +186,7 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Incidencias</p>
           <h1 className="text-4xl font-serif text-gray-900 mb-2">{report.title}</h1>
           <p className="text-gray-600 text-sm">
-            {report.folio} · Reportada el {created.date}, {created.time} · Los Olivos
+            {report.folio} · Reportada el {created.date}, {created.time} · {CONDOMINIO.nombre}
           </p>
         </div>
         <Link
@@ -370,7 +371,7 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
       </div>
 
       <div className="mt-8 text-xs text-gray-500">
-        Información al {new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' })} · Fechas y horas locales de Los Olivos.
+        Información al {new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' })} · Fechas y horas locales de {CONDOMINIO.nombre}.
       </div>
     </div>
   );

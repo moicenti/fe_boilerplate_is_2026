@@ -30,5 +30,5 @@ export async function deleteSession() {
 // Borra la sesión y manda al login (p. ej. cuando la API responde 401).
 export async function expireSession(): Promise<never> {
   await deleteSession();
-  redirect("/login");
+  redirect("/login?motivo=vencida");
 }

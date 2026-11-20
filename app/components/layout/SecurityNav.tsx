@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Home,
-  Bell,
   LogIn,
   Users,
   PackagePlus,
@@ -22,7 +21,6 @@ type NavItem = {
 
 const ITEMS: NavItem[] = [
   { href: "/mi-comunidad", label: "Mi comunidad", icon: Home },
-  { href: "/notificaciones", label: "Notificaciones", icon: Bell },
   { href: "/seguridad/visitas", label: "Registro de entrada", icon: LogIn },
   { href: "/seguridad/panel", label: "Panel de seguridad", icon: Users },
   { href: "/paquetes/nuevo", label: "Llegada de paquete", icon: PackagePlus },

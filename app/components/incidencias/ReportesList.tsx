@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Plus, Search, ChevronDown, CheckCircle2 } from 'lucide-react';
 import ReportCard, { Report } from '@/app/components/incidencias/ReportCard';
+import { CONDOMINIO } from '@/lib/condominio';
 
 type ApiReport = {
   id: string;
@@ -275,7 +276,7 @@ export default function ReportesList({ displayName }: ReportesListProps) {
           hour: '2-digit',
           minute: '2-digit',
         })}{' '}
-        · Fechas y horas locales de Los Olivos.
+        · Fechas y horas locales de {CONDOMINIO.nombre}.
       </div>
     </div>
   );

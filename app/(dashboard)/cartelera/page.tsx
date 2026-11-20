@@ -9,6 +9,7 @@ import {
   ModalComunicadoUrgente,
   type ComunicadoItem,
 } from './components/ModalComunicadoUrgente';
+import { CONDOMINIO } from '@/lib/condominio';
 
 export default function CarteleraPage() {
   const [comunicados, setComunicados] = useState<ComunicadoItem[]>([]);
@@ -85,7 +86,7 @@ export default function CarteleraPage() {
             Comunicados oficiales
           </h1>
           <p className="text-sm text-[#6B7280] mt-1">
-            Avisos de administración, mantenimiento y seguridad de Los Olivos.
+            Avisos de administración, mantenimiento y seguridad de {CONDOMINIO.nombre}.
           </p>
         </div>
 

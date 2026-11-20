@@ -16,6 +16,7 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
+import { CONDOMINIO } from "@/lib/condominio";
 
 export default async function MiComunidadPage() {
   const user = await getCurrentUser();
@@ -163,19 +164,24 @@ export default async function MiComunidadPage() {
         ]
       : []),
 
-    {
-      title: "Notificaciones",
-      description: "Consulta los avisos y novedades del condominio.",
-      href: "/notificaciones",
-      icon: Bell,
-    },
+    // El backend solo da notificaciones a residentes.
+    ...(role === "RESIDENTE"
+      ? [
+          {
+            title: "Notificaciones",
+            description: "Consulta los avisos y novedades del condominio.",
+            href: "/notificaciones",
+            icon: Bell,
+          },
+        ]
+      : []),
   ];
 
   return (
     <div className="space-y-8">
       <section>
         <p className="text-sm font-medium text-[#164a33] mb-2">
-          Los Olivos
+          {CONDOMINIO.nombre}
         </p>
 
         <h1 className="text-3xl font-semibold text-gray-900">

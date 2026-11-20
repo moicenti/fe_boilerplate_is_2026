@@ -1,7 +1,7 @@
 import { Suspense, type ReactNode } from "react";
 import { logout } from "@/app/actions/auth";
 import { BellLink, NotificationBell } from "./notification-bell";
-import { Sidebar } from "./sidebar";
+import { MenuMovil, Sidebar } from "./sidebar";
 
 // Estructura común del área del residente: menú lateral + encabezado con la
 // campana de notificaciones.
@@ -10,9 +10,9 @@ export function ResidenteShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen bg-crema text-habita-900">
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
+        <MenuMovil />
         <header className="flex h-16 items-center justify-between border-b border-borde px-5 md:px-10">
-          <p className="font-serif text-xl md:hidden">habita</p>
-          <p className="hidden text-sm text-habita-700/70 md:block">
+          <p className="text-sm text-habita-700/70">
             Mi comunidad
           </p>
           <div className="flex items-center gap-3">
