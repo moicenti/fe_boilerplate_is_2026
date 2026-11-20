@@ -19,6 +19,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Copy `.env.example` to `.env.local`.
 - `API_URL` — backend base **including** the version prefix (e.g. `http://localhost:8000/api/v1`); `apiFetch` throws if it is missing.
 - `NEXT_PUBLIC_MONEDA` — ISO 4217 code (default `USD`) for every amount. Always format money with `formatMonto` / `MONEDA` / `SIMBOLO_MONEDA` from `lib/moneda.ts`; never hardcode a currency code or symbol. It is inlined at build time, so changing it needs a dev-server restart or rebuild.
+- `NEXT_PUBLIC_BACKEND_URL` — backend origin as the **browser** sees it (no `/api/v1`), for links to the backend's public `/uploads` files (incidencia photos, cartelera attachments). Also inlined at build time.
+- `COOKIE_SECURE` — production only: `false` lets the session cookie work over plain HTTP. Otherwise the browser drops the `Secure` cookie outside localhost and every reload goes back to `/login`.
+
+**Docker.** `Dockerfile` builds the `output: "standalone"` server (`node server.js`). `NEXT_PUBLIC_*` go in as build args; `API_URL` and `COOKIE_SECURE` are runtime env. `docker-compose.yml` is a standalone project: it reaches the backend's own compose (API published on host port 3000) through `host.docker.internal` and serves the frontend on `${FRONTEND_PORT:-3001}`.
 
 ## Architecture
 

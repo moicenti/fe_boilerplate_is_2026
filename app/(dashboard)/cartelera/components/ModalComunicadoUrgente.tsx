@@ -29,9 +29,7 @@ interface ModalComunicadoProps {
   onCerrar?: () => void;
 }
 
-const BACKEND_BASE = (
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'
-).replace('/api/v1', '');
+const BACKEND_BASE = process.env.NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:8000';
 
 export function ModalComunicadoUrgente({
   comunicado,

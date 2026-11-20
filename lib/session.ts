@@ -8,7 +8,9 @@ export async function createSession(token: string) {
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, token, {
     httpOnly: true,
-    secure: process.env.COOKIE_SECURE === "true",
+    // En producción la cookie solo viaja por HTTPS. COOKIE_SECURE=false la permite por HTTP
+    // (despliegue sin TLS); si no, el navegador la descarta y no se puede iniciar sesión.
+    secure: process.env.NODE_ENV === "production" && process.env.COOKIE_SECURE !== "false",
     sameSite: "lax",
     path: "/",
     expires: new Date(Date.now() + SESSION_DURATION_MS),
