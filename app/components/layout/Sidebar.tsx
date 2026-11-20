@@ -3,6 +3,7 @@ import { Home, MessageCircle, LogOut } from 'lucide-react';
 import { getCurrentUser } from '@/lib/current-user';
 import SecurityNav from '@/app/components/layout/SecurityNav';
 import ResidentNav from '@/app/components/layout/ResidentNav';
+import { logout } from '@/app/actions/auth';
 
 export default async function Sidebar() {
   const user = await getCurrentUser();
@@ -46,7 +47,7 @@ export default async function Sidebar() {
         </div>
 
         {/* Navegación (delegada a componentes) */}
-        {isSecurity ? <SecurityNav /> : <ResidentNav isAdmin={isAdmin} />}
+        {isSecurity ? <SecurityNav /> : <ResidentNav role={user?.role} />}
       </div>
 
       {/* Footer */}
@@ -63,7 +64,7 @@ export default async function Sidebar() {
             Contactar administración
           </Link>
         </div>
-        <button className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white w-full transition">
+        <button className="flex items-center gap-3 px-2 py-2 text-sm text-gray-300 hover:text-white w-full transition" onClick={logout}>
           <LogOut size={18} /> Cerrar sesión
         </button>
       </div>

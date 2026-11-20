@@ -1,8 +1,11 @@
+
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Home,
+  Bell,
   LogIn,
   Users,
   PackagePlus,
@@ -11,9 +14,15 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-type NavItem = { href: string; label: string; icon: LucideIcon };
+type NavItem = {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+};
 
 const ITEMS: NavItem[] = [
+  { href: "/mi-comunidad", label: "Mi comunidad", icon: Home },
+  { href: "/notificaciones", label: "Notificaciones", icon: Bell },
   { href: "/seguridad/visitas", label: "Registro de entrada", icon: LogIn },
   { href: "/seguridad/panel", label: "Panel de seguridad", icon: Users },
   { href: "/paquetes/nuevo", label: "Llegada de paquete", icon: PackagePlus },
@@ -21,12 +30,26 @@ const ITEMS: NavItem[] = [
   { href: "/areas/disponibilidad", label: "Disponibilidad de áreas", icon: LayoutGrid },
 ];
 
-function isActive(pathname: string, href: string): boolean {
-  if (href === "#") return false;
+function matches(pathname: string, href: string): boolean {
   if (href === "/paquetes") {
-    return pathname === "/paquetes" || /^\/paquetes\/[^/]+\/entrega$/.test(pathname);
+    return (
+      pathname === "/paquetes" ||
+      /^\/paquetes\/[^/]+\/entrega$/.test(pathname)
+    );
   }
+
   return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function isActive(pathname: string, href: string): boolean {
+  if (!matches(pathname, href)) return false;
+
+  return !ITEMS.some(
+    (other) =>
+      other.href !== href &&
+      other.href.length > href.length &&
+      matches(pathname, other.href),
+  );
 }
 
 export default function SecurityNav() {
@@ -36,22 +59,28 @@ export default function SecurityNav() {
     <nav className="space-y-6">
       <div>
         <p className="text-xs text-gray-400 font-semibold mb-2 px-2 uppercase tracking-wider">
-          Operación de caseta
+          Navegación
         </p>
-        {ITEMS.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={label}
-            href={href}
-            aria-current={isActive(pathname, href) ? "page" : undefined}
-            className={`flex items-center gap-3 px-2 py-2 text-sm rounded-md transition mt-1 ${
-              isActive(pathname, href)
-                ? "bg-[#164a33] text-white"
-                : "text-gray-300 hover:text-white hover:bg-[#164a33]"
-            }`}
-          >
-            <Icon size={18} /> {label}
-          </Link>
-        ))}
+
+        {ITEMS.map(({ href, label, icon: Icon }) => {
+          const active = isActive(pathname, href);
+
+          return (
+            <Link
+              key={label}
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className={`flex items-center gap-3 px-2 py-2 text-sm rounded-md transition mt-1 ${
+                active
+                  ? "bg-[#164a33] text-white"
+                  : "text-gray-300 hover:text-white hover:bg-[#164a33]"
+              }`}
+            >
+              <Icon size={18} />
+              {label}
+            </Link>
+          );
+        })}
       </div>
     </nav>
   );

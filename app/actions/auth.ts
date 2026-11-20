@@ -65,7 +65,7 @@ export async function login(
   }
 
   await createSession(token);
-  redirect("/");
+  redirect("/mi-comunidad");
 }
 
 export async function logout() {
