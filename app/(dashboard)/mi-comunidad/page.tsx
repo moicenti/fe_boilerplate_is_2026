@@ -5,7 +5,6 @@ import {
   Bell,
   BookOpen,
   CalendarDays,
-  ClipboardList,
   FilePlus,
   FileText,
   Grid2X2,
@@ -13,6 +12,7 @@ import {
   Package,
   PieChart,
   ShieldCheck,
+  UserPlus,
   Users,
   Wallet,
 } from "lucide-react";
@@ -80,6 +80,12 @@ export default async function MiComunidadPage() {
     ...(role === "ADMINISTRADOR"
       ? [
           {
+            title: "Registrar usuario",
+            description: "Da de alta a residentes y al personal de seguridad.",
+            href: "/usuarios",
+            icon: UserPlus,
+          },
+          {
             title: "Publicar comunicado",
             description: "Redacta y envía comunicados informativos o urgentes.",
             href: "/administracion/cartelera/nuevo",
@@ -120,23 +126,6 @@ export default async function MiComunidadPage() {
             description: "Consulta las reglas y configuraciones de cuotas.",
             href: "/cuotas/reglas",
             icon: Wallet,
-          },
-        ]
-      : []),
-
-    ...(role === "MANTENIMIENTO"
-      ? [
-          {
-            title: "Incidencias",
-            description: "Consulta los reportes pendientes y su seguimiento.",
-            href: "/incidencias",
-            icon: ClipboardList,
-          },
-          {
-            title: "Áreas comunes",
-            description: "Consulta la información de las áreas del condominio.",
-            href: "/areas",
-            icon: Grid2X2,
           },
         ]
       : []),
