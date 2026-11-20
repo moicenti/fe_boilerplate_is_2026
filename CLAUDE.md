@@ -18,6 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Copy `.env.example` to `.env.local`.
 - `API_URL` — backend base **including** the version prefix (e.g. `http://localhost:8000/api/v1`); `apiFetch` throws if it is missing.
+- `NEXT_PUBLIC_CONDOMINIO` — name of the condominium this deployment manages, shown across the UI through `CONDOMINIO.nombre` (`lib/condominio.ts`; falls back to "Condominio"). Never hardcode a condominium name. Inlined at build time, like `NEXT_PUBLIC_MONEDA`.
 - `NEXT_PUBLIC_MONEDA` — ISO 4217 code (default `USD`) for every amount. Always format money with `formatMonto` / `MONEDA` / `SIMBOLO_MONEDA` from `lib/moneda.ts`; never hardcode a currency code or symbol. It is inlined at build time, so changing it needs a dev-server restart or rebuild.
 
 ## Architecture
@@ -48,7 +49,7 @@ Two patterns sit on top of it:
 
 Keep both sidebars in step: when a resident page is added, link it in `ResidentNav` and in `components/residente/sidebar.tsx`. `components/icons.tsx` (inline SVG icons) is still used by the admin screens that came from the old admin shell. The `(dashboard)` header bell (`NotificationBell`) only shows for residents, because the backend gives notifications only to them.
 
-**Domain modules in `lib/`.** Each domain has a client-safe module with types, constants and formatters (`areas.ts`, `bloqueos.ts`, `disponibilidad.ts`, `reservas.ts`, `estado-cuenta.ts`, `reglas-cuota.ts`, `paquetes.ts`…) and a separate server-only `*-api.ts` with the `apiFetch` wrappers. Condo dates use `America/El_Salvador` via `lib/condominio.ts` (`hoyEnCondominio`, `horaEnCondominio`, `aIsoCondominio`); `CONDOMINIO` also holds placeholder name/role data pending API support.
+**Domain modules in `lib/`.** Each domain has a client-safe module with types, constants and formatters (`areas.ts`, `bloqueos.ts`, `disponibilidad.ts`, `reservas.ts`, `estado-cuenta.ts`, `reglas-cuota.ts`, `paquetes.ts`…) and a separate server-only `*-api.ts` with the `apiFetch` wrappers. Condo dates use `America/El_Salvador` via `lib/condominio.ts` (`hoyEnCondominio`, `horaEnCondominio`, `aIsoCondominio`); `CONDOMINIO` also holds the condominium name from `NEXT_PUBLIC_CONDOMINIO`.
 
 **Payments (H1).** The backend computes every balance (`saldo`, `saldoTotal`); the UI shows them and must not recompute them. "Vencida" is derived on the client per the project definition: `PENDIENTE`/`PARCIAL` with a due date before today (`esVencida`). The card gateway is simulated by the backend (`POST /pagos` with `tarjetaUltimos4`: it waits 5 s, always declines cards ending in 2000 and approves the rest, including 2026). The UI must not reveal that rule. Full card data never leaves the browser: `lib/tarjeta.ts` validates the one-time card client-side and only the last 4 digits are sent. Each review step generates a unique `referencia`, so the backend answers a duplicate submit with 409 instead of charging twice.
 

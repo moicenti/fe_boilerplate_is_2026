@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { CONDOMINIO } from '@/lib/condominio';
 
 export interface ComunicadoItem {
   id: number;
@@ -128,7 +129,7 @@ export function ModalComunicadoUrgente({
                 {fechaFormateada} · {horaFormateada} h
               </p>
               <p>
-                Administración · Los Olivos · {codigoComunicado}
+                Administración · {CONDOMINIO.nombre} · {codigoComunicado}
               </p>
             </div>
           </div>

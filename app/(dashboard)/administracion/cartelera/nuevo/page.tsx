@@ -4,6 +4,7 @@ import React, { useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { publicarComunicadoAction } from '@/app/actions/comunicados';
+import { CONDOMINIO } from '@/lib/condominio';
 
 export default function RedactarComunicadoPage() {
   const router = useRouter();
@@ -12,7 +13,7 @@ export default function RedactarComunicadoPage() {
   // Campos principales del comunicado
   const [titulo, setTitulo] = useState('Interrupción de agua por mantenimiento');
   const [cuerpo, setCuerpo] = useState(
-    'El viernes 06 de noviembre, de 10:00 a 12:00 h, se suspenderá el suministro de agua en las torres A y B por mantenimiento del equipo de bombeo.\n\nTe pedimos prever el agua que necesites durante ese horario y mantener cerradas las llaves. Avisaremos por la cartelera cuando se restablezca el servicio.\n\nGracias por tu comprensión. Administración de Los Olivos.'
+    `El viernes 06 de noviembre, de 10:00 a 12:00 h, se suspenderá el suministro de agua en las torres A y B por mantenimiento del equipo de bombeo.\n\nTe pedimos prever el agua que necesites durante ese horario y mantener cerradas las llaves. Avisaremos por la cartelera cuando se restablezca el servicio.\n\nGracias por tu comprensión. Administración de ${CONDOMINIO.nombre}.`
   );
   const [categoria, setCategoria] = useState<'MANTENIMIENTO' | 'SEGURIDAD' | 'ADMINISTRATIVO'>('MANTENIMIENTO');
   const [prioridad, setPrioridad] = useState<'INFORMATIVO' | 'IMPORTANTE' | 'URGENTE'>('URGENTE');
@@ -112,7 +113,7 @@ export default function RedactarComunicadoPage() {
             <div>
               <p className="text-[11px] font-bold uppercase tracking-wider text-[#1B4332]">Comunicación con la comunidad</p>
               <h1 className="text-3xl font-serif text-gray-900 mt-1">Redactar comunicado</h1>
-              <p className="text-xs text-gray-500 mt-1">Comparte información clara y oportuna con los residentes de Los Olivos.</p>
+              <p className="text-xs text-gray-500 mt-1">Comparte información clara y oportuna con los residentes de {CONDOMINIO.nombre}.</p>
             </div>
             <span className="px-3 py-1 bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded-full font-medium">
               Borrador · No publicado
@@ -144,7 +145,7 @@ export default function RedactarComunicadoPage() {
               <div className="bg-white p-6 rounded-2xl border border-gray-200 space-y-5 shadow-sm">
                 <div>
                   <h3 className="text-sm font-semibold text-gray-900">Contenido del comunicado</h3>
-                  <p className="text-[11px] text-gray-400 mt-0.5">Los campos con * son obligatorios. Los Olivos se obtiene de tu sesión.</p>
+                  <p className="text-[11px] text-gray-400 mt-0.5">Los campos con * son obligatorios. El condominio se obtiene de tu sesión.</p>
                 </div>
 
                 {/* Título */}
@@ -335,7 +336,7 @@ export default function RedactarComunicadoPage() {
                 <h2 className="text-base font-bold text-gray-900 leading-snug">
                   {titulo || 'Sin título'}
                 </h2>
-                <p className="text-[11px] text-gray-400">Administración de Los Olivos · Sin publicar</p>
+                <p className="text-[11px] text-gray-400">Administración de {CONDOMINIO.nombre} · Sin publicar</p>
 
                 <div className="text-xs text-gray-600 whitespace-pre-line leading-relaxed pt-2">
                   {cuerpo || 'Escribe el contenido para previsualizarlo aquí.'}
@@ -360,7 +361,7 @@ export default function RedactarComunicadoPage() {
                 </div>
 
                 <p className="text-xs text-gray-600 leading-relaxed">
-                  El comunicado y su adjunto se harán visibles para Los Olivos. Por ser urgente, se mostrará a los residentes mediante un modal.
+                  El comunicado y su adjunto se harán visibles para {CONDOMINIO.nombre}. Por ser urgente, se mostrará a los residentes mediante un modal.
                 </p>
 
                 <p className="text-[11px] text-gray-500">

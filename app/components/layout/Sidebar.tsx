@@ -4,6 +4,7 @@ import { etiquetaRol, getCurrentUser } from '@/lib/current-user';
 import SecurityNav from '@/app/components/layout/SecurityNav';
 import ResidentNav from '@/app/components/layout/ResidentNav';
 import { logout } from '@/app/actions/auth';
+import { CONDOMINIO } from '@/lib/condominio';
 
 export default async function Sidebar() {
   const user = await getCurrentUser();
@@ -28,7 +29,7 @@ export default async function Sidebar() {
 
         {/* Info Usuario */}
         <div className="border border-gray-600 rounded-lg p-3 mb-6">
-          <h2 className="font-semibold text-sm">Los Olivos</h2>
+          <h2 className="font-semibold text-sm">{CONDOMINIO.nombre}</h2>
           {user?.unit ? (
             <>
               <p className="text-xs text-gray-300 mt-1">

@@ -1,8 +1,7 @@
-// Datos del condominio y del usuario que se muestran en el panel.
-// TODO: reemplazar por los datos de la sesión cuando la API los exponga.
+// Datos del condominio que gestiona esta instalación del frontend.
 export const CONDOMINIO = {
-  nombre: "Los Olivos",
-  rol: "Administrador",
+  /** NEXT_PUBLIC_CONDOMINIO. Se incrusta al compilar: cambiarlo exige reiniciar `npm run dev` o reconstruir. */
+  nombre: process.env.NEXT_PUBLIC_CONDOMINIO?.trim() || "Condominio",
   /** Zona horaria en la que se interpretan y muestran las fechas (UTC-06:00). */
   zonaHoraria: "America/El_Salvador",
 };

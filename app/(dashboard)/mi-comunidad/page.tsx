@@ -16,6 +16,7 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
+import { CONDOMINIO } from "@/lib/condominio";
 
 export default async function MiComunidadPage() {
   const user = await getCurrentUser();
@@ -180,7 +181,7 @@ export default async function MiComunidadPage() {
     <div className="space-y-8">
       <section>
         <p className="text-sm font-medium text-[#164a33] mb-2">
-          Los Olivos
+          {CONDOMINIO.nombre}
         </p>
 
         <h1 className="text-3xl font-semibold text-gray-900">
