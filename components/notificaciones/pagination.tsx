@@ -1,48 +1,48 @@
-import Link from "next/link";
-import type { Filtro } from "@/lib/notificaciones";
-import { hrefNotificaciones } from "./filter-tabs";
+// components/notificaciones/pagination.tsx
+"use client";
 
-export function Pagination({
-  filtro,
-  page,
-  size,
-  total,
-}: {
+import Link from "next/link";
+import { hrefNotificaciones } from "./filter-tabs";
+import type { Filtro, ModuloFiltro } from "@/lib/notificaciones";
+
+type Props = {
   filtro: Filtro;
+  modulo: ModuloFiltro; // ✅ NUEVA PROP
   page: number;
   size: number;
   total: number;
-}) {
+};
+
+export function Pagination({ filtro, modulo, page, size, total }: Props) {
   const totalPaginas = Math.max(1, Math.ceil(total / size));
-  const desde = total === 0 ? 0 : (page - 1) * size + 1;
-  const hasta = Math.min(page * size, total);
-  const base = "rounded-lg px-3 py-1.5 text-sm";
-  const apagado = `${base} text-habita-700/40`;
+
+  if (totalPaginas <= 1) return null;
+
+  const anterior = page > 1 ? hrefNotificaciones(filtro, page - 1, modulo) : null;
+  const siguiente = page < totalPaginas ? hrefNotificaciones(filtro, page + 1, modulo) : null;
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-borde px-6 py-4 text-xs text-habita-700">
-      <p>
-        {desde}–{hasta} de {total} notificaciones
-      </p>
-      <nav aria-label="Paginación" className="flex items-center gap-1">
-        {page > 1 ? (
-          <Link href={hrefNotificaciones(filtro, page - 1)} className={`${base} hover:bg-arena`}>
-            Anterior
-          </Link>
-        ) : (
-          <span className={apagado}>Anterior</span>
-        )}
-        <span className={`${base} bg-arena font-medium`} aria-current="page">
-          {page} / {totalPaginas}
-        </span>
-        {page < totalPaginas ? (
-          <Link href={hrefNotificaciones(filtro, page + 1)} className={`${base} hover:bg-arena`}>
-            Siguiente
-          </Link>
-        ) : (
-          <span className={apagado}>Siguiente</span>
-        )}
-      </nav>
-    </div>
+      <div className="flex items-center justify-between border-t border-borde px-6 py-4 text-sm">
+        <p className="text-habita-700/80">
+          {(page - 1) * size + 1}–{Math.min(page * size, total)} de {total} notificaciones
+        </p>
+        <div className="flex gap-2">
+          {anterior ? (
+              <Link href={anterior} className="rounded-lg border border-borde px-3 py-1 hover:bg-arena">
+                Anterior
+              </Link>
+          ) : (
+              <span className="rounded-lg border border-borde px-3 py-1 opacity-40">Anterior</span>
+          )}
+          <span className="rounded-lg bg-arena px-3 py-1 font-medium">{page}</span>
+          {siguiente ? (
+              <Link href={siguiente} className="rounded-lg border border-borde px-3 py-1 hover:bg-arena">
+                Siguiente
+              </Link>
+          ) : (
+              <span className="rounded-lg border border-borde px-3 py-1 opacity-40">Siguiente</span>
+          )}
+        </div>
+      </div>
   );
 }
