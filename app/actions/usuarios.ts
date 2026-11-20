@@ -1,8 +1,10 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { ApiError } from "@/lib/api";
 import { expireSession } from "@/lib/session";
-import { crearUsuario } from "@/lib/usuarios-api";
+import { crearUsuario, desactivarUsuario } from "@/lib/usuarios-api";
 import {
   errorEmail,
   errorPassword,
@@ -87,6 +89,7 @@ export async function registrarUsuario(
 
   try {
     const usuario = await crearUsuario(input);
+    revalidatePath("/usuarios");
     return {
       creado: {
         email: usuario.email,
@@ -111,4 +114,47 @@ export async function registrarUsuario(
     console.error("Error al registrar el usuario:", error);
     return { error: "No se pudo registrar el usuario. Intenta más tarde.", values };
   }
+}
+
+export type DesactivarState = { error?: string };
+
+function mensajeDesactivar(error: ApiError): string {
+  switch (error.status) {
+    case 409:
+      return "Esta cuenta ya estaba desactivada.";
+    case 404:
+      return "La cuenta ya no existe. Recarga la lista.";
+    case 403:
+      return error.message || "Solo se pueden desactivar cuentas de residentes o de seguridad.";
+    case 0:
+      return "No se pudo conectar con el servidor. Intenta más tarde.";
+    default:
+      return "No se pudo desactivar la cuenta. Intenta más tarde.";
+  }
+}
+
+export async function desactivarCuenta(
+  _prev: DesactivarState,
+  formData: FormData,
+): Promise<DesactivarState> {
+  const id = String(formData.get("id") ?? "");
+  if (!UUID.test(id)) return { error: "Cuenta no válida." };
+
+  let email: string;
+  try {
+    ({ email } = await desactivarUsuario(id));
+  } catch (error) {
+    if (error instanceof ApiError) {
+      if (error.status === 401) await expireSession();
+      return { error: mensajeDesactivar(error) };
+    }
+    console.error("Error al desactivar la cuenta:", error);
+    return { error: "No se pudo desactivar la cuenta. Intenta más tarde." };
+  }
+
+  revalidatePath("/usuarios");
+  // Se conservan los filtros de la lista desde la que se desactivó.
+  const volver = new URLSearchParams(String(formData.get("volver") ?? ""));
+  volver.set("desactivado", email);
+  redirect(`/usuarios?${volver}`);
 }

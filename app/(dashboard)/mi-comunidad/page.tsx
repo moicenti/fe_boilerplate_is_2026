@@ -80,8 +80,8 @@ export default async function MiComunidadPage() {
     ...(role === "ADMINISTRADOR"
       ? [
           {
-            title: "Registrar usuario",
-            description: "Da de alta a residentes y al personal de seguridad.",
+            title: "Usuarios",
+            description: "Registra o desactiva cuentas de residentes y de seguridad.",
             href: "/usuarios",
             icon: UserPlus,
           },

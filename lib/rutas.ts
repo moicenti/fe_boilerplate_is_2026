@@ -51,7 +51,7 @@ const REGLAS: { ruta: RegExp; roles: readonly RolPermitido[] }[] = [
   { ruta: /^\/morosidad$/, roles: [A] },
   { ruta: /^\/reportes\/(incidencias|votaciones)$/, roles: [A] },
   { ruta: /^\/administracion\/cartelera\/nuevo$/, roles: [A] },
-  { ruta: /^\/usuarios$/, roles: [A] },
+  { ruta: /^\/usuarios(\/nuevo)?$/, roles: [A] },
 
   { ruta: /^\/cartelera$/, roles: [R, A] },
   { ruta: /^\/directorio$/, roles: [R, A] },

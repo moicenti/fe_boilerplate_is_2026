@@ -42,8 +42,8 @@ export type NuevoUsuario = {
   unitId?: string;
 };
 
-/** Respuesta de POST /users. */
-export type UsuarioCreado = {
+/** Respuesta de POST /users, GET /users y PATCH /users/:id/desactivar. */
+export type Usuario = {
   id: string;
   email: string;
   isActive: boolean;
@@ -85,4 +85,16 @@ export function unidadesPorTorre(unidades: UnidadCondominio[]) {
       torre,
       unidades: items.sort((a, b) => a.code.localeCompare(b.code, "es", { numeric: true })),
     }));
+}
+
+/** Estado de cuenta en el filtro de /usuarios. Por defecto se muestran las activas. */
+export const ESTADOS = ["activos", "inactivos", "todos"] as const;
+export type EstadoFiltro = (typeof ESTADOS)[number];
+
+export function leerEstado(valor: string | undefined): EstadoFiltro {
+  return (ESTADOS as readonly string[]).includes(valor ?? "") ? (valor as EstadoFiltro) : "activos";
+}
+
+export function leerRol(valor: string | undefined): RolCreable | undefined {
+  return esRolCreable(valor) ? valor : undefined;
 }

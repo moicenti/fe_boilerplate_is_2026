@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useRef, useState } from "react";
 import { CheckCircle2, ChevronDown, Eye, EyeOff, KeyRound, ShieldCheck, TriangleAlert, UserRound } from "lucide-react";
 import { registrarUsuario, type UsuarioFormState } from "@/app/actions/usuarios";
@@ -72,7 +73,10 @@ export function RegistroUsuarioForm({ unidades }: { unidades: UnidadCondominio[]
             </p>
             <p className="mt-1 text-secondary">
               Ya puede iniciar sesión con ese correo y la contraseña que le asignaste. Compártela por un medio
-              seguro: Habita no la vuelve a mostrar.
+              seguro: Habita no la vuelve a mostrar.{" "}
+              <Link href="/usuarios" className="font-semibold text-foreground underline underline-offset-4">
+                Ver usuarios
+              </Link>
             </p>
           </div>
         </div>
