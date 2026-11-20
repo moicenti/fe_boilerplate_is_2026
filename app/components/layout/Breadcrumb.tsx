@@ -110,8 +110,11 @@ function crumbsFor(pathname: string, role?: Role): string[] {
   if (pathname === "/cartelera") {
     return ["Mi comunidad", "Cartelera"];
   }
+  if (pathname === "/usuarios/nuevo") {
+    return ["Administración", "Usuarios", "Registrar usuario"];
+  }
   if (pathname === "/usuarios") {
-    return ["Administración", "Registrar usuario"];
+    return ["Administración", "Usuarios"];
   }
   if (pathname === "/administracion/cartelera/nuevo") {
     return ["Administración", "Publicar comunicado"];

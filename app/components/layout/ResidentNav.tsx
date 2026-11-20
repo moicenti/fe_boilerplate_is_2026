@@ -66,7 +66,7 @@ const GRUPOS: NavGroup[] = [
 const GRUPO_ADMIN: NavGroup = {
   titulo: "Administración",
   items: [
-    { href: "/usuarios", label: "Registrar usuario", icon: UserPlus },
+    { href: "/usuarios", label: "Usuarios", icon: UserPlus },
     { href: "/administracion/cartelera/nuevo", label: "Publicar comunicado", icon: FilePlus },
     { href: "/admin/incidencias", label: "Panel de incidencias", icon: ShieldCheck },
     { href: "/admin/asambleas/nueva", label: "Convocar asamblea", icon: CalendarPlus },
