@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LogIn,
-  Users,
   PackagePlus,
   Package,
   LayoutGrid,
@@ -14,8 +13,7 @@ import {
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
 const ITEMS: NavItem[] = [
-  { href: "#", label: "Registro de entrada", icon: LogIn },
-  { href: "#", label: "Visitantes dentro", icon: Users },
+  { href: "/seguridad/visitas", label: "Registro de entrada", icon: LogIn },
   { href: "/paquetes/nuevo", label: "Llegada de paquete", icon: PackagePlus },
   { href: "/paquetes", label: "Paquetes pendientes", icon: Package },
   { href: "/areas/disponibilidad", label: "Disponibilidad de áreas", icon: LayoutGrid },
@@ -25,6 +23,9 @@ function isActive(pathname: string, href: string): boolean {
   if (href === "#") return false;
   if (href === "/paquetes") {
     return pathname === "/paquetes" || /^\/paquetes\/[^/]+\/entrega$/.test(pathname);
+  }
+  if (href.startsWith("/seguridad/visitas")) {
+    return pathname === "/seguridad/visitas" || pathname.startsWith("/seguridad/visitas/");
   }
   return pathname === href;
 }
