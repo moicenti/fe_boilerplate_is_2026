@@ -1,5 +1,6 @@
-import { Bell } from "lucide-react";
-import { getCurrentUser, type Role } from "@/lib/current-user";
+import { Suspense } from "react";
+import { etiquetaRol, getCurrentUser } from "@/lib/current-user";
+import { BellLink, NotificationBell } from "@/components/residente/notification-bell";
 import Breadcrumb from "@/app/components/layout/Breadcrumb";
 import MenuMovil from "@/app/components/layout/MenuMovil";
 
@@ -17,21 +18,11 @@ function getDisplayName(email: string): string {
   return local.replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-function getRoleLabel(role: Role | undefined): string {
-  switch (role) {
-    case 'ADMINISTRADOR': return 'Administrador';
-    case 'MANTENIMIENTO': return 'Mantenimiento';
-    case 'SEGURIDAD': return 'Seguridad';
-    case 'RESIDENTE': return 'Residente';
-    default: return 'Invitado';
-  }
-}
-
 export default async function Header() {
   const user = await getCurrentUser();
   const initials = user ? getInitials(user.email) : '??';
   const displayName = user ? getDisplayName(user.email) : 'Invitado';
-  const roleLabel = getRoleLabel(user?.role);
+  const roleLabel = etiquetaRol(user?.role);
   const unitLabel = user?.unit ? `${user.unit.tower} · ${user.unit.code}` : null;
 
   return (
@@ -42,12 +33,12 @@ export default async function Header() {
       </div>
 
       <div className="flex shrink-0 items-center gap-4 md:gap-6">
-        <button className="relative text-gray-500 hover:text-gray-900">
-          <Bell size={20} />
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-            2
-          </span>
-        </button>
+        {/* El backend solo da notificaciones a residentes. */}
+        {user?.role === "RESIDENTE" && (
+          <Suspense fallback={<BellLink count={0} />}>
+            <NotificationBell />
+          </Suspense>
+        )}
         <div className="flex items-center gap-3 border-l border-gray-300 pl-4 md:pl-6">
           <div className="w-8 h-8 bg-[#0a2f1f] text-white rounded-full flex items-center justify-center text-xs font-semibold">
             {initials}

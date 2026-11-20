@@ -19,6 +19,17 @@ export type CurrentUser = {
   createdAt?: string;
 };
 
+/** Nombre legible del rol para la interfaz. */
+export function etiquetaRol(role: Role | undefined): string {
+  switch (role) {
+    case "ADMINISTRADOR": return "Administrador";
+    case "MANTENIMIENTO": return "Mantenimiento";
+    case "SEGURIDAD": return "Seguridad";
+    case "RESIDENTE": return "Residente";
+    default: return "Invitado";
+  }
+}
+
 /** Nombre para mostrar a partir del correo: "ana.martinez@…" → "Ana Martinez". */
 export function nombreVisible(email: string) {
   const local = email.split("@")[0] ?? "";

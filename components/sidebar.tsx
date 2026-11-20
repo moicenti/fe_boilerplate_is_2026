@@ -30,16 +30,17 @@ const NAV: { titulo: string; items: NavItem[] }[] = [
   {
     titulo: "Comunidad",
     items: [
+      { label: "Mi comunidad", icon: HomeIcon, href: "/mi-comunidad" },
       { label: "Residentes", icon: UsersIcon },
       { label: "Áreas comunes", icon: GridIcon, href: "/areas" },
-      { label: "Incidencias", icon: ClipboardIcon },
-      { label: "Convocar asamblea", icon: CalendarPlusIcon },
+      { label: "Incidencias", icon: ClipboardIcon, href: "/admin/incidencias" },
+      { label: "Convocar asamblea", icon: CalendarPlusIcon, href: "/admin/asambleas/nueva" },
     ],
   },
   {
     titulo: "Administración financiera",
     items: [
-      { label: "Estado de cuenta", icon: WalletIcon },
+      { label: "Estado de cuenta", icon: WalletIcon, href: "/estado-de-cuenta" },
       { label: "Morosidad", icon: ClockIcon, href: "/morosidad" },
       { label: "Reglas de cuotas", icon: SlidersIcon, href: "/cuotas/reglas" },
       { label: "Generación manual", icon: FilePlusIcon, href: "/cuotas/generacion" },
@@ -63,12 +64,83 @@ export function Logo() {
   );
 }
 
+function NavGrupos({ pathname }: { pathname: string }) {
+  return (
+    <div className="flex flex-col gap-6">
+      {NAV.map((grupo) => (
+        <div key={grupo.titulo}>
+          <p className="mb-2 text-[10px] tracking-[0.15em] text-cream/60 uppercase">
+            {grupo.titulo}
+          </p>
+          <ul className="flex flex-col gap-1">
+            {grupo.items.map(({ label, icon: Icon, href }) => {
+              const active = href && pathname.startsWith(href);
+              const classes = `flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-sm transition-colors hover:bg-moss/60 ${
+                active ? "bg-moss font-medium" : ""
+              }`;
+              return (
+                <li key={label}>
+                  {href ? (
+                    <Link
+                      href={href}
+                      aria-current={active ? "page" : undefined}
+                      className={classes}
+                    >
+                      <Icon />
+                      {label}
+                    </Link>
+                  ) : (
+                    // Sin href todavía: se ve igual que el resto pero no hace nada.
+                    <button type="button" className={classes}>
+                      <Icon />
+                      {label}
+                    </button>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Debajo de `lg` la barra lateral se oculta; este menú desplegable muestra los mismos items.
+// `key={pathname}` lo vuelve a cerrar al navegar.
+export function MenuMovilPanel() {
+  const pathname = usePathname();
+
+  return (
+    <details key={pathname} className="bg-forest text-cream lg:hidden">
+      <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3">
+        <Link href="/mi-comunidad" aria-label="Habita, inicio" className="font-serif text-2xl">
+          habita
+        </Link>
+        <span className="rounded-lg border border-cream/30 px-3 py-1.5 text-sm">Menú</span>
+      </summary>
+      <nav aria-label="Principal" className="px-4 pb-5">
+        <NavGrupos pathname={pathname} />
+        <form action={logout} className="mt-6 border-t border-cream/20 pt-4">
+          <button
+            type="submit"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm text-cream/80 hover:bg-moss/60 hover:text-cream"
+          >
+            <LogOutIcon />
+            Cerrar sesión
+          </button>
+        </form>
+      </nav>
+    </details>
+  );
+}
+
 export function Sidebar() {
   const pathname = usePathname();
 
   return (
     <aside className="hidden w-60 shrink-0 flex-col bg-forest px-5 py-8 text-cream lg:flex">
-      <Link href="/areas" className="px-2" aria-label="Habita, inicio">
+      <Link href="/mi-comunidad" className="px-2" aria-label="Habita, inicio">
         <Logo />
       </Link>
 
@@ -80,42 +152,8 @@ export function Sidebar() {
         </span>
       </div>
 
-      <nav className="mt-8 flex flex-col gap-6" aria-label="Principal">
-        {NAV.map((grupo) => (
-          <div key={grupo.titulo}>
-            <p className="mb-2 text-[10px] tracking-[0.15em] text-cream/60 uppercase">
-              {grupo.titulo}
-            </p>
-            <ul className="flex flex-col gap-1">
-              {grupo.items.map(({ label, icon: Icon, href }) => {
-                const active = href && pathname.startsWith(href);
-                const classes = `flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-sm transition-colors hover:bg-moss/60 ${
-                  active ? "bg-moss font-medium" : ""
-                }`;
-                return (
-                  <li key={label}>
-                    {href ? (
-                      <Link
-                        href={href}
-                        aria-current={active ? "page" : undefined}
-                        className={classes}
-                      >
-                        <Icon />
-                        {label}
-                      </Link>
-                    ) : (
-                      // Sin href todavía: se ve igual que el resto pero no hace nada.
-                      <button type="button" className={classes}>
-                        <Icon />
-                        {label}
-                      </button>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+      <nav className="mt-8" aria-label="Principal">
+        <NavGrupos pathname={pathname} />
       </nav>
 
       <div className="mt-auto flex flex-col gap-4 pt-10">

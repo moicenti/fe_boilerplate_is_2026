@@ -44,8 +44,10 @@ Two patterns sit on top of it:
 
 **Route groups / layouts.** Three UI shells exist, from different feature branches. When editing a feature, follow the conventions of the shell it already lives in.
 - `app/(dashboard)/` — the main shell for residents, security and admins: `app/components/layout/*` (`Sidebar` picks `ResidentNav` or `SecurityNav` by role; `Header`; `Breadcrumb` maps pathnames to crumbs; `MenuMovil` replaces the sidebar below `md`), `lucide-react` icons. Feature components live in `app/components/<feature>/`. New pages need a nav entry in `ResidentNav`/`SecurityNav`, a case in `Breadcrumb` and a rule in `lib/rutas.ts`.
-- `app/(panel)/` — older admin shell: `components/` (`sidebar.tsx`, `topbar.tsx`, `icons.tsx` with inline SVG icons).
-- `app/(residente)/` — notifications shell: `components/residente/*`; its sidebar only links items marked `disponible: true`.
+- `app/(panel)/` — older admin shell: `components/` (`sidebar.tsx`, `topbar.tsx`, `icons.tsx` with inline SVG icons). Below `lg` the sidebar is replaced by `MenuMovilPanel` (same items); it links back to `/mi-comunidad`.
+- `app/(residente)/` — notifications shell: `components/residente/*`. Its sidebar mirrors `ResidentNav` for a resident and only links items marked `disponible: true`; below `md` it becomes `MenuMovil`. Its color tokens (`habita-*`, `crema`, `arena`, `borde`) are aliases of the palette in `globals.css`.
+
+Keep the three sidebars in step: when a page is added, link it in every sidebar its role sees. The `(dashboard)` header bell (`NotificationBell`) only shows for residents, because the backend gives notifications only to them.
 
 **Domain modules in `lib/`.** Each domain has a client-safe module with types, constants and formatters (`areas.ts`, `bloqueos.ts`, `disponibilidad.ts`, `reservas.ts`, `estado-cuenta.ts`, `reglas-cuota.ts`, `paquetes.ts`…) and a separate server-only `*-api.ts` with the `apiFetch` wrappers. Condo dates use `America/El_Salvador` via `lib/condominio.ts` (`hoyEnCondominio`, `horaEnCondominio`, `aIsoCondominio`); `CONDOMINIO` also holds placeholder name/role data pending API support.
 

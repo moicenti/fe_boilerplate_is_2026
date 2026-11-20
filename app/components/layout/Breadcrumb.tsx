@@ -81,7 +81,55 @@ function crumbsFor(pathname: string, role?: Role): string[] {
       ? ["Administración financiera", "Estado de cuenta"]
       : ["Mi cuenta", "Cuotas y pagos"];
   }
-  return ["Mi comunidad", "Incidencias"];
+
+  if (pathname === "/reservas/nueva") {
+    return ["Mi comunidad", "Áreas comunes", "Nueva reserva"];
+  }
+  if (pathname === "/reservas") {
+    return ["Mi comunidad", "Mis reservas"];
+  }
+
+  if (pathname === "/visitas/nueva") {
+    return ["Mi comunidad", "Mis visitas", "Nueva visita"];
+  }
+  if (pathname === "/visitas") {
+    return ["Mi comunidad", "Mis visitas"];
+  }
+  if (pathname === "/seguridad/visitas") {
+    return ["Seguridad", "Registro de entrada"];
+  }
+
+  if (pathname === "/cartelera") {
+    return ["Mi comunidad", "Cartelera"];
+  }
+  if (pathname === "/administracion/cartelera/nuevo") {
+    return ["Administración", "Publicar comunicado"];
+  }
+  if (pathname === "/directorio") {
+    return ["Mi comunidad", "Directorio"];
+  }
+  if (pathname === "/perfil/privacidad") {
+    return ["Mi comunidad", "Directorio", "Privacidad"];
+  }
+
+  if (pathname === "/reportes/incidencias") {
+    return ["Administración", "Reporte de incidencias"];
+  }
+  if (pathname === "/reportes/votaciones") {
+    return ["Administración", "Reporte de votaciones"];
+  }
+
+  if (pathname === "/incidencias/nuevo") {
+    return ["Mi comunidad", "Incidencias", "Nueva"];
+  }
+  if (/^\/incidencias\/[^/]+$/.test(pathname)) {
+    return ["Mi comunidad", "Incidencias", "Detalle"];
+  }
+  if (pathname === "/incidencias") {
+    return ["Mi comunidad", "Incidencias"];
+  }
+
+  return ["Mi comunidad"];
 }
 
 export default function Breadcrumb({ role }: { role?: Role }) {
