@@ -1,7 +1,7 @@
 import { getSession } from "@/lib/session";
 import { apiFetch } from "@/lib/api";
 
-export type Role = "RESIDENTE" | "ADMINISTRADOR" | "MANTENIMIENTO" | "SEGURIDAD";
+export type Role = "RESIDENTE" | "ADMINISTRADOR" | "SEGURIDAD";
 
 export type Unidad = {
   id: string;
@@ -23,7 +23,6 @@ export type CurrentUser = {
 export function etiquetaRol(role: Role | undefined): string {
   switch (role) {
     case "ADMINISTRADOR": return "Administrador";
-    case "MANTENIMIENTO": return "Mantenimiento";
     case "SEGURIDAD": return "Seguridad";
     case "RESIDENTE": return "Residente";
     default: return "Invitado";

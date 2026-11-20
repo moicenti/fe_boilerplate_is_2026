@@ -75,7 +75,7 @@ function buildTimeline(report: ApiReport): TimelineEvent[] {
         description = 'Registramos tu incidencia y las fotos adjuntas.';
         break;
       case 'ASIGNADO': {
-        title = 'Asignado a mantenimiento';
+        title = 'Asignado a la administración';
         const priority = typeof meta.priority === 'string' ? (meta.priority as Priority) : undefined;
         const dueDate = typeof meta.dueDate === 'string' ? meta.dueDate : undefined;
         const justification = typeof meta.priorityJustification === 'string' ? meta.priorityJustification : undefined;

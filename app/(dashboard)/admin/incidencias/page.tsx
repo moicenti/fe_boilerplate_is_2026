@@ -6,7 +6,7 @@ import { apiFetch } from '@/lib/api';
 type Me = {
   id: string;
   email: string;
-  role: 'RESIDENTE' | 'ADMINISTRADOR' | 'MANTENIMIENTO' | 'SEGURIDAD';
+  role: 'RESIDENTE' | 'ADMINISTRADOR' | 'SEGURIDAD';
   unit?: { id: string; code: string; tower: string; description: string } | null;
 };
 

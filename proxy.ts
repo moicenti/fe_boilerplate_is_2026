@@ -5,7 +5,7 @@ import { INICIO, esRolPermitido, puedeAcceder, type RolPermitido } from "@/lib/r
 type Sesion =
   | { estado: "valida"; role: RolPermitido }
   | { estado: "invalida" } // token vencido o rechazado por el backend
-  | { estado: "rol-no-permitido" } // p. ej. MANTENIMIENTO
+  | { estado: "rol-no-permitido" } // un rol que la aplicación no conoce
   | { estado: "sin-conexion" }; // no se pudo consultar: no se cierra la sesión por eso
 
 // El JWT no trae el rol, así que se pide a /auth/me. El resultado se guarda un minuto por

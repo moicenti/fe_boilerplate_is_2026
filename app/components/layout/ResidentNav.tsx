@@ -18,10 +18,10 @@ import {
   PieChart,
   Receipt,
   ShieldCheck,
+  UserPlus,
   Users,
   Vote,
   Wallet,
-  ClipboardList,
   type LucideIcon,
 } from "lucide-react";
 import type { Role } from "@/lib/current-user";
@@ -66,6 +66,7 @@ const GRUPOS: NavGroup[] = [
 const GRUPO_ADMIN: NavGroup = {
   titulo: "Administración",
   items: [
+    { href: "/usuarios", label: "Registrar usuario", icon: UserPlus },
     { href: "/administracion/cartelera/nuevo", label: "Publicar comunicado", icon: FilePlus },
     { href: "/admin/incidencias", label: "Panel de incidencias", icon: ShieldCheck },
     { href: "/admin/asambleas/nueva", label: "Convocar asamblea", icon: CalendarPlus },
@@ -79,18 +80,9 @@ const GRUPO_ADMIN: NavGroup = {
   ],
 };
 
-const GRUPO_MANTENIMIENTO: NavGroup = {
-  titulo: "Mantenimiento",
-  items: [
-    { href: "/incidencias", label: "Incidencias", icon: ClipboardList },
-    { href: "/areas", label: "Áreas comunes", icon: Grid },
-  ],
-};
-
 const HREFS = [
   ...GRUPOS.flatMap((group) => group.items),
   ...GRUPO_ADMIN.items,
-  ...GRUPO_MANTENIMIENTO.items,
 ].map((item) => item.href);
 
 function matches(pathname: string, href: string): boolean {
@@ -119,7 +111,6 @@ export default function ResidentNav({ role }: { role?: Role }) {
           items: grupo.items.filter((item) => !item.soloResidente),
         }))),
     ...(role === "ADMINISTRADOR" ? [GRUPO_ADMIN] : []),
-    ...(role === "MANTENIMIENTO" ? [GRUPO_MANTENIMIENTO] : []),
   ];
 
   return (

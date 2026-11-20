@@ -1,4 +1,4 @@
-/** Roles con acceso a la aplicación. Cualquier otro (p. ej. MANTENIMIENTO) no puede iniciar sesión. */
+/** Los tres roles que existen. Si el backend devolviera otro, esa cuenta no puede iniciar sesión. */
 export const ROLES_PERMITIDOS = ["RESIDENTE", "ADMINISTRADOR", "SEGURIDAD"] as const;
 export type RolPermitido = (typeof ROLES_PERMITIDOS)[number];
 
@@ -51,6 +51,7 @@ const REGLAS: { ruta: RegExp; roles: readonly RolPermitido[] }[] = [
   { ruta: /^\/morosidad$/, roles: [A] },
   { ruta: /^\/reportes\/(incidencias|votaciones)$/, roles: [A] },
   { ruta: /^\/administracion\/cartelera\/nuevo$/, roles: [A] },
+  { ruta: /^\/usuarios$/, roles: [A] },
 
   { ruta: /^\/cartelera$/, roles: [R, A] },
   { ruta: /^\/directorio$/, roles: [R, A] },
