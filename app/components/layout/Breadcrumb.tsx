@@ -17,6 +17,14 @@ function crumbsFor(pathname: string, role?: Role): string[] {
     return ["Administración", "Cuotas y reglas"];
   }
 
+  if (pathname.startsWith("/cuotas/generacion")) {
+    return ["Administración", "Generación de cuotas"];
+  }
+
+  if (pathname.startsWith("/morosidad")) {
+    return ["Administración", "Morosidad"];
+  }
+
   if (pathname.startsWith("/areas/disponibilidad")) {
     return ["Mi comunidad", "Áreas comunes", "Disponibilidad"];
   }

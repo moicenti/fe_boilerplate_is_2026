@@ -9,7 +9,6 @@ import {
   PlusIcon,
   SlidersIcon,
 } from "@/components/icons";
-import { Topbar } from "@/components/topbar";
 import { ApiError } from "@/lib/api";
 import { CONDOMINIO, marcaHoraCondominio } from "@/lib/condominio";
 import { getCurrentUser } from "@/lib/current-user";
@@ -127,15 +126,7 @@ export default async function ReglasCuotaPage(props: PageProps<"/cuotas/reglas">
 
   return (
     <>
-      <Topbar
-        crumbs={
-          editando
-            ? ["Administración", "Reglas de cuotas", seleccionada?.concepto ?? "Nueva regla"]
-            : ["Administración", "Reglas de cuotas"]
-        }
-      />
-
-      <main className="flex flex-col gap-6 px-4 py-10 sm:px-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             {editando ? (
@@ -407,7 +398,7 @@ export default async function ReglasCuotaPage(props: PageProps<"/cuotas/reglas">
           Información al {marcaHoraCondominio()} · Hora local de {CONDOMINIO.nombre} · Importes en{" "}
           {MONEDA}.
         </p>
-      </main>
+      </div>
     </>
   );
 }

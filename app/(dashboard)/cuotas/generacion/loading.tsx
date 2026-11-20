@@ -1,10 +1,8 @@
-import { Topbar } from "@/components/topbar";
 
 export default function Cargando() {
   return (
     <>
-      <Topbar crumbs={["Administración", "Generación manual"]} />
-      <main className="flex flex-col gap-6 px-4 py-10 sm:px-10" aria-busy="true">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6" aria-busy="true">
         <p role="status" className="sr-only">
           Calculando la vista previa…
         </p>
@@ -18,7 +16,7 @@ export default function Cargando() {
           <div className="h-80 animate-pulse rounded-xl border border-border bg-surface" />
           <div className="h-96 animate-pulse rounded-xl bg-forest/80" />
         </div>
-      </main>
+      </div>
     </>
   );
 }

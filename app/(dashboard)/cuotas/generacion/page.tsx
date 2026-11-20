@@ -4,7 +4,6 @@ import { logout } from "@/app/actions/auth";
 import Paginacion from "@/app/components/pagos/Paginacion";
 import SelectorUrl from "@/app/components/pagos/SelectorUrl";
 import { AlertIcon, FilePlusIcon, InfoIcon } from "@/components/icons";
-import { Topbar } from "@/components/topbar";
 import { ApiError } from "@/lib/api";
 import { CONDOMINIO, hoyEnCondominio, marcaHoraCondominio } from "@/lib/condominio";
 import { getCurrentUser } from "@/lib/current-user";
@@ -143,9 +142,7 @@ export default async function GeneracionManualPage(props: PageProps<"/cuotas/gen
 
   return (
     <>
-      <Topbar crumbs={["Administración", "Generación manual"]} />
-
-      <main className="flex flex-col gap-6 px-4 py-10 sm:px-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-[11px] font-medium tracking-[0.2em] text-secondary uppercase">
@@ -334,7 +331,7 @@ export default async function GeneracionManualPage(props: PageProps<"/cuotas/gen
         <p className="text-[11px] text-muted">
           Información al {marcaHoraCondominio()} · Hora local de {CONDOMINIO.nombre} · Importes en {MONEDA}.
         </p>
-      </main>
+      </div>
     </>
   );
 }
