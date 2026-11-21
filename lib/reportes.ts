@@ -8,7 +8,7 @@ export interface ResumenReporte {
 }
 
 export interface Seccion {
-    id: number;
+    id: string;
     nombre: string;
     torre: string;
 }
@@ -47,4 +47,11 @@ export function formatearValor(valor: IndicadorValor<any>, clave: keyof ResumenR
     const config = CONFIG_INDICADORES[clave];
     if (clave === 'incidencias') return String(valor.cantidad);
     return `${valor.porcentaje.toFixed(1)}${config.unidad}`;
+}
+export interface AreaComunesRow {
+    areaId: number;
+    nombre: string;
+    reservas: number;
+    horasReservadas: number;
+    porcentaje: number;
 }

@@ -1,24 +1,34 @@
 import "server-only";
 import { apiFetch } from "@/lib/api";
-import type { ResumenReporte, Seccion } from "./reportes";
+import type { AreaComunesRow, ResumenReporte, Seccion } from "./reportes";
 
 
-export interface AreaComunesRow {
-    areaId: number;
-    nombre: string;
-    reservas: number;
-    horasReservadas: number;
-    porcentaje: number;
+function crearParametros(desde: string, hasta: string, seccion?: string) {
+    const params = new URLSearchParams({ desde, hasta });
+    if (seccion) params.set("seccion", seccion);
+    return params.toString();
+}
+
+export function obtenerResumenReportes(
+    desde: string,
+    hasta: string,
+    seccion?: string,
+): Promise<ResumenReporte> {
+    return apiFetch<ResumenReporte>(
+        `reportes/resumen?${crearParametros(desde, hasta, seccion)}`,
+    );
+}
+
+export function obtenerSecciones(): Promise<Seccion[]> {
+    return apiFetch<Seccion[]>("reportes/secciones");
 }
 
 export function obtenerAreasComunes(
     desde: string,
     hasta: string,
-    seccion?: number,
+    seccion?: string,
 ): Promise<AreaComunesRow[]> {
-    const params = new URLSearchParams({ desde, hasta });
-    if (seccion) params.set("seccion", String(seccion));
     return apiFetch<AreaComunesRow[]>(
-        `reportes/areas-comunes?${params.toString()}`,
+        `reportes/areas-comunes?${crearParametros(desde, hasta, seccion)}`,
     );
 }
