@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { SESSION_COOKIE } from "@/lib/session-constants";
 
-export const SESSION_COOKIE = "session";
+export { SESSION_COOKIE };
 const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 
 export async function createSession(token: string) {

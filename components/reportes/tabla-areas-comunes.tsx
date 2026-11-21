@@ -1,6 +1,6 @@
 "use client";
 
-import type { AreaComunesRow } from "@/lib/reportes-api";
+import type { AreaComunesRow } from "@/lib/reportes";
 
 type Props = {
     datos: AreaComunesRow[];
