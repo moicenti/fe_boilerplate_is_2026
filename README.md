@@ -11,7 +11,7 @@ Plataforma web que centraliza la administración de un condominio: reportes de i
 | Componente | URL |
 |---|---|
 | Frontend | **[COMPLETAR: https://...]** |
-| Documentación de la API (Swagger) | **[COMPLETAR: https://.../api/docs]** |
+| Documentación de la API (Swagger) | **[[COMPLETAR: https://.../api/docs]](https://be-boilerplate-is-2026.onrender.com/api/docs)** |
 
 Los usuarios de prueba se entregan en Moodle, no en este repositorio.
 
@@ -20,7 +20,7 @@ Los usuarios de prueba se entregan en Moodle, no en este repositorio.
 | Nombre | Carnet | Usuario de GitHub | Módulos o historias principales |
 |---|---|---|---|
 | **Moisés Marco Centi Zepeda** | **00054123** | **moicenti** | **H7-H12 y H35** |
-| **[COMPLETAR]** | **[COMPLETAR]** | **[@usuario]** | **[...]** |
+| **Jorge Eduardo González Cardoza** | **00016823** | **jorgon29** | **H1-H6 y H34** |
 | **[COMPLETAR]** | **[COMPLETAR]** | **[@usuario]** | **[...]** |
 | **[COMPLETAR]** | **[COMPLETAR]** | **[@usuario]** | **[...]** |
 
