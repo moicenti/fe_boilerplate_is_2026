@@ -11,7 +11,7 @@ Plataforma web que centraliza la administración de un condominio: reportes de i
 | Componente | URL |
 |---|---|
 | Frontend | **[COMPLETAR: https://...]** |
-| Documentación de la API (Swagger) | **[[COMPLETAR: https://.../api/docs]](https://be-boilerplate-is-2026.onrender.com/api/docs)** |
+| Documentación de la API (Swagger) | **[[https://be-boilerplate-is-2026.onrender.com/api/docs]]** |
 
 Los usuarios de prueba se entregan en Moodle, no en este repositorio.
 
