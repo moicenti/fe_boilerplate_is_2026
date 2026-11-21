@@ -2,15 +2,32 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { obtenerSecciones, type Seccion } from "@/lib/reportes-api";
+import type { Seccion } from "@/lib/reportes";
 
-export function FiltrosReportes() {
+export function FiltrosReportes({ basePath = "/admin/indicadores" }: { basePath?: string }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [secciones, setSecciones] = useState<Seccion[]>([]);
 
     useEffect(() => {
-        obtenerSecciones().then(setSecciones).catch(() => {});
+        const controller = new AbortController();
+
+        fetch("/api/reportes/secciones", {
+            cache: "no-store",
+            signal: controller.signal,
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error("No se pudieron cargar las secciones");
+                return res.json() as Promise<Seccion[]>;
+            })
+            .then(setSecciones)
+            .catch((error: unknown) => {
+                if (error instanceof Error && error.name !== "AbortError") {
+                    console.error("Error cargando secciones:", error);
+                }
+            });
+
+        return () => controller.abort();
     }, []);
 
     const desde = searchParams.get("desde") || "";
@@ -27,7 +44,7 @@ export function FiltrosReportes() {
         if (nuevoHasta) params.set("hasta", nuevoHasta);
         if (nuevaSeccion && nuevaSeccion !== "todas")
             params.set("seccion", nuevaSeccion);
-        router.push(`/admin/indicadores?${params.toString()}`);
+        router.push(`${basePath}?${params.toString()}`);
     }
 
     function setPeriodo(tipo: "mes" | "trimestre") {
@@ -38,11 +55,14 @@ export function FiltrosReportes() {
         } else {
             d.setMonth(Math.floor(hoy.getMonth() / 3) * 3, 1);
         }
-        aplicarFiltros(
-            d.toISOString().split("T")[0],
-            hoy.toISOString().split("T")[0],
-            seccion,
-        );
+        const fechaLocal = (fecha: Date) => {
+            const anio = fecha.getFullYear();
+            const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+            const dia = String(fecha.getDate()).padStart(2, "0");
+            return `${anio}-${mes}-${dia}`;
+        };
+
+        aplicarFiltros(fechaLocal(d), fechaLocal(hoy), seccion);
     }
 
     return (

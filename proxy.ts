@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { SESSION_COOKIE } from "@/lib/session";
+import { SESSION_COOKIE } from "@/lib/session-constants";
 import { INICIO, esRolPermitido, puedeAcceder, type RolPermitido } from "@/lib/rutas";
 
 type Sesion =

@@ -15,20 +15,22 @@ function getFechasPorDefecto(searchParams: {
         return {
             desde,
             hasta,
-            seccion: searchParams.seccion
-                ? Number(searchParams.seccion)
-                : undefined,
+            seccion: searchParams.seccion || undefined,
         };
     }
 
     const hoy = new Date();
+    const fechaLocal = (fecha: Date) => {
+        const anio = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+        const dia = String(fecha.getDate()).padStart(2, "0");
+        return `${anio}-${mes}-${dia}`;
+    };
     const primerDia = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
     return {
-        desde: primerDia.toISOString().split("T")[0],
-        hasta: hoy.toISOString().split("T")[0],
-        seccion: searchParams.seccion
-            ? Number(searchParams.seccion)
-            : undefined,
+        desde: fechaLocal(primerDia),
+        hasta: fechaLocal(hoy),
+        seccion: searchParams.seccion || undefined,
     };
 }
 
@@ -77,7 +79,7 @@ export default async function AreasComunesPage({
                     <div className="h-32 animate-pulse rounded-2xl bg-gray-100" />
                 }
             >
-                <FiltrosReportes />
+                <FiltrosReportes basePath="/admin/reportes/areas-comunes" />
             </Suspense>
 
             {/* Contenido */}
