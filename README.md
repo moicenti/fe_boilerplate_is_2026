@@ -10,8 +10,8 @@ Plataforma web que centraliza la administración de un condominio: reportes de i
 
 | Componente | URL |
 |---|---|
-| Frontend | **[COMPLETAR: https://...]** |
-| Documentación de la API (Swagger) | **[COMPLETAR: https://.../api/docs]** |
+| Frontend | **[https://fe-boilerplate-is-2026-seven.vercel.app/login]** |
+| Documentación de la API (Swagger) | **[https://be-boilerplate-is-2026.onrender.com/api/docs]** |
 
 Los usuarios de prueba se entregan en Moodle, no en este repositorio.
 
@@ -20,9 +20,10 @@ Los usuarios de prueba se entregan en Moodle, no en este repositorio.
 | Nombre | Carnet | Usuario de GitHub | Módulos o historias principales |
 |---|---|---|---|
 | **Moisés Marco Centi Zepeda** | **00054123** | **moicenti** | **H7-H12 y H35** |
-| **[COMPLETAR]** | **[COMPLETAR]** | **[@usuario]** | **[...]** |
-| **[COMPLETAR]** | **[COMPLETAR]** | **[@usuario]** | **[...]** |
-| **[COMPLETAR]** | **[COMPLETAR]** | **[@usuario]** | **[...]** |
+| **Jorge Eduardo González Cardoza** | **00016823** | **jorgon29** | **H1-H6 y H34** |
+| **Juan José Castellanos Manajo** | **00026223** | **JuanJoseCastellanosMajano** | **H23-H26, H30-H31** |
+| **Cristian Mauricio Rodríguez Cruz** | **00082923** | **CrisRdrgz** | **H13-H18** |
+| **Jonatan Ernesto Segura Reymundo** | **00043823** | **JonaSeguReymundo** | **H19-H22, H27-H28** |
 
 ## Documentación
 

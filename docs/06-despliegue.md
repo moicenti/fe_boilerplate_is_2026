@@ -3,10 +3,10 @@
 ## Dónde está desplegado
 
 | Componente | Plataforma | URL | Rama |
-|---|---|---|---|
-| Frontend | **[COMPLETAR: Vercel, Render, Netlify...]** | **[COMPLETAR: https://...]** | main |
-| Backend | **[COMPLETAR: Render, Railway...]** | **[COMPLETAR: https://...]** (Swagger en `/api/docs`) | main |
-| Base de datos | **[COMPLETAR: Neon, Supabase, Render...]** | (privada) | |
+|---|---|---|
+| Frontend | **[Vercel](https://fe-boilerplate-is-2026-seven.vercel.app)** | main |
+| Backend | [**Render**](https://be-boilerplate-is-2026.onrender.com/) (Swagger en `/api/docs`)| main |
+| Base de datos |**Render (privada)** | main |
 
 El sistema debe seguir en línea, con los mismos usuarios, al menos hasta el martes 24 de noviembre. En los planes gratuitos el backend se apaga tras un rato sin uso y la primera petición tarda en responder: abran el sistema unos minutos antes de cualquier revisión.
 
@@ -27,25 +27,25 @@ Solo los nombres, nunca los valores.
 
 ### Backend
 
-| Variable | Dónde se configura |
-|---|---|
-| `DATABASE_URL` | **[COMPLETAR: panel de la plataforma, sección de variables de entorno]** |
-| `JWT_SECRET` | **[COMPLETAR: igual]** |
-| `JWT_EXPIRES_IN` | **[COMPLETAR: igual]** |
-| `REFRESH_TOKEN_EXPIRES_IN_DAYS` | **[COMPLETAR: igual]** |
-| `BCRYPT_SALT_ROUNDS` | **[COMPLETAR: igual]** |
-| `NODE_ENV` | **[COMPLETAR: igual]** |
-| `APP_TIMEZONE` | **[COMPLETAR: igual]** |
-| `TRUST_PROXY_HOPS` (1 si la plataforma es Render) | **[COMPLETAR: igual]** |
-| `CORS_ORIGINS` (URL del frontend desplegado) | **[COMPLETAR: igual]** |
-| `SEED_DEMO_PASSWORD` (solo para cargar los datos semilla) | **[COMPLETAR: igual]** |
+| Variable |
+|---- |
+| `DATABASE_URL` |
+| `JWT_SECRET` |
+| `JWT_EXPIRES_IN` |
+| `REFRESH_TOKEN_EXPIRES_IN_DAYS` |
+| `BCRYPT_SALT_ROUNDS` |
+| `NODE_ENV` |
+| `APP_TIMEZONE` |
+| `TRUST_PROXY_HOPS` (1 si la plataforma es Render) |
+| `CORS_ORIGINS` (URL del frontend desplegado) |
+| `SEED_DEMO_PASSWORD` (solo para cargar los datos semilla) |
 
 ### Frontend
 
-| Variable | Dónde se configura |
+| Variable |
 |---|---|
-| `API_URL` (URL del backend desplegado, con `/api/v1`) | **[COMPLETAR: panel de la plataforma]** |
-| `NEXT_PUBLIC_BACKEND_URL` (se incrusta al compilar: definirla antes del build) | **[COMPLETAR: igual]** |
-| `NEXT_PUBLIC_CONDOMINIO` (se incrusta al compilar) | **[COMPLETAR: igual]** |
-| `NEXT_PUBLIC_MONEDA` (se incrusta al compilar) | **[COMPLETAR: igual]** |
-| `COOKIE_SECURE` (solo si el sitio se sirve sin HTTPS) | **[COMPLETAR: igual]** |
+| `API_URL` (URL del backend desplegado, con `/api/v1`) |
+| `NEXT_PUBLIC_BACKEND_URL` (se incrusta al compilar: definirla antes del build) |
+| `NEXT_PUBLIC_CONDOMINIO` (se incrusta al compilar) |
+| `NEXT_PUBLIC_MONEDA` (se incrusta al compilar) |
+| `COOKIE_SECURE` (solo si el sitio se sirve sin HTTPS) |
