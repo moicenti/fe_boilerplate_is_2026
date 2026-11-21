@@ -1,16 +1,14 @@
 # Guía de uso
 
-**[COMPLETAR: los pasos salen del código y de la descripción de cada módulo; recorran cada flujo en el sistema y ajusten los nombres exactos de botones y campos. Tomen las capturas con los nombres de archivo indicados y guárdenlas en `docs/img/`.]**
-
 Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas las pantallas se abren desde el menú lateral (en el celular, desde el menú desplegable) y cada usuario solo ve las secciones que su rol permite.
 
 ## Roles
 
-| Rol | Qué puede hacer |
-|---|---|
+| Rol           | Qué puede hacer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Administrador | Crea y desactiva cuentas de residentes y de seguridad. Administra las incidencias (asigna prioridad, responsable y fecha, y las marca como resueltas). Gestiona las áreas comunes y sus bloqueos. Define reglas de cuota, genera cuotas manualmente y consulta las unidades en mora y el estado de cuenta de cualquier unidad. Convoca asambleas, las publica y consulta resultados y auditoría. Publica comunicados. Consulta los reportes de incidencias y de votaciones. También puede ver las visitas activas. |
-| Residente | Consulta el estado de cuenta de su unidad y paga cuotas. Consulta la disponibilidad de las áreas comunes y reserva o cancela reservas. Reporta incidencias y confirma o rechaza su resolución. Pre-autoriza visitas. Consulta los paquetes de su unidad y su código de retiro. Lee la cartelera de comunicados, consulta el directorio de vecinos y configura su privacidad. Participa en las votaciones de las asambleas (un voto por unidad). Recibe y administra sus notificaciones. |
-| Seguridad | Registra la entrada y la salida de visitantes, con o sin pre-autorización, y consulta el panel de visitantes dentro del condominio. Registra la llegada de paquetes y su entrega. Consulta la disponibilidad de las áreas comunes. |
+| Residente     | Consulta el estado de cuenta de su unidad y paga cuotas. Consulta la disponibilidad de las áreas comunes y reserva o cancela reservas. Reporta incidencias y confirma o rechaza su resolución. Pre-autoriza visitas. Consulta los paquetes de su unidad y su código de retiro. Lee la cartelera de comunicados, consulta el directorio de vecinos y configura su privacidad. Participa en las votaciones de las asambleas (un voto por unidad). Recibe y administra sus notificaciones.                            |
+| Seguridad     | Registra la entrada y la salida de visitantes, con o sin pre-autorización, y consulta el panel de visitantes dentro del condominio. Registra la llegada de paquetes y su entrega. Consulta la disponibilidad de las áreas comunes.                                                                                                                                                                                                                                                                                 |
 
 ## Flujos principales
 
@@ -22,8 +20,6 @@ Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas 
 2. Escribir el correo y la contraseña del usuario de prueba del rol que se quiere probar y pulsar **Iniciar sesión**.
 3. El sistema abre **Mi comunidad**, la página de inicio, que muestra accesos directos a las secciones disponibles para el rol.
 4. Para salir, usar la opción de cerrar sesión del encabezado. Si la sesión vence, el sistema regresa al inicio de sesión con un aviso.
-
-**[COMPLETAR: captura de la pantalla de inicio de sesión y de la página de inicio de cada rol]**
 
 ![Pantalla de inicio de sesión](img/login.png)
 
@@ -44,8 +40,6 @@ Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas 
 1. En **Usuarios**, filtrar por rol o estado, o buscar por correo.
 2. Pulsar **Desactivar** en la cuenta y confirmar. La acción no se puede deshacer: se cierra su sesión, se cancelan sus reservas futuras y sus pre-autorizaciones activas, y se libera su unidad.
 
-**[COMPLETAR: capturas]**
-
 ![Lista de usuarios](img/usuarios.png)
 
 ### Incidencias
@@ -62,9 +56,7 @@ Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas 
 1. Entrar a **Panel de incidencias** y abrir la incidencia.
 2. Asignar prioridad, responsable (un administrador activo) y fecha límite.
 3. Cuando el problema se resuelve, marcar la incidencia como **Resuelta** y escribir el comentario de resolución.
-4. El residente la confirma (queda **Cerrada**) o la rechaza. **[COMPLETAR: indicar a qué estado vuelve una incidencia rechazada]**
-
-**[COMPLETAR: capturas]**
+4. El residente la confirma (queda **Cerrada**) o la rechaza.
 
 ![Formulario de nueva incidencia](img/incidencia-nueva.png)
 
@@ -86,8 +78,6 @@ Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas 
 4. Si no hay pre-autorización, registrar la entrada indicando nombre, documento, unidad y motivo (de 10 a 200 caracteres). La visita aparece como **Sin autorización**.
 5. En **Panel de seguridad** se ven los visitantes que están dentro. Cuando se retiran, pulsar **Registrar salida**.
 
-**[COMPLETAR: capturas]**
-
 ![Pre-autorización de visita](img/visita-preautorizacion.png)
 
 ![Panel de seguridad](img/seguridad-panel.png)
@@ -105,8 +95,6 @@ Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas 
 1. Entrar a **Paquetes**. Se listan los paquetes de la unidad; los pendientes muestran su código de retiro.
 2. Abrir un paquete para ver su detalle. Un paquete de otra unidad no se puede ver.
 
-**[COMPLETAR: capturas]**
-
 ![Registro de paquete](img/paquete-nuevo.png)
 
 ![Mis paquetes](img/paquetes-residente.png)
@@ -123,8 +111,6 @@ Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas 
 
 1. Entrar a **Gestión de áreas** para crear un área (nombre, capacidad, ubicación, duración del bloque, condiciones de uso y horarios por día), editarla o eliminarla.
 2. Desde el área, bloquear un horario por mantenimiento, renovación u otro motivo. No se puede bloquear un horario que ya tiene reservas.
-
-**[COMPLETAR: capturas]**
 
 ![Disponibilidad de áreas](img/areas-disponibilidad.png)
 
@@ -145,8 +131,6 @@ Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas 
 2. Las cuotas de las reglas activas se generan solas cada día a las 00:05.
 3. Para generar un periodo a pedido, entrar a **Generación de cuotas**, elegir la regla y el periodo, revisar la vista previa, marcar la casilla de confirmación y pulsar generar. El resumen muestra cuántas cuotas se crearon, omitieron o fallaron.
 4. En **Morosidad** se listan las unidades con cuotas vencidas, con filtros por torre y antigüedad. Desde cada fila se abre el estado de cuenta de la unidad.
-
-**[COMPLETAR: capturas]**
 
 ![Estado de cuenta](img/estado-de-cuenta.png)
 
@@ -171,8 +155,6 @@ Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas 
 
 1. En **Asambleas**, abrir la asamblea y luego los resultados de la propuesta.
 2. Para una votación cerrada se puede ver la auditoría y descargarla en PDF. Los reportes no revelan el sentido de cada voto.
-
-**[COMPLETAR: capturas]**
 
 ![Convocatoria de asamblea](img/asamblea-nueva.png)
 
@@ -200,8 +182,6 @@ Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas 
 1. Entrar a **Notificaciones** para ver los avisos, filtrarlos y marcarlos como leídos. La campana del encabezado muestra cuántos hay sin leer.
 2. En **Preferencias** se elige de qué módulos se quieren recibir avisos.
 
-**[COMPLETAR: capturas]**
-
 ![Cartelera de comunicados](img/cartelera.png)
 
 ![Notificaciones](img/notificaciones.png)
@@ -210,7 +190,5 @@ Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas 
 
 1. **Reporte de incidencias:** incidencias abiertas agrupadas por estado y prioridad, con filtros por fecha y sección.
 2. **Reporte de votaciones:** porcentaje de participación por votación cerrada.
-
-**[COMPLETAR: capturas]**
 
 ![Reporte de incidencias](img/reporte-incidencias.png)
