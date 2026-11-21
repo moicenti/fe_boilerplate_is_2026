@@ -1,4 +1,5 @@
-// app/(residente)/preferencias/page.tsx
+export const dynamic = 'force-dynamic';
+
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ApiError } from "@/lib/api";
