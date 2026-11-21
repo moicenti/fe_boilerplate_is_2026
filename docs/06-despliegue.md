@@ -5,8 +5,8 @@
 | Componente | Plataforma | URL | Rama |
 |---|---|---|---|
 | Frontend | **[COMPLETAR: Vercel, Render, Netlify...]** | **[COMPLETAR: https://...]** | main |
-| Backend | **[COMPLETAR: Render, Railway...]** | **[COMPLETAR: https://...]** (Swagger en `/api/docs`) | main |
-| Base de datos | **[COMPLETAR: Neon, Supabase, Render...]** | (privada) | |
+| Backend | **Render** | **https://be-boilerplate-is-2026.onrender.com/** (Swagger en `/api/docs`) | main |
+| Base de datos | **Render** | (privada) | main |
 
 El sistema debe seguir en línea, con los mismos usuarios, al menos hasta el martes 24 de noviembre. En los planes gratuitos el backend se apaga tras un rato sin uso y la primera petición tarda en responder: abran el sistema unos minutos antes de cualquier revisión.
 
