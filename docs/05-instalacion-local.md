@@ -4,7 +4,7 @@ Hay dos repositorios que se levantan por separado: primero el backend (API y bas
 
 ## Requisitos
 
-- Docker y docker-compose v2 o superior **[COMPLETAR: versión usada]**
+- Docker y docker-compose v2 o superior
 - Node.js 24 (la versión de las imágenes Docker; el backend requiere como mínimo 20.19) y npm, solo si se corre fuera de Docker
 
 ## Pasos

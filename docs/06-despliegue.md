@@ -4,7 +4,7 @@
 
 | Componente | Plataforma | URL | Rama |
 |---|---|---|---|
-| Frontend | **[COMPLETAR: Vercel, Render, Netlify...]** | **[COMPLETAR: https://...]** | main |
+| Frontend | **[Vercel](https://fe-boilerplate-is-2026-seven.vercel.app) | main |
 | Backend | **[COMPLETAR: Render, Railway...]** | **[COMPLETAR: https://...]** (Swagger en `/api/docs`) | main |
 | Base de datos | **[COMPLETAR: Neon, Supabase, Render...]** | (privada) | |
 
@@ -44,8 +44,8 @@ Solo los nombres, nunca los valores.
 
 | Variable | Dónde se configura |
 |---|---|
-| `API_URL` (URL del backend desplegado, con `/api/v1`) | **[COMPLETAR: panel de la plataforma]** |
-| `NEXT_PUBLIC_BACKEND_URL` (se incrusta al compilar: definirla antes del build) | **[COMPLETAR: igual]** |
-| `NEXT_PUBLIC_CONDOMINIO` (se incrusta al compilar) | **[COMPLETAR: igual]** |
-| `NEXT_PUBLIC_MONEDA` (se incrusta al compilar) | **[COMPLETAR: igual]** |
-| `COOKIE_SECURE` (solo si el sitio se sirve sin HTTPS) | **[COMPLETAR: igual]** |
+| `API_URL` (URL del backend desplegado, con `/api/v1`) ||
+| `NEXT_PUBLIC_BACKEND_URL` (se incrusta al compilar: definirla antes del build) ||
+| `NEXT_PUBLIC_CONDOMINIO` (se incrusta al compilar) ||
+| `NEXT_PUBLIC_MONEDA` (se incrusta al compilar) ||
+| `COOKIE_SECURE` (solo si el sitio se sirve sin HTTPS) ||
