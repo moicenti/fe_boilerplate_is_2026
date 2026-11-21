@@ -21,7 +21,7 @@ Los usuarios de prueba se entregan en Moodle, no en este repositorio.
 |---|---|---|---|
 | **Moisés Marco Centi Zepeda** | **00054123** | **moicenti** | **H7-H12 y H35** |
 | **Jorge Eduardo González Cardoza** | **00016823** | **jorgon29** | **H1-H6 y H34** |
-| **[COMPLETAR]** | **[COMPLETAR]** | **[@usuario]** | **[...]** |
+| **Juan José Castellanos Manajo** | **00026223** | **JuanJoseCastellanosMajano** | **H23-H27, H30-H31** |
 | **[COMPLETAR]** | **[COMPLETAR]** | **[@usuario]** | **[...]** |
 
 ## Documentación
