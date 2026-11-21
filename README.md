@@ -1,141 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Plataforma de Gestión de Condominios
 
-## Getting Started
+Plataforma web que centraliza la administración de un condominio: reportes de incidencias y mantenimiento, control de acceso de visitas y demás procesos entre la administración, los residentes y el personal de seguridad.
 
-First, run the development server:
+**Equipo:** Terraplanistas
+**Proyecto asignado:** **Sistema de gestión de condominios**
+**Curso:** Ingeniería de Software, UCA, ciclo 02/2026, Sección **02**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Ambiente desplegado
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## H1 · Cuotas y pagos
-
-### Estado de cuenta (FE-1.1)
-
-Ruta `/estado-de-cuenta` (`app/(dashboard)/estado-de-cuenta/page.tsx`). Consume
-`GET /unidades/{unidadId}/estado-de-cuenta`; el residente ve solo su unidad (sale de la sesión) y el
-administrador elige cualquiera con el selector de unidad (`?unidad=<uuid>`).
-
-| Componente | Archivo | Qué muestra |
-|---|---|---|
-| `ResumenSaldo` | `app/components/pagos/ResumenSaldo.tsx` | Saldo pendiente total (de la API), importe vencido y próximo vencimiento |
-| `TablaCuotas` | `app/components/pagos/TablaCuotas.tsx` | Cuotas por pagar o todas (`?ver=todas`), con su estado en texto y color |
-| `HistorialPagos` | `app/components/pagos/HistorialPagos.tsx` | Lo aplicado a cada cuota por cada pago, filtrable por año (`?anio=`) |
-
-- Los saldos no se recalculan en el cliente: se muestran los de la API. "Vencida" se deriva de la
-  definición común (PENDIENTE o PARCIAL con vencimiento anterior a hoy, en hora del condominio).
-- Estados: carga (`loading.tsx`), error con botón **Reintentar** (`ErrorCarga`) y vacío.
-
-### Flujo de pago (FE-1.2)
-
-Ruta `/pagos` (`app/(dashboard)/pagos/page.tsx` + `app/components/pagos/FlujoPago.tsx`), en tres
-pasos sin recargar la página: **seleccionar cuotas → revisar y confirmar → comprobante**.
-
-1. Se preseleccionan las cuotas vencidas (o las de `?cuotas=1,2`). El total es la suma de los saldos
-   elegidos; se puede escribir un monto menor para un pago parcial (se aplica primero a la que vence antes).
-2. Al confirmar se llama a la Server Action `pagarCuotas` (`app/actions/pagos.ts`), que toma la unidad
-   de la sesión y hace `POST /pagos`. El botón se deshabilita mientras se envía y un guardia evita el
-   doble clic; cada revisión genera una `referencia` única, así un reenvío responde 409 en lugar de cobrar dos veces.
-3. Con éxito se muestra el comprobante y el estado de cuenta se revalida en el mismo viaje.
-
-Medio de pago: dos tarjetas guardadas de demostración o **otra tarjeta de un solo uso** (número,
-nombre, vencimiento MM/AA y CVV; validada en `lib/tarjeta.ts`, componente `MedioDePago`). La pasarela
-simulada del backend tarda 5 s, aprueba siempre la tarjeta que termina en **2026** y rechaza siempre la que
-termina en **2000**; la interfaz no lo anuncia. El número completo, el vencimiento y el CVV nunca salen
-del navegador: solo se envían los últimos 4 dígitos, y la tarjeta de un solo uso se borra tras pagar.
-
-### Moneda
-
-Todos los importes (H1 y reglas de cuota de H3) usan la moneda de `NEXT_PUBLIC_MONEDA` (código ISO
-4217; por defecto `USD`), definida en `lib/moneda.ts` junto con `formatMonto` y `SIMBOLO_MONEDA`. Next la
-incrusta al compilar: tras cambiarla, reinicia `npm run dev` o vuelve a hacer `npm run build`.
-
-| Error de la API | Qué ve el residente |
+| Componente | URL |
 |---|---|
-| 402 `PAGO_RECHAZADO` | Tarjeta rechazada, sin cobro; sigue en la revisión para elegir otra tarjeta |
-| 409 `CUOTA_YA_PAGADA` | La cuota ya está pagada o la referencia se repitió; vuelve a la selección con las cuotas actualizadas |
-| 422 `MONTO_EXCEDE_DEUDA` | El monto supera lo adeudado, sin cobro (también se valida antes de enviar) |
-| 404 `CUOTA_INEXISTENTE` | La cuota ya no existe; vuelve a la selección actualizada |
-| 403 / 401 | No puede pagar esa unidad / la sesión venció y se redirige al login |
+| Frontend | **[COMPLETAR: https://...]** |
+| Documentación de la API (Swagger) | **[COMPLETAR: https://.../api/docs]** |
 
-En todos los errores se conserva la selección para reintentar.
+Los usuarios de prueba se entregan en Moodle, no en este repositorio.
 
-## H34 · Generación manual de cuotas
+## Integrantes
 
-Pantalla de administración en `/cuotas/generacion` (shell `(panel)`, menú «Generación manual»). Cada fila de `/cuotas/reglas` enlaza a ella con «Generar periodo» (o «Ver ejecuciones» si la regla no está activa).
+| Nombre | Carnet | Usuario de GitHub | Módulos o historias principales |
+|---|---|---|---|
+| **Moisés Marco Centi Zepeda** | **00054123** | **moicenti** | **H7-H12 y H35** |
+| **[COMPLETAR]** | **[COMPLETAR]** | **[@usuario]** | **[...]** |
+| **[COMPLETAR]** | **[COMPLETAR]** | **[@usuario]** | **[...]** |
+| **[COMPLETAR]** | **[COMPLETAR]** | **[@usuario]** | **[...]** |
 
-### Flujo de generación manual (FE-34.1)
+## Documentación
 
-1. **Regla y periodo.** Se eligen en dos selectores que viven en la URL (`?regla=&periodo=&pagina=`), así la vista se puede recargar y compartir. El periodo ofrece el actual y los 11 anteriores; nunca futuros. Sin `?regla=` se abre la primera regla activa.
-2. **Vista previa.** La página llama a `POST /reglas-cuota/{id}/generacion/vista-previa` al renderizar (no escribe nada): cuotas por crear, monto total, vencimiento, unidades que ya tienen la cuota y excepciones (unidad, motivo y si quedará omitida o con error). Avisa si el vencimiento ya pasó, porque las cuotas nacerán vencidas. «Recalcular vista» la vuelve a pedir. Si la regla no está activa no se pide la vista previa (el backend respondería 422) y solo se muestra el historial.
-3. **Confirmación.** `ConfirmarGeneracion` exige marcar «He revisado…» y solo confirma la vista previa que se está mostrando. El botón se deshabilita mientras corre y una referencia bloquea el doble clic antes del siguiente render. Si no hay cuotas por crear, no se puede ejecutar.
-4. **Resumen.** La Server Action `generarPeriodo` (`app/actions/generacion-cuotas.ts`) llama a `POST /reglas-cuota/{id}/generacion` y muestra creadas, omitidas, con error y la causa de cada error, tal como responde el servicio. Si el resultado no coincide con la vista previa confirmada (otra ejecución o datos que cambiaron en medio), lo indica. `revalidatePath` actualiza la vista previa y el historial en la misma respuesta.
-5. **Historial.** `GET /reglas-cuota/{id}/ejecuciones`, paginado de 10 en 10: fecha, periodo, origen (automática o manual), usuario («Sistema» en las automáticas), estado y totales.
+1. [Guía de uso](docs/01-guia-de-uso.md)
+2. [Arquitectura](docs/02-arquitectura.md)
+3. [Modelo de datos](docs/03-modelo-de-datos.md)
+4. [API](docs/04-api.md)
+5. [Instalación local](docs/05-instalacion-local.md)
+6. [Despliegue](docs/06-despliegue.md)
+7. [Forma de trabajo](docs/07-forma-de-trabajo.md)
+8. [Historias por módulo](docs/08-historias.md)
+9. [Problemas conocidos](docs/09-problemas-conocidos.md)
 
-| Código | Cómo se muestra |
-|---|---|
-| `EJECUCION_EN_CURSO` (409) | «Ya hay una generación en curso»: no se creó nada; botón para actualizar vista previa e historial |
-| `REGLA_INACTIVA` (422) | «No se puede generar este periodo» con el mensaje del backend (regla no activa o periodo futuro) |
-| `REGLA_INEXISTENTE` (404) | «La regla ya no existe» |
-| `ROL_NO_PERMITIDO` (403) | «Acceso restringido» en la página / «Sin permiso» en la acción |
-| Sin conexión o error 5xx al ejecutar | No se sabe si la generación corrió: se pide revisar el historial; reintentar es seguro porque solo crea lo que falte |
+## Repositorios
 
-Código: `lib/generacion-cuotas.ts` (tipos, etiquetas, periodos, comparación con la vista previa), `lib/generacion-cuotas-api.ts` (llamadas al backend, solo servidor), `app/(panel)/cuotas/generacion/` (página, confirmación, recalcular, carga).
+El proyecto se divide en dos repositorios:
 
-## H2 · Unidades en mora
+- [**Frontend (React)**](https://github.com/moicenti/be_boilerplate_is_2026)
+- [**Backend (NestJS)**](https://github.com/moicenti/fe_boilerplate_is_2026)
 
-### Ruta y permisos
-
-`/morosidad` (shell `(panel)`, menú «Morosidad»). Solo `ADMINISTRADOR`: el menú de residentes y seguridad no la muestra, la página responde «Acceso restringido» a cualquier otro rol y el backend también responde `403 ROL_NO_PERMITIDO`.
-
-### Datos
-
-`GET /unidades/mora` devuelve por unidad: código y torre, responsable (correo del residente activo más antiguo; «Sin residente asignado» si no hay), cuotas vencidas, monto adeudado, en mora desde y días de atraso. La tabla los muestra tal como llegan. Una unidad está en mora si tiene al menos una cuota `PENDIENTE` o `PARCIAL` vencida antes de hoy (una que vence hoy no cuenta); al pagar todo lo vencido deja de aparecer. La fecha de corte (`fechaCorte`) se muestra en la tabla.
-
-Las tarjetas de arriba (total vencido, unidades con adeudo «X de Y», mayor antigüedad) suman la lista completa del servicio con los filtros activos: el backend no devuelve agregados, así que `resumenMora` recorre todas sus páginas de 100. «Y» sale de `GET /unidades`.
-
-### Filtros, orden y paginación
-
-Todo vive en la URL, así que la vista se puede recargar y compartir:
-
-| Parámetro | Valores | Se envía al backend como |
-|---|---|---|
-| `torre` | Torre exacta (lista de `GET /unidades`) | `torre` |
-| `antiguedad` | Días mínimos de atraso: 30, 60 o 90 (otro entero escrito a mano también vale) | `antiguedadMinDias` |
-| `orden` | `unidad`, `responsable`, `cuotasVencidas`, `montoAdeudado`, `enMoraDesde`, `diasAtraso`; con `-` delante, descendente. Por defecto `-diasAtraso` | `orden` |
-| `pagina` | ≥ 1, de 10 en 10 | `pagina`, `tamano=10` |
-
-Cada encabezado ordena por su columna: el primer clic pone lo más urgente primero (más días, más monto, la fecha más antigua; texto de la A a la Z) y el segundo invierte. Los filtros activos aparecen como etiquetas que se quitan una por una, y «Limpiar filtros» los quita todos. Cambiar un filtro vuelve a la página 1. Un valor inválido en la URL se ignora en vez de provocar un 400.
-
-### Estados
-
-Cargando (`loading.tsx`), error con «Reintentar», vacío («No hay unidades en mora» o «Ninguna unidad en mora cumple los filtros» con enlace para limpiarlos) y página fuera de rango. «Ver cuenta» abre `/estado-de-cuenta?unidad=<id>`, el estado de cuenta de la unidad para el administrador.
-
-Código: `lib/morosidad.ts` (tipos, orden, lectura de filtros, resumen), `lib/morosidad-api.ts` (llamadas al backend, solo servidor), `app/(panel)/morosidad/`.
+La documentación completa está en [Frontend](https://github.com/moicenti/be_boilerplate_is_2026).
