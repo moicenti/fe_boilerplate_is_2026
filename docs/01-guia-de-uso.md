@@ -4,11 +4,11 @@ Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas 
 
 ## Roles
 
-| Rol | Qué puede hacer |
-|---|---|
+| Rol           | Qué puede hacer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Administrador | Crea y desactiva cuentas de residentes y de seguridad. Administra las incidencias (asigna prioridad, responsable y fecha, y las marca como resueltas). Gestiona las áreas comunes y sus bloqueos. Define reglas de cuota, genera cuotas manualmente y consulta las unidades en mora y el estado de cuenta de cualquier unidad. Convoca asambleas, las publica y consulta resultados y auditoría. Publica comunicados. Consulta los reportes de incidencias y de votaciones. También puede ver las visitas activas. |
-| Residente | Consulta el estado de cuenta de su unidad y paga cuotas. Consulta la disponibilidad de las áreas comunes y reserva o cancela reservas. Reporta incidencias y confirma o rechaza su resolución. Pre-autoriza visitas. Consulta los paquetes de su unidad y su código de retiro. Lee la cartelera de comunicados, consulta el directorio de vecinos y configura su privacidad. Participa en las votaciones de las asambleas (un voto por unidad). Recibe y administra sus notificaciones. |
-| Seguridad | Registra la entrada y la salida de visitantes, con o sin pre-autorización, y consulta el panel de visitantes dentro del condominio. Registra la llegada de paquetes y su entrega. Consulta la disponibilidad de las áreas comunes. |
+| Residente     | Consulta el estado de cuenta de su unidad y paga cuotas. Consulta la disponibilidad de las áreas comunes y reserva o cancela reservas. Reporta incidencias y confirma o rechaza su resolución. Pre-autoriza visitas. Consulta los paquetes de su unidad y su código de retiro. Lee la cartelera de comunicados, consulta el directorio de vecinos y configura su privacidad. Participa en las votaciones de las asambleas (un voto por unidad). Recibe y administra sus notificaciones.                            |
+| Seguridad     | Registra la entrada y la salida de visitantes, con o sin pre-autorización, y consulta el panel de visitantes dentro del condominio. Registra la llegada de paquetes y su entrega. Consulta la disponibilidad de las áreas comunes.                                                                                                                                                                                                                                                                                 |
 
 ## Flujos principales
 
@@ -40,7 +40,6 @@ Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas 
 1. En **Usuarios**, filtrar por rol o estado, o buscar por correo.
 2. Pulsar **Desactivar** en la cuenta y confirmar. La acción no se puede deshacer: se cierra su sesión, se cancelan sus reservas futuras y sus pre-autorizaciones activas, y se libera su unidad.
 
-
 ![Lista de usuarios](img/usuarios.png)
 
 ### Incidencias
@@ -57,7 +56,7 @@ Las credenciales de prueba se entregan en Moodle, no en este repositorio. Todas 
 1. Entrar a **Panel de incidencias** y abrir la incidencia.
 2. Asignar prioridad, responsable (un administrador activo) y fecha límite.
 3. Cuando el problema se resuelve, marcar la incidencia como **Resuelta** y escribir el comentario de resolución.
-4. El residente la confirma (queda **Cerrada**) o la rechaza. **[COMPLETAR: indicar a qué estado vuelve una incidencia rechazada]**
+4. El residente la confirma (queda **Cerrada**) o la rechaza.
 
 ![Formulario de nueva incidencia](img/incidencia-nueva.png)
 
