@@ -71,8 +71,6 @@ Si el backend corre en el puerto 3000 y el frontend se levanta con `npm run dev`
 
 Las variables `NEXT_PUBLIC_*` se incrustan al compilar: si se cambian, hay que reiniciar `npm run dev` o reconstruir la imagen.
 
-> El `.env.example` del frontend trae `API_URL=http://localhost:8000/api/v1`, pero el backend escucha en el puerto 3000 por defecto. Cambien el valor a `http://localhost:3000/api/v1` (o el puerto que usen).
-
 ## Datos semilla
 
 `npm run db:seed` (o `npx prisma db seed` dentro del contenedor) crea los roles, las unidades, los usuarios de prueba y datos de ejemplo para recorrer los módulos. Se puede ejecutar varias veces. Todas las cuentas comparten la contraseña de `SEED_DEMO_PASSWORD`; las credenciales de la entrega se dan en Moodle, no en este repositorio.
@@ -83,14 +81,12 @@ Las variables `NEXT_PUBLIC_*` se incrustan al compilar: si se cambian, hay que r
 | Residente | `demo@example.com` (unidad A-19), `otro@example.com` (A-20) y residentes de la Torre B |
 | Seguridad | `ricardo.soto@example.com` |
 
-**[COMPLETAR: si el seed del ambiente desplegado usa otros usuarios, aclararlo aquí sin escribir contraseñas.]**
-
 ## Pruebas automatizadas
 
-```
-npm test            # pruebas unitarias (backend)
-npm run test:e2e    # pruebas de extremo a extremo (backend)
-npm run lint        # análisis estático (backend y frontend)
+``` shell
+pnpm test            # pruebas unitarias (backend)
+pnpm run test:e2e    # pruebas de extremo a extremo (backend)
+pnpm run lint        # análisis estático (backend y frontend)
 ```
 
 - **Backend, unitarias:** archivos `*.spec.ts` junto al código que prueban, dentro de `src/`. Se ejecutan con Vitest.

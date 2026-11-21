@@ -15,7 +15,6 @@ Todas las rutas cuelgan del prefijo `/api/v1`. Los errores tienen la forma `{ "c
 
 Roles: **Administrador** (`ADMINISTRADOR`), **Residente** (`RESIDENTE`) y **Seguridad** (`SEGURIDAD`).
 
-**[COMPLETAR: en incidencias, visitas, asambleas, cartelera y directorio el rol sale del `@Roles` del controlador o de la validación del servicio y, donde el controlador no lo declara, de las reglas de rutas del frontend. Verifiquen cada fila contra Swagger antes de entregar.]**
 
 ## Endpoints por módulo
 
