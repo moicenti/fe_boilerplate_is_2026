@@ -101,6 +101,16 @@ function buildTimeline(report: ApiReport): TimelineEvent[] {
         description = reason ?? 'El residente rechazó la resolución.';
         break;
       }
+      case 'CONFIRMADO':
+        title = 'Resolución confirmada';
+        description = 'Confirmaste que el problema quedó solucionado. Reporte cerrado.';
+        break;
+      case 'RECHAZADO': {
+        title = 'Resolución rechazada';
+        const reason = typeof meta.rejectionComment === 'string' ? meta.rejectionComment : null;
+        description = reason ?? 'Rechazaste la resolución. El reporte volverá a atención.';
+        break;
+      }
       default:
         description = '';
     }
@@ -123,7 +133,6 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
   const [error, setError] = useState<string | null>(null);
   const [comment, setComment] = useState('');
   const [isResolved, setIsResolved] = useState(false);
- 
 
   useEffect(() => {
     let ignore = false;
@@ -160,12 +169,13 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
         const body = await res.json().catch(() => ({}));
         throw new Error(body.message ?? 'Error al confirmar');
       }
+      setIsResolved(true);
       router.refresh();
-      // recarga la página para reflejar el nuevo estado
+      // recarga la página para reflejar el nuevo estadosetSubmitting
       window.location.reload();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Error desconocido');
-    }
+    } 
   };
 
   const handleReject = async () => {
