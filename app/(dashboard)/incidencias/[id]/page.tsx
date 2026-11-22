@@ -123,6 +123,7 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
   const [error, setError] = useState<string | null>(null);
   const [comment, setComment] = useState('');
   const [isResolved, setIsResolved] = useState(false);
+ 
 
   useEffect(() => {
     let ignore = false;
@@ -148,18 +149,49 @@ export default function DetalleIncidenciaPage({ params }: { params: Promise<{ id
     };
   }, [params]);
 
-  const handleConfirm = () => {
-    // TODO: conectar al backend cuando exista el endpoint
-    setIsResolved(true);
+    const handleConfirm = async () => {
+    if (!report) return;
+    setError(null);
+    try {
+      const res = await fetch(`/api/incidencias/${report.id}/confirmar`, {
+        method: 'PATCH',
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.message ?? 'Error al confirmar');
+      }
+      router.refresh();
+      // recarga la página para reflejar el nuevo estado
+      window.location.reload();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Error desconocido');
+    }
   };
 
-  const handleReject = () => {
-    if (!comment.trim()) {
-      alert('Por favor, describe qué sigue pendiente antes de rechazar.');
+  const handleReject = async () => {
+    if (!report) return;
+    setError(null);
+
+    if (comment.trim().length < 10 || comment.trim().length > 200) {
+      setError('El comentario debe tener entre 10 y 200 caracteres.');
       return;
     }
-    // TODO: conectar al backend cuando exista el endpoint
-    setIsResolved(true);
+
+    try {
+      const res = await fetch(`/api/incidencias/${report.id}/rechazar`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment: comment.trim() }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.message ?? 'Error al rechazar');
+      }
+      router.refresh();
+      window.location.reload();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Error desconocido');
+    } 
   };
 
   if (isLoading) {
